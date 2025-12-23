@@ -1,0 +1,14 @@
+{
+  "patterns": [
+    { "type": "WHITESPACE", "regex": "^\\s+" },
+    { "type": "COMMENT",    "regex": "^//.*|^/\\*[\\s\\S]*?\\*/" },
+    { "type": "STRING",     "regex": "^\"([^\"\\\\]|\\\\.)*\"" },
+    { "type": "NUMBER",     "regex": "^\\d+" },
+    { "type": "DOUBLE_BANG", "regex": "^!!" },
+    { "type": "BANG",        "regex": "^!(?!!)" },
+    { "type": "SYMBOL",      "regex": "^[(){}\\[\\],;]" },
+    { "type": "OPERATOR",    "regex": "^[=+\\-*/%<>!]+" },
+    { "type": "WORD",        "regex": "^[a-zA-Z_][a-zA-Z0-9_]*" },
+    { "type": "CONFIG_REF",  "regex": "^config\\.[a-zA-Z_\\[\\].]+" }
+  ]
+}

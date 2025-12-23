@@ -1,0 +1,19 @@
+{
+  "KW_MACRO": [
+    "repeat!",
+    "mc_exec!"
+  ],
+  "KW_CONTROL": [
+    "if",
+    "else"
+  ],
+  "KW_TYPE": [
+    "int_c",
+    "string"
+  ],
+  "LIT_VAL": [
+    "null",
+    "true",
+    "false"
+  ]
+}

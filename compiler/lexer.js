@@ -1,28 +1,54 @@
-let tokenPatterns = {
-  "patterns": [
-    { "type": "WHITESPACE", "regex": "^\\s+" },
-    { "type": "COMMENT",    "regex": "^(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)" },
-    { "type": "STRING",     "regex": "^\"([^\"\\\\]|\\\\.)*\"" },
-    { "type": "NUMBER",     "regex": "^\\d+" },
-    { "type": "DOUBLE_BANG", "regex": "^!!" },
-    { "type": "BANG",        "regex": "^!(?!!)" },
-    { "type": "SYMBOL",      "regex": "^[(){}\\[\\],;]" },
-    { "type": "OPERATOR",    "regex": "^[=+\\-*/%<>]+" },
-    { "type": "CONFIG_REF",  "regex": "^config\\.[a-zA-Z_\\[\\].]+" },
-    { "type": "WORD",        "regex": "^[a-zA-Z_][a-zA-Z0-9_]*" }
-    
-  ]
+const tokenPatterns = {
+    "patterns": [
+        { "type": "WHITESPACE", "regex": "^\\s+" },
+        { "type": "COMMENT", "regex": "^(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)" },
+        { "type": "STRING", "regex": "^\"([^\"\\\\]|\\\\.)*\"" },
+        { "type": "NUMBER", "regex": "^\\d+" },
+        { "type": "BOOL", "regex": "^true|false$" },
+        { "type": "DOUBLE_BANG", "regex": "^!!" },
+        { "type": "BANG", "regex": "^!(?!!)" },
+        { "type": "SYMBOL", "regex": "^[(){}\\[\\],;]" },
+        { "type": "OPERATOR", "regex": "^[=+\\-*/%<>]+" },
+        { "type": "CONFIG_REF", "regex": "^config\\.[a-zA-Z_\\[\\].]+" },
+        { "type": "WORD", "regex": "^[a-zA-Z_][a-zA-Z0-9_]*" }
+
+    ]
 };
 
-function extractTemplate(source, config) {
-    let tokens = [];
-    let cursor = 0;
+const reservedKeywords = {
+    "KW_MACRO": [
+        "repeat",
+        "mc_exec"
+    ],
+    "KW_CONTROL": [
+        "if",
+        "else"
+    ],
+    "KW_TYPE": [
+        "int_c",
+        "string",
+        "bool"
+    ],
+    "LIT_VAL": [
+        "null",
+    ],
+    "KW_MCCOMMAND": [
+        "give",
+        "execute",
+        "scoreboard",
+        "tellraw",
+        "say",
+        "summon",
+        "effect"
+    ]
 }
+
 
 
 export function tokenize(source, config) {
     let tokens = [];
     let cursor = 0;
+    let idx = 0;
 
     while (cursor < source.length) {
         let match = null;
@@ -36,21 +62,40 @@ export function tokenize(source, config) {
         }
 
         // Match patterns from your JSON
-        for (const { type, regex } of tokenPatterns.patterns) {
+        for (let { type, regex } of tokenPatterns.patterns) {
             const re = new RegExp(regex);
             match = substring.match(re);
             if (match) {
                 let value = match[0];
-                
+
                 // Special handling for Config Refs: Swap them NOW
-                
                 if (type === "CONFIG_REF") {
                     const key = value.split('.')[1];
                     value = config[key] || "null";
+                    if (/^\d+$/.test(value)) {
+                        type = "NUMBER";
+                    } else if (value === "true" || value === "false") {
+                        type = "BOOL";
+                    } else {
+                        type = "STRING";
+                    }
                 }
-                
 
-                tokens.push({ type, value });
+                // For type WORD: check and decide whether if it's a keyword or an identifier 
+                if (type === "WORD") {
+                    for (const kw_type in reservedKeywords) {
+                        if (Object.hasOwn(reservedKeywords, kw_type)) {
+                            if (reservedKeywords[kw_type].includes(value)) {
+                                type = kw_type;
+                            }
+                        }
+                    }
+                    // if none of reserved ones matched
+                    if (type === "WORD") type = "IDENTIFIER";
+                }
+
+                tokens.push({ type, value, idx });
+                idx++;
                 cursor += match[0].length;
                 break;
             }

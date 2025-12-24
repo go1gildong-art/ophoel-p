@@ -6,34 +6,6 @@ const typeMapper = {
     "BOOL": "bool"
 }
 
-const reservedKeywords = {
-    "KW_MACRO": [
-        "repeat",
-        "mc_exec"
-    ],
-    "KW_CONTROL": [
-        "if",
-        "else"
-    ],
-    "KW_TYPE": [
-        "int_c",
-        "string",
-        "bool"
-    ],
-    "LIT_VAL": [
-        "null",
-    ],
-    "KW_MCCOMMAND": [
-        "give",
-        "execute",
-        "scoreboard",
-        "tellraw",
-        "say",
-        "summon",
-        "effect"
-    ]
-}
-
 
 
 class OphoelParser {
@@ -56,9 +28,49 @@ class OphoelParser {
     expect(type, value = null) {
         const token = this.eat();
         if (!token || token.type !== type || (value && (token.value !== value))) {
-            throw new OphoelParseErrorError(`Error: Expected ${type} ${value || ''} but got ${token?.type} at idx ${this.peek().idx}`);
+            throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.type} at idx ${this.peek().idx}`);
         }
         return token;
+    }
+
+    // Helper to check if a symbol exists
+    validateSymbol(sym) {
+        if (!Object.keys(this.symbols).includes(sym)) {
+            throw new OphoelParseError(`Error: Using undefined variable ${sym} at idx ${this.peek().idx}`);
+        }
+        return sym;
+    }
+
+    // Helper to evaluate template strings. currently only accept variables
+    evaluateString(str) {
+        // regex to find ${} pattern
+        const finder = /\${[A-Za-z0-9._!\(\)\[\]]+}/;
+        const finderGlobal = /\${[A-Za-z0-9._!\(\)\[\]]+}/g;
+
+        
+
+        const print = (x) => {
+            console.log(x);
+            return x;
+        };
+
+        const evaluatedStr = (str
+            .match(finderGlobal) || []) // extracts ${} inside string 
+            .map(part => part.slice(2, -1)) // extracts only symbols without puncs
+            .map(sym => this.validateSymbol(sym)) // check symbols if they exist
+            .map(sym => this.symbols[sym]) // convert to values
+            .map(value => this.evaluateExpression(value)) // evalutate if it's expression
+            .map(value => value.trim().slice(1, -1)) // remove "" at the both ends of the evalated part of the string 
+            .reduce((acc, value) => acc.replace(finder, value), str) // replaces ${} into values. returns string
+            .trim().slice(1, -1); // remove "" at the both ends of the string 
+
+            return evaluatedStr
+    }
+    // x = x
+
+    // Helper to evaluate expressions. dummy data
+    evaluateExpression(expr) {
+        return expr;
     }
 
     // Helper to build commands
@@ -120,7 +132,7 @@ class OphoelParser {
         const subTokens = this.getBraceBlock();
         const results = new OphoelParser(subTokens, this.config, this.symbols).parse();
         results
-            .map(cmd => `execute ${prefix} run ${cmd}`)
+            .map(cmd => `execute ${this.evaluateString(prefix)} run ${cmd}`)
             .forEach(cmd => this.emit(cmd));
         this.expect("SYMBOL", "}");
     }
@@ -147,7 +159,8 @@ class OphoelParser {
         const commandArgs = this.expect("STRING").value;
         this.expect("SYMBOL", ")");
         this.expect("SYMBOL", ";");
-        this.commands.push(`${command} ${commandArgs}`);
+        this.commands.push(`${command} ${this.evaluateString(commandArgs)}`);
+        // console.log("as command arg");
     }
 
     parse() {

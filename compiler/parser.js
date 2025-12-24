@@ -61,6 +61,11 @@ class OphoelParser {
         return token;
     }
 
+    // Helper to build commands
+    emit(cmd) {
+        this.commands.push(cmd);
+    }
+
     // Helper to find out the tokens belong inside braces
     getBraceBlock() {
         let depth = 1; // tracks how much braces are stacked. 0 when the code goes to its base block
@@ -76,7 +81,7 @@ class OphoelParser {
         }
 
         if (depth > 0) {
-            throw new OphoelParseError("Error: Unclosed brace block detected.");
+            throw new OphoelParseError("Error: Unclosed brace block detected");
         }
 
         // Capture the inside
@@ -114,10 +119,9 @@ class OphoelParser {
         this.expect("SYMBOL", "{");
         const subTokens = this.getBraceBlock();
         const results = new OphoelParser(subTokens, this.config, this.symbols).parse();
-        this.commands = this.commands.concat(
-            results
-                .map(cmd => `execute ${prefix} run ${cmd}`)
-        );
+        results
+            .map(cmd => `execute ${prefix} run ${cmd}`)
+            .forEach(cmd => this.emit(cmd));
         this.expect("SYMBOL", "}");
     }
 
@@ -131,7 +135,7 @@ class OphoelParser {
         const subTokens = this.getBraceBlock();
         const results = new OphoelParser(subTokens, this.config, this.symbols).parse();
         for (let i = 0; i < count; i++) {
-            this.commands = this.commands.concat(results);
+            results.forEach(cmd => this.emit(cmd));
         }
         this.expect("SYMBOL", "}");
     }

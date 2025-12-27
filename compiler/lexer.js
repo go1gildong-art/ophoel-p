@@ -46,13 +46,15 @@ const reservedKeywords = {
 
 
 export function tokenize(source, config) {
+    const ophoelSource = source;
     let tokens = [];
     let cursor = 0;
     let idx = 0;
 
-    while (cursor < source.length) {
+
+    while (cursor < ophoelSource.length) {
         let match = null;
-        let substring = source.slice(cursor);
+        let substring = ophoelSource.slice(cursor);
 
         // Skip Whitespace
         match = substring.match(/^\s+/);
@@ -67,6 +69,11 @@ export function tokenize(source, config) {
             match = substring.match(re);
             if (match) {
                 let value = match[0];
+
+                // remove quotes at the both end from string
+                if (type === "STRING") {
+                    value = value.slice(1, (value.length - 1));
+                }
 
                 // Special handling for Config Refs: Swap them NOW
                 if (type === "CONFIG_REF") {
@@ -94,13 +101,14 @@ export function tokenize(source, config) {
                     if (type === "WORD") type = "IDENTIFIER";
                 }
 
+
+
                 tokens.push({ type, value, idx });
-                idx++;
+                idx += 1;
                 cursor += match[0].length;
                 break;
             }
         }
     }
-
     return tokens;
 }

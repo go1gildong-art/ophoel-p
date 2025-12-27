@@ -1,0 +1,18 @@
+{
+  "name": "ophoel",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js",
+    "dev": "nodemon --prefix \"C:/Users/nines/Desktop/릴름즈/ophoel\" --watch \"ophoel_config.json\" --watch \"data/*/ophoel\" --ext oph,json --exec \"node compiler/build.js\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bin": {
+    "ophoel-build": "./compiler/build.js"
+  }
+}

@@ -6,8 +6,6 @@ const typeMapper = {
     "BOOL": "bool"
 }
 
-
-
 class OphoelParser {
     constructor(tokens, config, symbols = {}) {
         this.tokens = tokens;
@@ -26,11 +24,11 @@ class OphoelParser {
 
     // Helper to catch syntax errors
     expect(type, value = null) {
-        const token = this.eat();
-        if (!token || token.type !== type || (value && (token.value !== value))) {
-            throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.type} at idx ${this.peek().idx}`);
-        }
-        return token;
+            const token = this.eat();
+            if (token == null || token.type !== type || (value && (token.value !== value))) {
+                throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.type} at idx ${(this.peek() != undefined) ? this.peek().idx : (this.tokens[this.pos - 2].idx + 1)}`);
+            }
+            return token;
     }
 
     // Helper to check if a symbol exists
@@ -47,7 +45,7 @@ class OphoelParser {
         const finder = /\${[A-Za-z0-9._!\(\)\[\]]+}/;
         const finderGlobal = /\${[A-Za-z0-9._!\(\)\[\]]+}/g;
 
-        
+
 
         const print = (x) => {
             console.log(x);
@@ -60,11 +58,12 @@ class OphoelParser {
             .map(sym => this.validateSymbol(sym)) // check symbols if they exist
             .map(sym => this.symbols[sym]) // convert to values
             .map(value => this.evaluateExpression(value)) // evalutate if it's expression
-            .map(value => value.trim().slice(1, -1)) // remove "" at the both ends of the evalated part of the string 
+            // .map(value => value.trim().slice(1, -1)) // remove "" at the both ends of the evalated part of the string 
             .reduce((acc, value) => acc.replace(finder, value), str) // replaces ${} into values. returns string
-            .trim().slice(1, -1); // remove "" at the both ends of the string 
+            .trim();
+        // .slice(1, -1); // remove "" at the both ends of the string 
 
-            return evaluatedStr
+        return evaluatedStr
     }
     // x = x
 
@@ -144,8 +143,9 @@ class OphoelParser {
         const count = this.expect("NUMBER").value;
         this.expect("SYMBOL", ")");
         this.expect("SYMBOL", "{");
+        const pos = this.pos;
         const subTokens = this.getBraceBlock();
-        const results = new OphoelParser(subTokens, this.config, this.symbols).parse();
+        const results = new OphoelParser(subTokens, this.config, this.symbols, pos).parse();
         for (let i = 0; i < count; i++) {
             results.forEach(cmd => this.emit(cmd));
         }

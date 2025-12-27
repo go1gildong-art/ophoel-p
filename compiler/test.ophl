@@ -1,9 +1,8 @@
-// this line is a comment. null true false give string int_s
-
+// this line is a comment. null true false give string int_s null
 give!!("@p diamond 2");
 string my_zombie = "[type=zombie]";
 
-mc_exec! ("as @e${my_zombie} at @s run") {
+mc_exec! ("as @e\${my_zombie} at @s") {
     summon!!("lightning");
 }
 
@@ -11,5 +10,7 @@ repeat! (10) {
     say!!("this repeats 10 times!");
 }
 
+int_c foo = 10;
+bool bar = true;
 string from_config = config.test;
 say!!("content from config: ${from_config}");

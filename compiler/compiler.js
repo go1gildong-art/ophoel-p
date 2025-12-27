@@ -8,7 +8,7 @@ let code = `
 int_c base_val = 100;
 int_c total = (base_val * 2) + 50;
 
-say!!("The result is ${total}"); // Should output: "The result is 250"
+say!!("The result is \${total}"); // Should output: "The result is 250"
 `;
 
 
@@ -22,4 +22,3 @@ export function compile(sourceCode, config) {
     return commands;
 }
 
-console.log(compile(code, {}));

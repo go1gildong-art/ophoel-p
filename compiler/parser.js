@@ -24,11 +24,11 @@ class OphoelParser {
 
     // Helper to catch syntax errors
     expect(type, value = null) {
-            const token = this.eat();
-            if (token == null || token.type !== type || (value && (token.value !== value))) {
-                throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.type} at idx ${(this.peek() != undefined) ? this.peek().idx : (this.tokens[this.pos - 2].idx + 1)}`);
-            }
-            return token;
+        const token = this.eat();
+        if (token == null || token.type !== type || (value && (token.value !== value))) {
+            throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.type} at idx ${(this.peek() != undefined) ? this.peek().idx : (this.tokens[this.pos - 2].idx + 1)}`);
+        }
+        return token;
     }
 
     // Helper to check if a symbol exists
@@ -65,11 +65,34 @@ class OphoelParser {
 
         return evaluatedStr
     }
-    // x = x
+
 
     // Helper to evaluate expressions. dummy data
     evaluateExpression(expr) {
-        return expr;
+
+        // return if single value
+        if (expr.length === 1) return expr[0];
+        if (!Array.isArray(expr)) return expr;
+
+
+        // 1. Map variables/numbers to a string
+        const expressionString = expr.map(t => {
+            if (t.type === 'VARIABLE' || t.type === 'IDENTIFIER') {
+                const val = this.symbols[t.value];
+                if (val === undefined) throw new OphoelParseError(`Undefined variable: ${t.value} at idx ${this.peek().idx}`);
+                
+                return val;
+            }
+            return t.value; // Returns the number or operator (+, -, *, /)
+        }).join(' ');
+
+        // 2. Security Check (ensure no malicious code injection)
+        if (/[^0-9\+\-\*\/\(\)\.\s]/.test(expressionString)) {
+            throw new OphoelParseError(`Illegal math: ${expressionString} at idx ${this.peek().idx}`);
+        }
+
+        // 3. Calculation
+        return new Function(`return {type: "NUMBER", value: ${expressionString}}`)();
     }
 
     // Helper to build commands
@@ -104,6 +127,22 @@ class OphoelParser {
         return block;
     }
 
+    // Helper to find out the expression, until semicolon
+    getExpressionUntilSemicolon() {
+        let startPos = this.pos;
+        let endPos = (this.tokens
+            .slice(startPos)
+            .findIndex(token => token.type === "SYMBOL" && token.value === ";")) + startPos;
+
+        // Capture the inside
+        const expr = this.tokens.slice(startPos, endPos);
+
+
+        // Move the main parser's position AT the ;
+        this.pos = endPos;
+        return expr;
+    }
+
     handleAssignment() {
         const type = this.expect("KW_TYPE");
         const name = this.expect("IDENTIFIER");
@@ -111,7 +150,8 @@ class OphoelParser {
             throw new OphoelParseError(`Error: Variable ${name} already exists at idx ${this.peek().idx}`);
         }
         this.expect("OPERATOR", "=");
-        const value = this.eat();
+        const expr = this.getExpressionUntilSemicolon();
+        const value = this.evaluateExpression(expr);
         if (typeMapper[value.type] !== type.value) {
             throw new OphoelParseError(`Error: Mismatching type assignment. Tried ${typeMapper[value.type]} to ${type.value} at idx ${this.peek().idx}`);
         }
@@ -160,7 +200,6 @@ class OphoelParser {
         this.expect("SYMBOL", ")");
         this.expect("SYMBOL", ";");
         this.commands.push(`${command} ${this.evaluateString(commandArgs)}`);
-        // console.log("as command arg");
     }
 
     parse() {

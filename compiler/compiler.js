@@ -4,13 +4,16 @@ import { parse } from './parser.js';
 // Load Configs
 // const config = JSON.parse(fs.readFileSync('./configs.json', 'utf8'));
 
-let code = `
+let code = 
+`
 int_c base_val = 100;
-int_c total = (base_val * 2) + 50;
+int_c total = base_val / 3;
 
-say!!("The result is \${total}"); // Should output: "The result is 250"
+say!!(\`The result is \${total + 2 - 19203 * config.brrr} and \${x}\`); // Should output: "The result is 250"
+
+
+say!!("yee");
 `;
-
 
 export function compile(sourceCode, config) {
     // 1. Raw text to Tokens
@@ -22,3 +25,5 @@ export function compile(sourceCode, config) {
     return commands;
 }
 
+console.log(tokenize(code, {}));
+// console.log(compile(code, {}));

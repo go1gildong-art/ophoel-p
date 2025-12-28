@@ -1,3 +1,5 @@
+import { AST } from "./ast.js";
+
 class OphoelParseError extends Error { };
 
 const typeMapper = {
@@ -45,8 +47,6 @@ class OphoelParser {
         const finder = /\${[A-Za-z0-9._!\(\)\[\]]+}/;
         const finderGlobal = /\${[A-Za-z0-9._!\(\)\[\]]+}/g;
 
-
-
         const print = (x) => {
             console.log(x);
             return x;
@@ -57,7 +57,7 @@ class OphoelParser {
             .map(part => part.slice(2, -1)) // extracts only symbols without puncs
             .map(sym => this.validateSymbol(sym)) // check symbols if they exist
             .map(sym => this.symbols[sym]) // convert to values
-            .map(value => this.evaluateExpression(value)) // evalutate if it's expression
+            // .map(value => this.evaluateStrExpr(value)) // evalutate if it's expression
             // .map(value => value.trim().slice(1, -1)) // remove "" at the both ends of the evalated part of the string 
             .reduce((acc, value) => acc.replace(finder, value), str) // replaces ${} into values. returns string
             .trim();
@@ -65,7 +65,6 @@ class OphoelParser {
 
         return evaluatedStr
     }
-
 
     // Helper to evaluate expressions. dummy data
     evaluateExpression(expr) {
@@ -92,7 +91,7 @@ class OphoelParser {
         }
 
         // 3. Calculation
-        return new Function(`return {type: "NUMBER", value: ${expressionString}}`)();
+        return new Function(`return {type: "NUMBER", value: Math.round(${expressionString})}`)();
     }
 
     // Helper to build commands

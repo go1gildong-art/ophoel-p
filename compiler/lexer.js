@@ -7,13 +7,14 @@ const tokenPatterns = {
         { "type": "BOOL", "regex": "^true|false$" },
         { "type": "DOUBLE_BANG", "regex": "^!!" },
         { "type": "BANG", "regex": "^!(?!!)" },
-        { "type": "SYMBOL", "regex": "^[(){}\\[\\],;]" },
+        { "type": "SYMBOL", "regex": "^[(){}\\[\\],;`$]" },
         { "type": "OPERATOR", "regex": "^[=+\\-*/%<>]+" },
-        { "type": "CONFIG_REF", "regex": "^config\\.[a-zA-Z_\\[\\].]+" },
-        { "type": "WORD", "regex": "^[a-zA-Z_][a-zA-Z0-9_]*" }
-
+        { "type": "CONFIG_REF", "regex": "^config\\.[a-zA-Z_][a-zA-Z0-9_]*(\\.[A-Za-z0-9_]+|\\[[0-9]+\\])*" },
+        { "type": "WORD", "regex": "^[a-zA-Z_][a-zA-Z0-9_]*" },
+        { "type": "FALLBACK", "regex": "^.+"}
     ]
 };
+
 
 const reservedKeywords = {
     "KW_MACRO": [
@@ -39,17 +40,28 @@ const reservedKeywords = {
         "tellraw",
         "say",
         "summon",
-        "effect"
+        "effect",
+        "fill",
+        "setblock"
     ]
 }
 
-
+function print(x, msg = "") {
+    console.log(x, msg);
+    return x;
+}
 
 export function tokenize(source, config) {
     const ophoelSource = source;
     let tokens = [];
     let cursor = 0;
     let idx = 0;
+    let line = 1;
+
+    let templateStrMode = false;
+
+    // temp flag for checking temporal escaping with ${}s
+    let templateStrEscape = false;
 
 
     while (cursor < ophoelSource.length) {
@@ -60,6 +72,35 @@ export function tokenize(source, config) {
         match = substring.match(/^\s+/);
         if (match) {
             cursor += match[0].length;
+            line += match[0].match(/\n/g)?.length ?? 0;
+            continue;
+        }
+
+        if (templateStrMode && !templateStrEscape) {
+            let type;
+            let value;
+
+            if (tokens[tokens.length - 1].type === "SYMBOL"
+                && tokens[tokens.length - 1].value === "`") {
+                type = "TEMPLATE_HEAD";
+            } else if (print(substring.match(/`/)?.index ?? substring.length, "searching `") <
+                print(substring.match(/\$\{/)?.index ?? substring.length)) {
+                // when next ` is faster than ${. false if any are found
+                type = "TEMPLATE_TAIL";
+                console.log("tail!");
+            } else {
+                type = "TEMPLATE_BODY";
+            }
+            templateStrEscape = true;
+
+
+            // get next ${ or ` index. if none are present, just return the end 
+            const nextBrPoint = substring.match(/\$\{|`/)?.index ?? substring.length;
+            value = substring.slice(0, nextBrPoint);
+
+            tokens.push({ type, value, idx, line });
+            idx += 1;
+            cursor += nextBrPoint;
             continue;
         }
 
@@ -70,12 +111,36 @@ export function tokenize(source, config) {
             if (match) {
                 let value = match[0];
 
+                if (type === "SYMBOL"
+                    && value === "`") {
+                    if (templateStrMode) {
+                        // close template string by second `
+                        templateStrMode = false;
+                    } else {
+                        // if found `, enable template string parsing mode
+                        templateStrMode = true;
+                        templateStrEscape = false;
+                    }
+                }
+
+                if (type === "SYMBOL"
+                    && value === "}"
+                    && templateStrMode === true
+                    && templateStrEscape === true) {
+                    // close ${} interpolation by ending }
+                    templateStrEscape = false;
+                }
+
+
+
                 // remove quotes at the both end from string
                 if (type === "STRING") {
                     value = value.slice(1, (value.length - 1));
                 }
 
-                // Special handling for Config Refs: Swap them NOW
+                // Special handling for Config Refs: Swap them now: DON'T
+                // Config values will resolved at semantics
+                /*
                 if (type === "CONFIG_REF") {
                     const key = value.split('.')[1];
                     value = config[key] || "null";
@@ -87,6 +152,7 @@ export function tokenize(source, config) {
                         type = "STRING";
                     }
                 }
+                    */
 
                 // For type WORD: check and decide whether if it's a keyword or an identifier 
                 if (type === "WORD") {
@@ -103,7 +169,7 @@ export function tokenize(source, config) {
 
 
 
-                tokens.push({ type, value, idx });
+                tokens.push({ type, value, idx, line });
                 idx += 1;
                 cursor += match[0].length;
                 break;

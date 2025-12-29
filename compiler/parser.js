@@ -1,21 +1,160 @@
-import { AST } from "./ast.js";
+import { AST, Location } from "./ast.js";
 
-class OphoelParseError extends Error { };
+class OphoelParseError extends Error {
+    constructor(msg, token) {
+        return new Error(msg + ` at ${token?.location.fileName}:${token?.location.line}, ${token?.location.tokenIdx}`);
+    }
+};
 
-const typeMapper = {
-    "NUMBER": "int_c",
-    "STRING": "string",
-    "BOOL": "bool"
+class ExpressionParser {
+    constructor(tokens) {
+        this.tokens = tokens;
+        this.expressionPos = tokens[0].location.idx; // to track global position of the expression
+        this.pos = 0;
+    }
+
+    getExprLocation() { return this.tokens[0].location; }
+
+    // Helper to get current token
+    peek() { return this.tokens[this.pos]; }
+
+    // Helper to move forward
+    eat() { return this.tokens[this.pos++]; }
+
+    // Helper to catch syntax errors
+    expect(type, value = null) {
+        const token = this.eat();
+        if (token == null || token.type !== type || (value && (token.value !== value))) {
+            throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.value}`, token);
+        }
+        return token;
+    }
+
+    // Helper to find out the tokens belong inside braces
+    // mostly will work with braces
+    getTokensBetween(type, value1, value2) {
+        let depth = 1; // tracks how much braces are stacked. 0 when the code goes to its base block
+        const startPos = this.pos;
+        let endPos = this.pos;
+
+        while (depth > 0) {
+            endPos++;
+
+            if (this.tokens[endPos].type === type && this.tokens[endPos].value === value1) {
+                depth++;
+            } else if (this.tokens[endPos].value === value2) {
+                depth--;
+            }
+
+            
+            if (endPos > this.tokens.length) throw new OphoelParseError(`The ${value1}${value2} structure is not closed`, this.tokens[startPos]);
+        }
+        
+
+        // Capture the inside
+        const block = this.tokens.slice(startPos, endPos);
+
+        // Move the main parser's position AT the closing }
+        this.pos = endPos;
+
+        return block;
+    }
+
+    parse() {
+        return this.parseAdditive();
+    }
+
+    parseAdditive() {
+        let left = this.parseMultiplicative();
+
+        while (this.peek()?.type === 'OPERATOR' && ['+', '-'].includes(this.peek().value)) {
+            const operator = this.eat().value;
+            const right = this.parseAdditive();
+
+            // Wrap the current 'left' in a new tree
+            left = AST.BinaryExpression(operator, left, right);
+        }
+
+        return left;
+    }
+
+    parseMultiplicative() {
+        let left = this.parsePrimary();
+
+        while (this.peek()?.type === 'OPERATOR' && ['*', '/'].includes(this.peek().value)) {
+            const operator = this.eat().value;
+            const right = this.parseMultiplicative();
+            left = AST.BinaryExpression(operator, left, right);
+        }
+
+        return left;
+    }
+
+    parsePrimary() {
+        const token = this.peek();
+
+        if (token.type.match(/^(NUMBER|STRING|BOOL)$/)) {
+            return AST.Literal(token.value, String(token.value), this.getExprLocation());
+        }
+
+        if (token.type === 'SYMBOL' && token.value === "`") {
+            this.eat(); // remove 1st `
+            const quasis = [];
+            const exprs = [];
+
+            do {
+                const token = this.peek();
+                console.log(token)
+
+                if (token.type.match(/^(TEMPLATE_HEAD|TEMPLATE_BODY|TEMPLATE_TAIL)$/)) {
+                    quasis.push(token.value);
+                    this.eat();
+                    continue;
+                }
+
+                if (token.type === "SYMBOL" && token.value === "$") {
+                    this.eat();
+                    this.expect("SYMBOL", "{");
+                    const exprTokens = this.getTokensBetween("SYMBOL", "{", "}");
+                    exprs.push(new ExpressionParser(exprTokens, this.pos + this.expressionPos).parse());
+                    this.eat();
+                    continue;
+                }
+
+                if (token.type === "SYMBOL" && token.value === "`") {
+                    break;
+                }
+
+            } while (true);
+
+
+            return AST.TemplateStringLiteral(quasis, exprs, this.getExprLocation())
+        }
+
+        if (token.type === 'IDENTIFIER') {
+            return AST.Identifier(this.eat().value, this.getExprLocation());
+        }
+
+        if (token.value === '(') {
+            this.eat(); // eat (
+            const expr = this.parse();
+            this.eat(); // eat )
+            return expr;
+        }
+
+        throw new OphoelParseError(`Unexpected token in expression: ${token.value}`, token);
+    }
 }
 
+
+
+
+
 class OphoelParser {
-    constructor(tokens, config, symbols = {}) {
+    constructor(tokens, config = {}, symbols = {}) {
         this.tokens = tokens;
-        this.config = config;
         this.pos = 0;
-        this.symbols = symbols; // Variable storage
-        this.effectStack = []; // For managing /execute prefixes 
-        this.commands = []; // Final .mcfunction lines
+        this.ast = [];
     }
 
     // Helper to get current token
@@ -28,94 +167,35 @@ class OphoelParser {
     expect(type, value = null) {
         const token = this.eat();
         if (token == null || token.type !== type || (value && (token.value !== value))) {
-            throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.type} at idx ${(this.peek() != undefined) ? this.peek().idx : (this.tokens[this.pos - 2].idx + 1)}`);
+            throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.type}`, token);
         }
         return token;
     }
 
-    // Helper to check if a symbol exists
-    validateSymbol(sym) {
-        if (!Object.keys(this.symbols).includes(sym)) {
-            throw new OphoelParseError(`Error: Using undefined variable ${sym} at idx ${this.peek().idx}`);
-        }
-        return sym;
-    }
-
-    // Helper to evaluate template strings. currently only accept variables
-    evaluateString(str) {
-        // regex to find ${} pattern
-        const finder = /\${[A-Za-z0-9._!\(\)\[\]]+}/;
-        const finderGlobal = /\${[A-Za-z0-9._!\(\)\[\]]+}/g;
-
-        const print = (x) => {
-            console.log(x);
-            return x;
-        };
-
-        const evaluatedStr = (str
-            .match(finderGlobal) || []) // extracts ${} inside string 
-            .map(part => part.slice(2, -1)) // extracts only symbols without puncs
-            .map(sym => this.validateSymbol(sym)) // check symbols if they exist
-            .map(sym => this.symbols[sym]) // convert to values
-            // .map(value => this.evaluateStrExpr(value)) // evalutate if it's expression
-            // .map(value => value.trim().slice(1, -1)) // remove "" at the both ends of the evalated part of the string 
-            .reduce((acc, value) => acc.replace(finder, value), str) // replaces ${} into values. returns string
-            .trim();
-        // .slice(1, -1); // remove "" at the both ends of the string 
-
-        return evaluatedStr
-    }
-
-    // Helper to evaluate expressions. dummy data
-    evaluateExpression(expr) {
-
-        // return if single value
-        if (expr.length === 1) return expr[0];
-        if (!Array.isArray(expr)) return expr;
-
-
-        // 1. Map variables/numbers to a string
-        const expressionString = expr.map(t => {
-            if (t.type === 'VARIABLE' || t.type === 'IDENTIFIER') {
-                const val = this.symbols[t.value];
-                if (val === undefined) throw new OphoelParseError(`Undefined variable: ${t.value} at idx ${this.peek().idx}`);
-                
-                return val;
-            }
-            return t.value; // Returns the number or operator (+, -, *, /)
-        }).join(' ');
-
-        // 2. Security Check (ensure no malicious code injection)
-        if (/[^0-9\+\-\*\/\(\)\.\s]/.test(expressionString)) {
-            throw new OphoelParseError(`Illegal math: ${expressionString} at idx ${this.peek().idx}`);
-        }
-
-        // 3. Calculation
-        return new Function(`return {type: "NUMBER", value: Math.round(${expressionString})}`)();
-    }
-
     // Helper to build commands
-    emit(cmd) {
-        this.commands.push(cmd);
-    }
+    emit(ast) { this.ast.push(ast); }
 
     // Helper to find out the tokens belong inside braces
-    getBraceBlock() {
+    // mostly will work with braces
+    getTokensBetween(type, value1, value2) {
         let depth = 1; // tracks how much braces are stacked. 0 when the code goes to its base block
-        let startPos = this.pos;
+        const startPos = this.pos;
         let endPos = this.pos;
+
         while (depth > 0) {
             endPos++;
-            if (this.tokens[endPos].type === "SYMBOL" && this.tokens[endPos].value === "{") {
+            if (endPos >= this.tokens.length) throw new OphoelParseError(`The ${value1}${value2} structure is not closed`, this.tokens[startPos]);
+
+            if (this.tokens[endPos].type === type && this.tokens[endPos].value === value1) {
                 depth++;
-            } else if (this.tokens[endPos].value === "}") {
+            } else if (this.tokens[endPos].value === value2) {
                 depth--;
             }
-        }
 
-        if (depth > 0) {
-            throw new OphoelParseError("Error: Unclosed brace block detected");
+            
+            
         }
+        
 
         // Capture the inside
         const block = this.tokens.slice(startPos, endPos);
@@ -126,18 +206,17 @@ class OphoelParser {
         return block;
     }
 
-    // Helper to find out the expression, until semicolon
-    getExpressionUntilSemicolon() {
+    // Helper to find out the expression, until specific token
+    getTokensUntil(tokenType, tokenValue) {
         let startPos = this.pos;
         let endPos = (this.tokens
             .slice(startPos)
-            .findIndex(token => token.type === "SYMBOL" && token.value === ";")) + startPos;
+            .findIndex(token => token.type === tokenType && token.value === tokenValue)) + startPos;
 
         // Capture the inside
         const expr = this.tokens.slice(startPos, endPos);
 
-
-        // Move the main parser's position AT the ;
+        // Move the main parser's position AT the "until" token
         this.pos = endPos;
         return expr;
     }
@@ -145,63 +224,71 @@ class OphoelParser {
     handleAssignment() {
         const type = this.expect("KW_TYPE");
         const name = this.expect("IDENTIFIER");
-        if (this.symbols[name] != null) {
-            throw new OphoelParseError(`Error: Variable ${name} already exists at idx ${this.peek().idx}`);
-        }
         this.expect("OPERATOR", "=");
-        const expr = this.getExpressionUntilSemicolon();
-        const value = this.evaluateExpression(expr);
-        if (typeMapper[value.type] !== type.value) {
-            throw new OphoelParseError(`Error: Mismatching type assignment. Tried ${typeMapper[value.type]} to ${type.value} at idx ${this.peek().idx}`);
-        }
+        const expr = this.getTokensUntil("SYMBOL", ";");
         this.expect("SYMBOL", ";");
 
+        this.emit(AST.VariableDecl(type.value, name.value, new ExpressionParser(expr).parse(), type.location))
+
         // save the variable inside storage
-        this.symbols[name.value] = value.value;
+        // this.symbols[name.value] = value.value;
     }
 
     handleMcExec() {
-        this.expect("KW_MACRO", "mc_exec");
-        this.expect("BANG", "!");
+        const keyword = this.expect("KW_BUILTIN", "mc_exec");
+        // this.expect("BANG", "!");
         this.expect("SYMBOL", "(");
-        const prefix = this.expect("STRING").value;
+        const prefix = this.getTokensBetween("SYMBOL", "(", ")");
         this.expect("SYMBOL", ")");
         this.expect("SYMBOL", "{");
-        const subTokens = this.getBraceBlock();
-        const results = new OphoelParser(subTokens, this.config, this.symbols).parse();
-        results
-            .map(cmd => `execute ${this.evaluateString(prefix)} run ${cmd}`)
-            .forEach(cmd => this.emit(cmd));
+        const block = this.getTokensBetween("SYMBOL", "{", "}");
         this.expect("SYMBOL", "}");
+
+        this.emit(
+            AST.McExecStatement(new ExpressionParser(prefix).parse(), new OphoelParser(block).parse(), keyword.location)
+        );
     }
 
     handleRepeat() {
-        this.expect("KW_MACRO", "repeat");
-        this.expect("BANG", "!");
+        const keyword = this.expect("KW_CONTROL", "repeat");
+        // this.expect("BANG", "!");
         this.expect("SYMBOL", "(");
-        const count = this.expect("NUMBER").value;
+        const count = this.getTokensBetween("SYMBOL", "(", ")");
         this.expect("SYMBOL", ")");
         this.expect("SYMBOL", "{");
-        const pos = this.pos;
-        const subTokens = this.getBraceBlock();
-        const results = new OphoelParser(subTokens, this.config, this.symbols, pos).parse();
-        for (let i = 0; i < count; i++) {
-            results.forEach(cmd => this.emit(cmd));
-        }
+        const block = this.getTokensBetween("SYMBOL", "{", "}");
         this.expect("SYMBOL", "}");
+
+        this.emit(
+            AST.RepeatStatement(new ExpressionParser(count).parse(), new OphoelParser(block).parse(), keyword.location)
+        );
     }
 
     handleRawCommand() {
-        const command = this.expect("KW_MCCOMMAND").value;
+        const command = this.expect("KW_MCCOMMAND");
         this.expect("DOUBLE_BANG", "!!");
         this.expect("SYMBOL", "(");
-        const commandArgs = this.expect("STRING").value;
+        const commandArgs = this.getTokensBetween("SYMBOL", "(", ")")
         this.expect("SYMBOL", ")");
         this.expect("SYMBOL", ";");
-        this.commands.push(`${command} ${this.evaluateString(commandArgs)}`);
+
+        this.emit(
+            AST.McCommand(command.value, new ExpressionParser(commandArgs).parse(), command.location)
+        );
     }
 
     parse() {
+
+        // first, check all invalid tokens
+        let invalidFlag = false;
+        this.tokens
+            .filter(token => token.type === "INVALID")
+            .forEach(token => {
+                console.error(`Invalid token ${token.value} at ${token.location.filename}:${token.location.line}, ${token.location.idx}`);
+                invalidFlag = true;
+            });
+            if (invalidFlag) throw new Error("Source code has invalid tokens!")
+
         while (this.pos < this.tokens.length) {
             const token = this.peek();
 
@@ -217,14 +304,14 @@ class OphoelParser {
                 continue;
             }
 
-            // 3. Handle mc_exec!
-            if (token.value === 'mc_exec' && this.tokens[this.pos + 1]?.value === '!') {
+            // 3. Handle mc_exec
+            if (token.type === "KW_BUILTIN" && token.value === 'mc_exec') {
                 this.handleMcExec();
                 continue;
             }
 
-            // 4. Handle repeat!
-            if (token.value === 'repeat' && this.tokens[this.pos + 1]?.value === '!') {
+            // 4. Handle repeat
+            if (token.type === "KW_CONTROL" && token.value === 'repeat') {
                 this.handleRepeat();
                 continue;
             }
@@ -235,13 +322,14 @@ class OphoelParser {
                 continue;
             }
 
-            throw new OphoelParseError(`Error: Unexpected token ${token.value} at idx ${token.idx}`); // Default fallback
+            console.log(JSON.stringify(this.ast));
+            throw new OphoelParseError(`Error: Unexpected token ${token.value}`, token); // Default fallback
         }
-        return this.commands;
+        return this.ast;
     }
 }
 
 
-export function parse(tokens, config, symbols = {}) {
+export function parse(tokens, config = {}, symbols = {}) {
     return new OphoelParser(tokens, config, symbols).parse();
 }

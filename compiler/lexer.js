@@ -9,11 +9,11 @@ const tokenPatterns = {
         { "type": "BOOL", "regex": "^true|false" },
         { "type": "DOUBLE_BANG", "regex": "^!!" },
         { "type": "BANG", "regex": "^!(?!!)" },
-        { "type": "SYMBOL", "regex": "^(!!|\\$\\{|::|[(){}\\[\\],;:`$!])" },
+        { "type": "SYMBOL", "regex": "^(!!|::|[(){}\\[\\],;:`$!])" },
         { "type": "OPERATOR", "regex": "^[=+\\-*/%<>]+" },
         { "type": "CONFIG_REF", "regex": "^config\\.[a-zA-Z_][a-zA-Z0-9_]*(\\.[A-Za-z0-9_]+|\\[[0-9]+\\])*" },
         { "type": "WORD", "regex": "^[a-zA-Z_][a-zA-Z0-9_]*" },
-        { "type": "FALLBACK", "regex": "^.+"}
+        { "type": "INVALID", "regex": "^.+" }
     ]
 };
 
@@ -50,7 +50,7 @@ const reservedKeywords = {
 }
 
 function print(x, msg = "") {
-    console.log(x, msg);
+    // console.log(x, msg);
     return x;
 }
 
@@ -90,7 +90,6 @@ export function tokenize(source, config, fileName) {
                 print(substring.match(/\$\{/)?.index ?? substring.length)) {
                 // when next ` is faster than ${. false if any are found
                 type = "TEMPLATE_TAIL";
-                console.log("tail!");
             } else {
                 type = "TEMPLATE_BODY";
             }
@@ -101,7 +100,8 @@ export function tokenize(source, config, fileName) {
             const nextBrPoint = substring.match(/\$\{|`/)?.index ?? substring.length;
             value = substring.slice(0, nextBrPoint);
 
-            tokens.push({ type, value, idx, line });
+            const location = new Location(fileName, line, idx);
+            tokens.push({ type, value, location });
             idx += 1;
             cursor += nextBrPoint;
             continue;
@@ -124,6 +124,7 @@ export function tokenize(source, config, fileName) {
                         templateStrMode = true;
                         templateStrEscape = false;
                     }
+                    // continue;
                 }
 
                 if (type === "SYMBOL"

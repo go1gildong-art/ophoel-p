@@ -1,0 +1,170 @@
+[
+    {
+        "type": "VariableDecl",
+        "location": {
+            "fileName": "source.oph",
+            "line": 2,
+            "tokenIdx": 0
+        },
+        "varType": "int_c",
+        "name": "base_val",
+        "value": {
+            "type": "Literal",
+            "location": {
+                "fileName": "source.oph",
+                "line": 2,
+                "tokenIdx": 3
+            },
+            "value": "100",
+            "raw": "100"
+        }
+    },
+    {
+        "type": "VariableDecl",
+        "location": {
+            "fileName": "source.oph",
+            "line": 3,
+            "tokenIdx": 5
+        },
+        "varType": "int_c",
+        "name": "total",
+        "value": {
+            "type": "BinaryExpression",
+            "operator": "/",
+            "left": {
+                "type": "Identifier",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 3,
+                    "tokenIdx": 8
+                },
+                "name": "base_val"
+            },
+            "right": {
+                "type": "Literal",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 3,
+                    "tokenIdx": 8
+                },
+                "value": "3",
+                "raw": "3"
+            }
+        }
+    },
+    {
+        "type": "RepeatStatement",
+        "location": {
+            "fileName": "source.oph",
+            "line": 5,
+            "tokenIdx": 12
+        },
+        "count": {
+            "type": "Literal",
+            "location": {
+                "fileName": "source.oph",
+                "line": 5,
+                "tokenIdx": 14
+            },
+            "value": "10",
+            "raw": "10"
+        },
+        "block": [
+            {
+                "type": "McCommand",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 6,
+                    "tokenIdx": 17
+                },
+                "command": "say",
+                "args": {
+                    "type": "TemplateStringLiteral",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 6,
+                        "tokenIdx": 20
+                    },
+                    "quasis": [
+                        "The result is ",
+                        "and ",
+                        ""
+                    ],
+                    "exprs": [
+                        {
+                            "type": "BinaryExpression",
+                            "operator": "+",
+                            "left": {
+                                "type": "Identifier",
+                                "location": {
+                                    "fileName": "source.oph",
+                                    "line": 6,
+                                    "tokenIdx": 24
+                                },
+                                "name": "total"
+                            },
+                            "right": {
+                                "type": "Literal",
+                                "location": {
+                                    "fileName": "source.oph",
+                                    "line": 6,
+                                    "tokenIdx": 24
+                                },
+                                "value": "2",
+                                "raw": "2"
+                            }
+                        },
+                        {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 6,
+                                "tokenIdx": 33
+                            },
+                            "name": "x"
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "type": "McExecStatement",
+        "location": {
+            "fileName": "source.oph",
+            "line": 9,
+            "tokenIdx": 40
+        },
+        "prefix": {
+            "type": "Literal",
+            "location": {
+                "fileName": "source.oph",
+                "line": 9,
+                "tokenIdx": 42
+            },
+            "value": "as @e",
+            "raw": "as @e"
+        },
+        "block": [
+            {
+                "type": "McCommand",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 10,
+                    "tokenIdx": 45
+                },
+                "command": "summon",
+                "args": {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 10,
+                        "tokenIdx": 48
+                    },
+                    "value": "pig",
+                    "raw": "pig"
+                }
+            }
+        ]
+    }
+]

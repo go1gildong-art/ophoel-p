@@ -1,10 +1,12 @@
+import { Location } from "./ast.js";
+
 const tokenPatterns = {
     "patterns": [
         { "type": "WHITESPACE", "regex": "^\\s+" },
         { "type": "COMMENT", "regex": "^(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)" },
         { "type": "STRING", "regex": "^\"([^\"\\\\]|\\\\.)*\"" },
         { "type": "NUMBER", "regex": "^\\d+" },
-        { "type": "BOOL", "regex": "^true|false$" },
+        { "type": "BOOL", "regex": "^true|false" },
         { "type": "DOUBLE_BANG", "regex": "^!!" },
         { "type": "BANG", "regex": "^!(?!!)" },
         { "type": "SYMBOL", "regex": "^(!!|\\$\\{|::|[(){}\\[\\],;:`$!])" },
@@ -52,7 +54,7 @@ function print(x, msg = "") {
     return x;
 }
 
-export function tokenize(source, config) {
+export function tokenize(source, config, fileName) {
     const ophoelSource = source;
     let tokens = [];
     let cursor = 0;
@@ -169,8 +171,8 @@ export function tokenize(source, config) {
                 }
 
 
-
-                tokens.push({ type, value, idx, line });
+                const location = new Location(fileName, line, idx);
+                tokens.push({ type, value, location });
                 idx += 1;
                 cursor += match[0].length;
                 break;

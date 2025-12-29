@@ -7,7 +7,7 @@ const tokenPatterns = {
         { "type": "BOOL", "regex": "^true|false$" },
         { "type": "DOUBLE_BANG", "regex": "^!!" },
         { "type": "BANG", "regex": "^!(?!!)" },
-        { "type": "SYMBOL", "regex": "^[(){}\\[\\],;`$]" },
+        { "type": "SYMBOL", "regex": "^(!!|\\$\\{|::|[(){}\\[\\],;:`$!])" },
         { "type": "OPERATOR", "regex": "^[=+\\-*/%<>]+" },
         { "type": "CONFIG_REF", "regex": "^config\\.[a-zA-Z_][a-zA-Z0-9_]*(\\.[A-Za-z0-9_]+|\\[[0-9]+\\])*" },
         { "type": "WORD", "regex": "^[a-zA-Z_][a-zA-Z0-9_]*" },
@@ -15,15 +15,16 @@ const tokenPatterns = {
     ]
 };
 
-
 const reservedKeywords = {
-    "KW_MACRO": [
-        "repeat",
-        "mc_exec"
-    ],
     "KW_CONTROL": [
         "if",
-        "else"
+        "else",
+        "for",
+        "while",
+        "repeat"
+    ],
+    "KW_BUILTIN": [
+        "mc_exec"
     ],
     "KW_TYPE": [
         "int_c",

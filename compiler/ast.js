@@ -10,15 +10,128 @@ export class Location {
     }
 }
 
-export const AST = {
+export class AST {
+    constructor(ast) {
+
+        // ---------- GENERAL ----------
+        // holds the node type. McCommand, Literal, VariableDecl, etc
+        // Uses: ALL
+        // Type: string
+        this.type = ast.type;
+
+        // holds the location of the node with Location object
+        // Uses: ALL
+        // Type: Location
+        this.location = ast.location;
+
+        // ---------- DECLARATION ----------
+        // holds the type for variable or function declaration
+        // Uses: VariableDecl, FunctionDecl, MacroDecl
+        // Type: string
+        this.varType = ast.varType;
+
+        // holds the name for variable or function declaration
+        // Uses: VariableDecl, FunctionDecl, MacroDecl
+        // Type: string
+        this.varName = ast.varName;
+
+        // holds the assigned value for declarations
+        // Uses: VariableDecl
+        // Type: AST
+        this.varValue = ast.varValue;
+
+        // holds the array of assigned parameters for declarations
+        // Uses: FunctionDecl, MacroDecl
+        // Type: string[]
+        this.varParam = ast.varParam;
+
+        // holds the code block body for declarations
+        // Uses: FunctionDecl, MacroDecl
+        // Type: AST[]
+        this.varBody = ast.varBody;
+
+        // ---------- CALLS & INVOCATIONS ----------
+        // holds the name for invoked value
+        // Uses: Identifier, FunctionCall, MacroInvoc
+        // Type: string
+        this.name = ast.name;
+
+        // holds an array of arguments passed inside
+        // Uses: IfStatement, WhileStatement, ForStatement, 
+        // Uses: RepeatStatement, McExecStatement,
+        // Uses: FunctionCall, MacroInvoc
+        // Type: AST[]
+        this.args = ast.args;
+
+        // holds an array of nodes as code block
+        // Uses: IfStatement, WhileStatement, ForStatement, 
+        // Uses: RepeatStatement, McExecStatement,
+        // Uses: FunctionCall, MacroInvoc
+        // Type: AST[]
+        this.body = ast.body;
+
+        // ---------- EXPRESSIONS ----------
+
+        // holds the value's type that the node would have
+        // Uses: Literal, TemplateStringLiteral,
+        // Uses: Identifier, FunctionCall, MacroInvoc
+        // Type: string
+        this.valueType = ast.valueType;
+
+        // holds the value that the node would finally have
+        // Uses: Literal, TemplateStringLiteral,
+        // Uses: Identifier, FunctionCall, MacroInvoc, 
+        // Uses: McCommand, ConfigRef
+        // Type: AST
+        this.value = ast.value;
+
+
+        // holds the operation the node performs
+        // Uses: UnaryExpression, BinaryExpression
+        // Type: string
+        this.operator = ast.operator;
+        
+        // holds the leftside value 
+        // Uses: UnaryExpression, BinaryExpression
+        // Type: AST
+        this.left = ast.left;
+
+        // holds the rightside value 
+        // Uses: UnaryExpression, BinaryExpression
+        // Type: AST
+        this.right = ast.right;
+
+        // ---------- MISC ----------
+        // holds the array of quasis strings for a template string
+        // Uses: TemplateStringLiteral
+        // Type: string[]
+        this.templateQuasis = ast.templateQuasis;
+
+        // holds the array of expression nodes for a template string
+        // Uses: TemplateStringLiteral
+        // Type: AST[]
+        this.templateExpressions = ast.templateExpressions;
+
+        // holds the command for minecraft commands
+        // Uses: McCommand
+        // Type: string
+        this.command = ast.command
+    }
+
+    setValue(value) {
+        this.value = value;
+    }
+}
+
+export const BuildAST = {
     // 1. Statements (top level items)
     Program: (body) => ({ type: 'Program', body }),
 
-    VariableDecl: (varType, name, value, location) => ({
+    VariableDecl: (varType, varName, varValue, location) => ({
         ...makeNode('VariableDecl', location),
         varType,
-        name,
-        value
+        varName,
+        varValue
     }),
 
     McCommand: (command, args, location) => {
@@ -43,14 +156,22 @@ export const AST = {
         return ({
             ...makeNode('Literal', location),
             value, // actual value
-            raw // string source
+            raw, // string source
+            valueType: ((val, loc) => {
+                if (typeof val === "number") return "int_c";
+                if (typeof val === "boolean") return "bool";
+                if (typeof val === "string") return "string";
+
+                throw new Error(`Literal type not deducible! Got ${val} for ${typeof val} at ${loc.fileName}:${loc.line}, ${loc.tokenIdx}`);
+            })(value, location)
         });
     },
 
-    TemplateStringLiteral: (quasis, exprs, location) => ({
+    TemplateStringLiteral: (templateQuasis, templateExpressions, location) => ({
         ...makeNode('TemplateStringLiteral', location),
-        quasis, // array of strings
-        exprs // array of expressions, go between quasis strings
+        templateQuasis, // array of strings
+        templateExpressions, // array of expressions, go between quasis strings
+        type: "string"
     }),
 
     Identifier: (name, location) => ({
@@ -58,16 +179,26 @@ export const AST = {
         name
     }),
 
+    ConfigRef: (access, location) => ({
+        ...makeNode('ConfigRef', location),
+        access
+    }),
+
     // 3. Control flows & Macro invocations
-    RepeatStatement: (count, block, location) => ({
+    RepeatStatement: (args, block, location) => ({
         ...makeNode("RepeatStatement", location),
-        count,
+        args,
         block
     }),
 
-    McExecStatement: (prefix, block, location) => ({
+    McExecStatement: (args, block, location) => ({
         ...makeNode("McExecStatement", location),
-        prefix,
+        args,
         block
     })
 }
+
+/*
+field meanings:
+
+*/

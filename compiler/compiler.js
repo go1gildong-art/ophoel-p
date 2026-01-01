@@ -1,19 +1,22 @@
 import { tokenize } from './lexer.js';
 import { parse } from './parser.js';
-
+import { transform } from "./transformer.js"
 // Load Configs
 // const config = JSON.parse(fs.readFileSync('./configs.json', 'utf8'));
 
 
 
 
-let code = 
+let code =
 `
 int_c base_val = 100;
 int_c total = base_val / 3;
 
+int_c lol = 42;
+string lool = "42";
+
 repeat (10) {
-say!!(\`The result is \${total + 2 / 3} and \${x}\`);
+say!!(\`The result is \${(total + 2) / (config.brrr + 3)} and \${base_val}\`);
 }
 
 mc_exec ("as @e") {
@@ -32,4 +35,5 @@ export function compile(sourceCode, config, fileName) {
 }
 
 // console.log(tokenize(code, {}, "source.oph"));
-console.log(JSON.stringify(parse(tokenize(code, {}, "source.oph"))));
+// console.log(JSON.stringify(parse(tokenize(code, {}, "source.oph"))));
+console.log(JSON.stringify(transform(parse(tokenize(code, {}, "source.oph"))), { brrr: 10 }));

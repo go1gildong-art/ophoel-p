@@ -1,4 +1,4 @@
-import { AST, Location } from "./ast.js";
+import { BuildAST, Location } from "./ast.js";
 
 class OphoelParseError extends Error {
     constructor(msg, token) {
@@ -46,10 +46,10 @@ class ExpressionParser {
                 depth--;
             }
 
-            
+
             if (endPos > this.tokens.length) throw new OphoelParseError(`The ${value1}${value2} structure is not closed`, this.tokens[startPos]);
         }
-        
+
 
         // Capture the inside
         const block = this.tokens.slice(startPos, endPos);
@@ -61,7 +61,8 @@ class ExpressionParser {
     }
 
     parse() {
-        return this.parseAdditive();
+        let left = this.parseAdditive();
+        return left;
     }
 
     parseAdditive() {
@@ -69,10 +70,11 @@ class ExpressionParser {
 
         while (this.peek()?.type === 'OPERATOR' && ['+', '-'].includes(this.peek().value)) {
             const operator = this.eat().value;
-            const right = this.parseAdditive();
+            const right = this.parse();
 
             // Wrap the current 'left' in a new tree
-            left = AST.BinaryExpression(operator, left, right);
+            left = BuildAST.BinaryExpression(operator, left, right, this.getExprLocation());
+            this.eat();
         }
 
         return left;
@@ -83,8 +85,8 @@ class ExpressionParser {
 
         while (this.peek()?.type === 'OPERATOR' && ['*', '/'].includes(this.peek().value)) {
             const operator = this.eat().value;
-            const right = this.parseMultiplicative();
-            left = AST.BinaryExpression(operator, left, right);
+            const right = this.parse();
+            left = BuildAST.BinaryExpression(operator, left, right, this.getExprLocation());
         }
 
         return left;
@@ -93,8 +95,19 @@ class ExpressionParser {
     parsePrimary() {
         const token = this.peek();
 
-        if (token.type.match(/^(NUMBER|STRING|BOOL)$/)) {
-            return AST.Literal(token.value, String(token.value), this.getExprLocation());
+        if (token.type.match(/^(NUMBER|BOOL|STRING)$/)) {
+            return BuildAST.Literal(
+                (token.type === "NUMBER" ? "int_c" :
+                token.type === "BOOL" ? "bool" :
+                "string"),
+
+                String(token.value),
+
+                this.getExprLocation());
+        }
+
+        if (token.type === "CONFIG_REF") {
+            return BuildAST.ConfigRef(token.value, this.getExprLocation());
         }
 
         if (token.type === 'SYMBOL' && token.value === "`") {
@@ -104,8 +117,6 @@ class ExpressionParser {
 
             do {
                 const token = this.peek();
-                console.log(token)
-
                 if (token.type.match(/^(TEMPLATE_HEAD|TEMPLATE_BODY|TEMPLATE_TAIL)$/)) {
                     quasis.push(token.value);
                     this.eat();
@@ -116,7 +127,8 @@ class ExpressionParser {
                     this.eat();
                     this.expect("SYMBOL", "{");
                     const exprTokens = this.getTokensBetween("SYMBOL", "{", "}");
-                    exprs.push(new ExpressionParser(exprTokens, this.pos + this.expressionPos).parse());
+                    const expr = new ExpressionParser(exprTokens).parse();
+                    exprs.push(expr);
                     this.eat();
                     continue;
                 }
@@ -124,15 +136,13 @@ class ExpressionParser {
                 if (token.type === "SYMBOL" && token.value === "`") {
                     break;
                 }
-
             } while (true);
 
-
-            return AST.TemplateStringLiteral(quasis, exprs, this.getExprLocation())
+            return BuildAST.TemplateStringLiteral(quasis, exprs, this.getExprLocation())
         }
 
         if (token.type === 'IDENTIFIER') {
-            return AST.Identifier(this.eat().value, this.getExprLocation());
+            return BuildAST.Identifier(this.eat().value, this.getExprLocation());
         }
 
         if (token.value === '(') {
@@ -146,15 +156,11 @@ class ExpressionParser {
     }
 }
 
-
-
-
-
 class OphoelParser {
     constructor(tokens, config = {}, symbols = {}) {
         this.tokens = tokens;
         this.pos = 0;
-        this.ast = [];
+        this.ast = BuildAST.Program([], tokens[0]?.location);
     }
 
     // Helper to get current token
@@ -162,6 +168,9 @@ class OphoelParser {
 
     // Helper to move forward
     eat() { return this.tokens[this.pos++]; }
+
+    // Helper to remove top level Program node
+    unprogram(program) { return program.body; }
 
     // Helper to catch syntax errors
     expect(type, value = null) {
@@ -173,7 +182,7 @@ class OphoelParser {
     }
 
     // Helper to build commands
-    emit(ast) { this.ast.push(ast); }
+    emit(ast) { this.ast.body.push(ast); }
 
     // Helper to find out the tokens belong inside braces
     // mostly will work with braces
@@ -192,10 +201,10 @@ class OphoelParser {
                 depth--;
             }
 
-            
-            
+
+
         }
-        
+
 
         // Capture the inside
         const block = this.tokens.slice(startPos, endPos);
@@ -228,7 +237,7 @@ class OphoelParser {
         const expr = this.getTokensUntil("SYMBOL", ";");
         this.expect("SYMBOL", ";");
 
-        this.emit(AST.VariableDecl(type.value, name.value, new ExpressionParser(expr).parse(), type.location))
+        this.emit(BuildAST.VariableDecl(type.value, name.value, new ExpressionParser(expr).parse(), type.location))
 
         // save the variable inside storage
         // this.symbols[name.value] = value.value;
@@ -245,7 +254,7 @@ class OphoelParser {
         this.expect("SYMBOL", "}");
 
         this.emit(
-            AST.McExecStatement(new ExpressionParser(prefix).parse(), new OphoelParser(block).parse(), keyword.location)
+            BuildAST.McExecStatement([new ExpressionParser(prefix).parse()], [...this.unprogram(new OphoelParser(block).parse())], keyword.location)
         );
     }
 
@@ -260,7 +269,7 @@ class OphoelParser {
         this.expect("SYMBOL", "}");
 
         this.emit(
-            AST.RepeatStatement(new ExpressionParser(count).parse(), new OphoelParser(block).parse(), keyword.location)
+            BuildAST.RepeatStatement([new ExpressionParser(count).parse()], [...this.unprogram(new OphoelParser(block).parse())], keyword.location)
         );
     }
 
@@ -273,12 +282,11 @@ class OphoelParser {
         this.expect("SYMBOL", ";");
 
         this.emit(
-            AST.McCommand(command.value, new ExpressionParser(commandArgs).parse(), command.location)
+            BuildAST.McCommand(command.value, [new ExpressionParser(commandArgs).parse()], command.location)
         );
     }
 
     parse() {
-
         // first, check all invalid tokens
         let invalidFlag = false;
         this.tokens
@@ -287,7 +295,7 @@ class OphoelParser {
                 console.error(`Invalid token ${token.value} at ${token.location.filename}:${token.location.line}, ${token.location.idx}`);
                 invalidFlag = true;
             });
-            if (invalidFlag) throw new Error("Source code has invalid tokens!")
+        if (invalidFlag) throw new Error("Source code has invalid tokens!")
 
         while (this.pos < this.tokens.length) {
             const token = this.peek();
@@ -322,8 +330,10 @@ class OphoelParser {
                 continue;
             }
 
+
+            // fallback behavior
             console.log(JSON.stringify(this.ast));
-            throw new OphoelParseError(`Error: Unexpected token ${token.value}`, token); // Default fallback
+            throw new OphoelParseError(`Error: Unexpected token ${token.value}`, token);
         }
         return this.ast;
     }

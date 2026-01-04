@@ -93,13 +93,14 @@ class ExpressionParser {
     }
 
     parsePrimary() {
-        const token = this.eat();
+        const token = this.peek();
 
         if (token.type.match(/^(NUMBER|BOOL|STRING)$/)) {
+            this.eat();
             return BuildAST.Literal(
                 (token.type === "NUMBER" ? "int_c" :
-                token.type === "BOOL" ? "bool" :
-                "string"),
+                    token.type === "BOOL" ? "bool" :
+                        "string"),
 
                 String(token.value),
 
@@ -107,10 +108,12 @@ class ExpressionParser {
         }
 
         if (token.type === "CONFIG_REF") {
+            this.eat();
             return BuildAST.ConfigRef(token.value, this.getExprLocation());
         }
 
         if (token.type === 'SYMBOL' && token.value === "`") {
+            this.eat(); // remove opening `
             const quasis = [];
             const exprs = [];
 
@@ -146,7 +149,8 @@ class ExpressionParser {
 
         if (token.value === '(') {
             this.eat(); // eat (
-            const expr = this.parse();
+            const exprTokens = this.getTokensBetween("SYMBOL", "(", ")");
+            const expr = new ExpressionParser(exprTokens).parse();
             this.eat(); // eat )
             return expr;
         }

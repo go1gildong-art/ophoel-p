@@ -10,7 +10,8 @@ import { generate } from "./generator.js"
 
 let code =
 `
-say!!(\`help \${-1 * 2} aaa\`);
+int_c radius = (config.brrr - 4) / 2;
+say!!(\`e \${radius} e\`);
 `;
 
 export function compile(sourceCode, config, fileName) {
@@ -30,6 +31,6 @@ export function compile(sourceCode, config, fileName) {
 }
 
 // console.log(tokenize(code, {}, "source.oph"));
-// console.log(JSON.stringify(parse(tokenize(code, {}, "source.oph"))));
+console.log(JSON.stringify(parse(tokenize(code, {}, "source.oph"))));
 // console.log(JSON.stringify(transform(parse(tokenize(code, {}, "source.oph"))), { brrr: 10 }));
-// console.log(compile(code, {brrr: 40}, "source.oph"));
+console.log(compile(code, {brrr: 40}, "source.oph"));

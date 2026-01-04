@@ -75,7 +75,7 @@ function compileDirectory(currentSrc, currentOut, config) {
             // It's an Ophoel file! Compile it
             try {
                 const source = fs.readFileSync(srcPath, 'utf8');
-                const commands = compile(source, config);
+                const commands = compile(source, config, item);
                 const finalOutPath = outPath.replace('.oph', '.mcfunction');
                 fs.writeFileSync(finalOutPath, commands);
 

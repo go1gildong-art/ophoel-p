@@ -9,7 +9,6 @@ function getCommands(node) {
     const commands = [];
 
     if (node.type === "McCommand") {
-        console.log("synthesizing..");
         let synthesized = "";
         if ((node.prefixes?.length ?? 0) === 0) {
             synthesized = "";
@@ -22,7 +21,6 @@ function getCommands(node) {
 
     if (node.type === "PreservedComment") {
         // remove /# and switch to #
-        console.log("preserved...");
         commands.push(node.message.slice(1));
     }
 

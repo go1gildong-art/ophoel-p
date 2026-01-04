@@ -93,7 +93,7 @@ class ExpressionParser {
     }
 
     parsePrimary() {
-        const token = this.peek();
+        const token = this.eat();
 
         if (token.type.match(/^(NUMBER|BOOL|STRING)$/)) {
             return BuildAST.Literal(
@@ -111,7 +111,6 @@ class ExpressionParser {
         }
 
         if (token.type === 'SYMBOL' && token.value === "`") {
-            this.eat(); // remove 1st `
             const quasis = [];
             const exprs = [];
 

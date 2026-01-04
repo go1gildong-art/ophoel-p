@@ -105,19 +105,21 @@ function evaluateValues(node, _ctx = { variables: {} }) {
         node.varType = ctx.variables[node.name].type;
     }
 
-    if (node.type === "templateExpressions") {
+    if (node.type === "TemplateStringLiteral") {
         const components = [];
-        node.expressions.forEach(node => evaluateValues(node));
-        while (node.quasis.length > 0 && node.expressions.length > 0) {
-            components.push(node.quasis.splice(0, 1)[0]);
-            components.push(node.expressions.splice(0, 1)[0].value);
+        node.templateExpressions = node.templateExpressions.map(node => evaluateValues(node, ctx));
+        while (node.templateQuasis.length > 0 && node.templateExpressions.length > 0) {
+            components.push(node.templateQuasis.splice(0, 1)[0]);
+            components.push(node.templateExpressions.splice(0, 1)[0].value);
         }
+        // pull out the last TEMPLATE_TAIL of the quasis
+        components.push(node.templateQuasis.splice(0, 1)[0]);
         node.value = components.join("");
     }
 
     if (node.type === "BinaryExpression") {
-        evaluateValues(node.left, ctx);
-        evaluateValues(node.right, ctx);
+        node.left = evaluateValues(node.left, ctx);
+        node.right = evaluateValues(node.right, ctx);
         let result;
         switch (node.operator) {
             case "+":
@@ -163,6 +165,7 @@ function unrollConstRepeat(node) {
         for (let i = 0; i < count; i++) arr.push(element);
         return arr;
     }
+
     // helper function to check if a value is constant integer
     const isConstant = (inputNode) => {
         if (inputNode.valueType === "int_c"
@@ -174,10 +177,9 @@ function unrollConstRepeat(node) {
     }
 
     if (node.type === "RepeatStatement") {
-        let count;
         if (isConstant(node.args[0])) {
-            count = node.args[0].value;
-            node.body.flatMap(node => [...proliferate(node.body, count).flat(1)]);
+            const count = node.args[0].value;
+            node.body = proliferate(node.body, count).flat(1);
         }
     }
 
@@ -192,10 +194,13 @@ function unrollMcExec(node) {
     if (node == null) return;
     if (node.type === "Literal") return node;
 
-    if (node.type === "mcExecStatement") {
-        const prefix = node.prefix;
+    if (node.type === "McExecStatement") {
+        const prefix = node.args[0].value;
         node.body.forEach(node => {
-            if (node.type === "McCommand") node.prefixes.unshift(prefix);
+            if (node.type === "McCommand") {
+                node.prefixes = (node.prefixes == null) ? [] : node.prefixes; 
+                node.prefixes.unshift(prefix);
+            }
         });
     }
 

@@ -3,9 +3,10 @@ import { Location } from "./ast.js";
 const tokenPatterns = {
     "patterns": [
         { "type": "WHITESPACE", "regex": "^\\s+" },
+        { "type": "PRESERVED_COMMENT", "regex": "^(\\/#[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)" },
         { "type": "COMMENT", "regex": "^(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)" },
         { "type": "STRING", "regex": "^\"([^\"\\\\]|\\\\.)*\"" },
-        { "type": "NUMBER", "regex": "^\\d+" },
+        { "type": "NUMBER", "regex": "^\\-?\\d+" },
         { "type": "BOOL", "regex": "^true|false" },
         { "type": "DOUBLE_BANG", "regex": "^!!" },
         { "type": "BANG", "regex": "^!(?!!)" },
@@ -71,14 +72,6 @@ export function tokenize(source, config, fileName) {
         let match = null;
         let substring = ophoelSource.slice(cursor);
 
-        // Skip Whitespace
-        match = substring.match(/^\s+/);
-        if (match) {
-            cursor += match[0].length;
-            line += match[0].match(/\n/g)?.length ?? 0;
-            continue;
-        }
-
         if (templateStrMode && !templateStrEscape) {
             let type;
             let value;
@@ -104,6 +97,14 @@ export function tokenize(source, config, fileName) {
             tokens.push({ type, value, location });
             idx += 1;
             cursor += nextBrPoint;
+            continue;
+        }
+
+        // Skip Whitespace
+        match = substring.match(/^\s+/);
+        if (match) {
+            cursor += match[0].length;
+            line += match[0].match(/\n/g)?.length ?? 0;
             continue;
         }
 

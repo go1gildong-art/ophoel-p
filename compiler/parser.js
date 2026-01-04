@@ -230,6 +230,11 @@ class OphoelParser {
         return expr;
     }
 
+    handlePreservedComment() {
+        const pc = this.eat();
+        this.emit(BuildAST.PreservedComment(pc.value, pc.location));
+    }
+
     handleAssignment() {
         const type = this.expect("KW_TYPE");
         const name = this.expect("IDENTIFIER");
@@ -306,25 +311,31 @@ class OphoelParser {
                 continue;
             }
 
-            // 2. Handle Assignments (string x = "y")
+            // 2. emit preserved comments
+            if (token.type === 'PRESERVED_COMMENT') {
+                this.handlePreservedComment();
+                continue;
+            }
+
+            // 3. Handle Assignments (string x = "y")
             if (token.type === 'KW_TYPE') {
                 this.handleAssignment();
                 continue;
             }
 
-            // 3. Handle mc_exec
+            // 4. Handle mc_exec
             if (token.type === "KW_BUILTIN" && token.value === 'mc_exec') {
                 this.handleMcExec();
                 continue;
             }
 
-            // 4. Handle repeat
+            // 5. Handle repeat
             if (token.type === "KW_CONTROL" && token.value === 'repeat') {
                 this.handleRepeat();
                 continue;
             }
 
-            // 5. Handle Raw Commands (give!!, summon!!, etc)
+            // 6. Handle Raw Commands (give!!, summon!!, etc)
             if (token.type === 'KW_MCCOMMAND' && this.tokens[this.pos + 1]?.type === 'DOUBLE_BANG') {
                 this.handleRawCommand();
                 continue;

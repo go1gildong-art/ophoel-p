@@ -7,49 +7,52 @@
     },
     "body": [
         {
-            "type": "VariableDecl",
+            "type": "PreservedComment",
             "location": {
                 "fileName": "source.oph",
                 "line": 2,
                 "tokenIdx": 0
             },
+            "message": "# brrrr"
+        },
+        {
+            "type": "VariableDecl",
+            "location": {
+                "fileName": "source.oph",
+                "line": 3,
+                "tokenIdx": 1
+            },
             "varType": "int_c",
-            "varName": "radius",
+            "varName": "x",
+            "mutability": true
+        },
+        {
+            "type": "VariableAssign",
+            "location": {
+                "fileName": "source.oph",
+                "line": 3,
+                "tokenIdx": 5
+            },
+            "varName": "x",
             "varValue": {
-                "type": "BinaryExpression",
+                "type": "Literal",
                 "location": {
                     "fileName": "source.oph",
-                    "line": 2,
-                    "tokenIdx": 3
+                    "line": 3,
+                    "tokenIdx": 7
                 },
-                "operator": "-",
-                "left": {
-                    "type": "ConfigRef",
-                    "location": {
-                        "fileName": "source.oph",
-                        "line": 2,
-                        "tokenIdx": 3
-                    },
-                    "access": "config.brrr"
-                },
-                "right": {
-                    "type": "Literal",
-                    "location": {
-                        "fileName": "source.oph",
-                        "line": 2,
-                        "tokenIdx": 3
-                    },
-                    "valueType": "int_c",
-                    "raw": "4"
-                }
-            }
+                "valueType": "int_c",
+                "raw": "10",
+                "value": 10
+            },
+            "declares": true
         },
         {
             "type": "McCommand",
             "location": {
                 "fileName": "source.oph",
-                "line": 3,
-                "tokenIdx": 11
+                "line": 6,
+                "tokenIdx": 9
             },
             "command": "say",
             "args": [
@@ -57,8 +60,8 @@
                     "type": "TemplateStringLiteral",
                     "location": {
                         "fileName": "source.oph",
-                        "line": 3,
-                        "tokenIdx": 14
+                        "line": 6,
+                        "tokenIdx": 12
                     },
                     "templateQuasis": [
                         "e ",
@@ -69,13 +72,1237 @@
                             "type": "Identifier",
                             "location": {
                                 "fileName": "source.oph",
-                                "line": 3,
-                                "tokenIdx": 18
+                                "line": 6,
+                                "tokenIdx": 16
                             },
-                            "name": "radius"
+                            "name": "x",
+                            "value": 10,
+                            "valueType": "int_c"
                         }
                     ],
-                    "valueType": "string"
+                    "valueType": "string",
+                    "value": "e 10 e"
+                }
+            ],
+            "message": " say e 10 e"
+        },
+        {
+            "type": "VariableAssign",
+            "location": {
+                "fileName": "source.oph",
+                "line": 7,
+                "tokenIdx": 22
+            },
+            "varName": "x",
+            "varValue": {
+                "type": "BinaryExpression",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 7,
+                    "tokenIdx": 24
+                },
+                "operator": "+",
+                "left": {
+                    "type": "Identifier",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 7,
+                        "tokenIdx": 24
+                    },
+                    "name": "x",
+                    "value": 10,
+                    "valueType": "int_c"
+                },
+                "right": {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 7,
+                        "tokenIdx": 24
+                    },
+                    "valueType": "int_c",
+                    "raw": "1",
+                    "value": 1
+                },
+                "valueType": "int_c",
+                "value": 11
+            },
+            "declares": false
+        },
+        {
+            "type": "McCommand",
+            "location": {
+                "fileName": "source.oph",
+                "line": 8,
+                "tokenIdx": 28
+            },
+            "command": "say",
+            "args": [
+                {
+                    "type": "TemplateStringLiteral",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 8,
+                        "tokenIdx": 31
+                    },
+                    "templateQuasis": [
+                        "e ",
+                        " e"
+                    ],
+                    "templateExpressions": [
+                        {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 8,
+                                "tokenIdx": 35
+                            },
+                            "name": "x",
+                            "value": 11,
+                            "valueType": "int_c"
+                        }
+                    ],
+                    "valueType": "string",
+                    "value": "e 11 e"
+                }
+            ],
+            "message": " say e 11 e"
+        },
+        {
+            "type": "VariableAssign",
+            "location": {
+                "fileName": "source.oph",
+                "line": 9,
+                "tokenIdx": 41
+            },
+            "varName": "x",
+            "varValue": {
+                "type": "BinaryExpression",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 9,
+                    "tokenIdx": 43
+                },
+                "operator": "+",
+                "left": {
+                    "type": "Identifier",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 9,
+                        "tokenIdx": 43
+                    },
+                    "name": "x",
+                    "value": 11,
+                    "valueType": "int_c"
+                },
+                "right": {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 9,
+                        "tokenIdx": 43
+                    },
+                    "valueType": "int_c",
+                    "raw": "1",
+                    "value": 1
+                },
+                "valueType": "int_c",
+                "value": 12
+            },
+            "declares": false
+        },
+        {
+            "type": "McCommand",
+            "location": {
+                "fileName": "source.oph",
+                "line": 10,
+                "tokenIdx": 47
+            },
+            "command": "say",
+            "args": [
+                {
+                    "type": "TemplateStringLiteral",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 10,
+                        "tokenIdx": 50
+                    },
+                    "templateQuasis": [
+                        "e ",
+                        " e"
+                    ],
+                    "templateExpressions": [
+                        {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 10,
+                                "tokenIdx": 54
+                            },
+                            "name": "x",
+                            "value": 12,
+                            "valueType": "int_c"
+                        }
+                    ],
+                    "valueType": "string",
+                    "value": "e 12 e"
+                }
+            ],
+            "message": " say e 12 e"
+        },
+        {
+            "type": "VariableAssign",
+            "location": {
+                "fileName": "source.oph",
+                "line": 11,
+                "tokenIdx": 60
+            },
+            "varName": "x",
+            "varValue": {
+                "type": "BinaryExpression",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 11,
+                    "tokenIdx": 62
+                },
+                "operator": "+",
+                "left": {
+                    "type": "Identifier",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 11,
+                        "tokenIdx": 62
+                    },
+                    "name": "x",
+                    "value": 12,
+                    "valueType": "int_c"
+                },
+                "right": {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 11,
+                        "tokenIdx": 62
+                    },
+                    "valueType": "int_c",
+                    "raw": "1",
+                    "value": 1
+                },
+                "valueType": "int_c",
+                "value": 13
+            },
+            "declares": false
+        },
+        {
+            "type": "PreservedComment",
+            "location": {
+                "fileName": "source.oph",
+                "line": 13,
+                "tokenIdx": 66
+            },
+            "message": "# 000"
+        },
+        {
+            "type": "RepeatStatement",
+            "location": {
+                "fileName": "source.oph",
+                "line": 15,
+                "tokenIdx": 67
+            },
+            "args": [
+                {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 15,
+                        "tokenIdx": 69
+                    },
+                    "valueType": "int_c",
+                    "raw": "3",
+                    "value": 3
+                }
+            ],
+            "body": [
+                {
+                    "type": "McCommand",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 16,
+                        "tokenIdx": 72
+                    },
+                    "command": "say",
+                    "args": [
+                        {
+                            "type": "TemplateStringLiteral",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 16,
+                                "tokenIdx": 75
+                            },
+                            "templateQuasis": [
+                                "e ",
+                                " e"
+                            ],
+                            "templateExpressions": [
+                                {
+                                    "type": "Identifier",
+                                    "location": {
+                                        "fileName": "source.oph",
+                                        "line": 16,
+                                        "tokenIdx": 79
+                                    },
+                                    "name": "x",
+                                    "value": 15,
+                                    "valueType": "int_c"
+                                }
+                            ],
+                            "valueType": "string",
+                            "value": "e 15 e"
+                        }
+                    ],
+                    "message": " say e 15 e"
+                },
+                {
+                    "type": "VariableAssign",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 17,
+                        "tokenIdx": 85
+                    },
+                    "varName": "x",
+                    "varValue": {
+                        "type": "BinaryExpression",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 17,
+                            "tokenIdx": 87
+                        },
+                        "operator": "+",
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "name": "x",
+                            "value": 15,
+                            "valueType": "int_c"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "valueType": "int_c",
+                            "raw": "1",
+                            "value": 1
+                        },
+                        "valueType": "int_c",
+                        "value": 16
+                    },
+                    "declares": false
+                }
+            ],
+            "statements": [
+                {
+                    "type": "McCommand",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 16,
+                        "tokenIdx": 72
+                    },
+                    "command": "say",
+                    "args": [
+                        {
+                            "type": "TemplateStringLiteral",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 16,
+                                "tokenIdx": 75
+                            },
+                            "templateQuasis": [
+                                "e ",
+                                " e"
+                            ],
+                            "templateExpressions": [
+                                {
+                                    "type": "Identifier",
+                                    "location": {
+                                        "fileName": "source.oph",
+                                        "line": 16,
+                                        "tokenIdx": 79
+                                    },
+                                    "name": "x",
+                                    "value": 15,
+                                    "valueType": "int_c"
+                                }
+                            ],
+                            "valueType": "string",
+                            "value": "e 15 e"
+                        }
+                    ],
+                    "message": " say e 15 e"
+                },
+                {
+                    "type": "VariableAssign",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 17,
+                        "tokenIdx": 85
+                    },
+                    "varName": "x",
+                    "varValue": {
+                        "type": "BinaryExpression",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 17,
+                            "tokenIdx": 87
+                        },
+                        "operator": "+",
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "name": "x",
+                            "value": 15,
+                            "valueType": "int_c"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "valueType": "int_c",
+                            "raw": "1",
+                            "value": 1
+                        },
+                        "valueType": "int_c",
+                        "value": 16
+                    },
+                    "declares": false
+                },
+                {
+                    "type": "McCommand",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 16,
+                        "tokenIdx": 72
+                    },
+                    "command": "say",
+                    "args": [
+                        {
+                            "type": "TemplateStringLiteral",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 16,
+                                "tokenIdx": 75
+                            },
+                            "templateQuasis": [
+                                "e ",
+                                " e"
+                            ],
+                            "templateExpressions": [
+                                {
+                                    "type": "Identifier",
+                                    "location": {
+                                        "fileName": "source.oph",
+                                        "line": 16,
+                                        "tokenIdx": 79
+                                    },
+                                    "name": "x",
+                                    "value": 15,
+                                    "valueType": "int_c"
+                                }
+                            ],
+                            "valueType": "string",
+                            "value": "e 15 e"
+                        }
+                    ],
+                    "message": " say e 15 e"
+                },
+                {
+                    "type": "VariableAssign",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 17,
+                        "tokenIdx": 85
+                    },
+                    "varName": "x",
+                    "varValue": {
+                        "type": "BinaryExpression",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 17,
+                            "tokenIdx": 87
+                        },
+                        "operator": "+",
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "name": "x",
+                            "value": 15,
+                            "valueType": "int_c"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "valueType": "int_c",
+                            "raw": "1",
+                            "value": 1
+                        },
+                        "valueType": "int_c",
+                        "value": 16
+                    },
+                    "declares": false
+                },
+                {
+                    "type": "McCommand",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 16,
+                        "tokenIdx": 72
+                    },
+                    "command": "say",
+                    "args": [
+                        {
+                            "type": "TemplateStringLiteral",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 16,
+                                "tokenIdx": 75
+                            },
+                            "templateQuasis": [
+                                "e ",
+                                " e"
+                            ],
+                            "templateExpressions": [
+                                {
+                                    "type": "Identifier",
+                                    "location": {
+                                        "fileName": "source.oph",
+                                        "line": 16,
+                                        "tokenIdx": 79
+                                    },
+                                    "name": "x",
+                                    "value": 15,
+                                    "valueType": "int_c"
+                                }
+                            ],
+                            "valueType": "string",
+                            "value": "e 15 e"
+                        }
+                    ],
+                    "message": " say e 15 e"
+                },
+                {
+                    "type": "VariableAssign",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 17,
+                        "tokenIdx": 85
+                    },
+                    "varName": "x",
+                    "varValue": {
+                        "type": "BinaryExpression",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 17,
+                            "tokenIdx": 87
+                        },
+                        "operator": "+",
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "name": "x",
+                            "value": 15,
+                            "valueType": "int_c"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "valueType": "int_c",
+                            "raw": "1",
+                            "value": 1
+                        },
+                        "valueType": "int_c",
+                        "value": 16
+                    },
+                    "declares": false
+                }
+            ]
+        }
+    ],
+    "statements": [
+        {
+            "type": "PreservedComment",
+            "location": {
+                "fileName": "source.oph",
+                "line": 2,
+                "tokenIdx": 0
+            },
+            "message": "# brrrr"
+        },
+        {
+            "type": "VariableDecl",
+            "location": {
+                "fileName": "source.oph",
+                "line": 3,
+                "tokenIdx": 1
+            },
+            "varType": "int_c",
+            "varName": "x",
+            "mutability": true
+        },
+        {
+            "type": "VariableAssign",
+            "location": {
+                "fileName": "source.oph",
+                "line": 3,
+                "tokenIdx": 5
+            },
+            "varName": "x",
+            "varValue": {
+                "type": "Literal",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 3,
+                    "tokenIdx": 7
+                },
+                "valueType": "int_c",
+                "raw": "10",
+                "value": 10
+            },
+            "declares": true
+        },
+        {
+            "type": "McCommand",
+            "location": {
+                "fileName": "source.oph",
+                "line": 6,
+                "tokenIdx": 9
+            },
+            "command": "say",
+            "args": [
+                {
+                    "type": "TemplateStringLiteral",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 6,
+                        "tokenIdx": 12
+                    },
+                    "templateQuasis": [
+                        "e ",
+                        " e"
+                    ],
+                    "templateExpressions": [
+                        {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 6,
+                                "tokenIdx": 16
+                            },
+                            "name": "x",
+                            "value": 10,
+                            "valueType": "int_c"
+                        }
+                    ],
+                    "valueType": "string",
+                    "value": "e 10 e"
+                }
+            ],
+            "message": " say e 10 e"
+        },
+        {
+            "type": "VariableAssign",
+            "location": {
+                "fileName": "source.oph",
+                "line": 7,
+                "tokenIdx": 22
+            },
+            "varName": "x",
+            "varValue": {
+                "type": "BinaryExpression",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 7,
+                    "tokenIdx": 24
+                },
+                "operator": "+",
+                "left": {
+                    "type": "Identifier",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 7,
+                        "tokenIdx": 24
+                    },
+                    "name": "x",
+                    "value": 10,
+                    "valueType": "int_c"
+                },
+                "right": {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 7,
+                        "tokenIdx": 24
+                    },
+                    "valueType": "int_c",
+                    "raw": "1",
+                    "value": 1
+                },
+                "valueType": "int_c",
+                "value": 11
+            },
+            "declares": false
+        },
+        {
+            "type": "McCommand",
+            "location": {
+                "fileName": "source.oph",
+                "line": 8,
+                "tokenIdx": 28
+            },
+            "command": "say",
+            "args": [
+                {
+                    "type": "TemplateStringLiteral",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 8,
+                        "tokenIdx": 31
+                    },
+                    "templateQuasis": [
+                        "e ",
+                        " e"
+                    ],
+                    "templateExpressions": [
+                        {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 8,
+                                "tokenIdx": 35
+                            },
+                            "name": "x",
+                            "value": 11,
+                            "valueType": "int_c"
+                        }
+                    ],
+                    "valueType": "string",
+                    "value": "e 11 e"
+                }
+            ],
+            "message": " say e 11 e"
+        },
+        {
+            "type": "VariableAssign",
+            "location": {
+                "fileName": "source.oph",
+                "line": 9,
+                "tokenIdx": 41
+            },
+            "varName": "x",
+            "varValue": {
+                "type": "BinaryExpression",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 9,
+                    "tokenIdx": 43
+                },
+                "operator": "+",
+                "left": {
+                    "type": "Identifier",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 9,
+                        "tokenIdx": 43
+                    },
+                    "name": "x",
+                    "value": 11,
+                    "valueType": "int_c"
+                },
+                "right": {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 9,
+                        "tokenIdx": 43
+                    },
+                    "valueType": "int_c",
+                    "raw": "1",
+                    "value": 1
+                },
+                "valueType": "int_c",
+                "value": 12
+            },
+            "declares": false
+        },
+        {
+            "type": "McCommand",
+            "location": {
+                "fileName": "source.oph",
+                "line": 10,
+                "tokenIdx": 47
+            },
+            "command": "say",
+            "args": [
+                {
+                    "type": "TemplateStringLiteral",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 10,
+                        "tokenIdx": 50
+                    },
+                    "templateQuasis": [
+                        "e ",
+                        " e"
+                    ],
+                    "templateExpressions": [
+                        {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 10,
+                                "tokenIdx": 54
+                            },
+                            "name": "x",
+                            "value": 12,
+                            "valueType": "int_c"
+                        }
+                    ],
+                    "valueType": "string",
+                    "value": "e 12 e"
+                }
+            ],
+            "message": " say e 12 e"
+        },
+        {
+            "type": "VariableAssign",
+            "location": {
+                "fileName": "source.oph",
+                "line": 11,
+                "tokenIdx": 60
+            },
+            "varName": "x",
+            "varValue": {
+                "type": "BinaryExpression",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 11,
+                    "tokenIdx": 62
+                },
+                "operator": "+",
+                "left": {
+                    "type": "Identifier",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 11,
+                        "tokenIdx": 62
+                    },
+                    "name": "x",
+                    "value": 12,
+                    "valueType": "int_c"
+                },
+                "right": {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 11,
+                        "tokenIdx": 62
+                    },
+                    "valueType": "int_c",
+                    "raw": "1",
+                    "value": 1
+                },
+                "valueType": "int_c",
+                "value": 13
+            },
+            "declares": false
+        },
+        {
+            "type": "PreservedComment",
+            "location": {
+                "fileName": "source.oph",
+                "line": 13,
+                "tokenIdx": 66
+            },
+            "message": "# 000"
+        },
+        {
+            "type": "RepeatStatement",
+            "location": {
+                "fileName": "source.oph",
+                "line": 15,
+                "tokenIdx": 67
+            },
+            "args": [
+                {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 15,
+                        "tokenIdx": 69
+                    },
+                    "valueType": "int_c",
+                    "raw": "3",
+                    "value": 3
+                }
+            ],
+            "body": [
+                {
+                    "type": "McCommand",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 16,
+                        "tokenIdx": 72
+                    },
+                    "command": "say",
+                    "args": [
+                        {
+                            "type": "TemplateStringLiteral",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 16,
+                                "tokenIdx": 75
+                            },
+                            "templateQuasis": [
+                                "e ",
+                                " e"
+                            ],
+                            "templateExpressions": [
+                                {
+                                    "type": "Identifier",
+                                    "location": {
+                                        "fileName": "source.oph",
+                                        "line": 16,
+                                        "tokenIdx": 79
+                                    },
+                                    "name": "x",
+                                    "value": 15,
+                                    "valueType": "int_c"
+                                }
+                            ],
+                            "valueType": "string",
+                            "value": "e 15 e"
+                        }
+                    ],
+                    "message": " say e 15 e"
+                },
+                {
+                    "type": "VariableAssign",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 17,
+                        "tokenIdx": 85
+                    },
+                    "varName": "x",
+                    "varValue": {
+                        "type": "BinaryExpression",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 17,
+                            "tokenIdx": 87
+                        },
+                        "operator": "+",
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "name": "x",
+                            "value": 15,
+                            "valueType": "int_c"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "valueType": "int_c",
+                            "raw": "1",
+                            "value": 1
+                        },
+                        "valueType": "int_c",
+                        "value": 16
+                    },
+                    "declares": false
+                }
+            ],
+            "statements": [
+                {
+                    "type": "McCommand",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 16,
+                        "tokenIdx": 72
+                    },
+                    "command": "say",
+                    "args": [
+                        {
+                            "type": "TemplateStringLiteral",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 16,
+                                "tokenIdx": 75
+                            },
+                            "templateQuasis": [
+                                "e ",
+                                " e"
+                            ],
+                            "templateExpressions": [
+                                {
+                                    "type": "Identifier",
+                                    "location": {
+                                        "fileName": "source.oph",
+                                        "line": 16,
+                                        "tokenIdx": 79
+                                    },
+                                    "name": "x",
+                                    "value": 15,
+                                    "valueType": "int_c"
+                                }
+                            ],
+                            "valueType": "string",
+                            "value": "e 15 e"
+                        }
+                    ],
+                    "message": " say e 15 e"
+                },
+                {
+                    "type": "VariableAssign",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 17,
+                        "tokenIdx": 85
+                    },
+                    "varName": "x",
+                    "varValue": {
+                        "type": "BinaryExpression",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 17,
+                            "tokenIdx": 87
+                        },
+                        "operator": "+",
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "name": "x",
+                            "value": 15,
+                            "valueType": "int_c"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "valueType": "int_c",
+                            "raw": "1",
+                            "value": 1
+                        },
+                        "valueType": "int_c",
+                        "value": 16
+                    },
+                    "declares": false
+                },
+                {
+                    "type": "McCommand",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 16,
+                        "tokenIdx": 72
+                    },
+                    "command": "say",
+                    "args": [
+                        {
+                            "type": "TemplateStringLiteral",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 16,
+                                "tokenIdx": 75
+                            },
+                            "templateQuasis": [
+                                "e ",
+                                " e"
+                            ],
+                            "templateExpressions": [
+                                {
+                                    "type": "Identifier",
+                                    "location": {
+                                        "fileName": "source.oph",
+                                        "line": 16,
+                                        "tokenIdx": 79
+                                    },
+                                    "name": "x",
+                                    "value": 15,
+                                    "valueType": "int_c"
+                                }
+                            ],
+                            "valueType": "string",
+                            "value": "e 15 e"
+                        }
+                    ],
+                    "message": " say e 15 e"
+                },
+                {
+                    "type": "VariableAssign",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 17,
+                        "tokenIdx": 85
+                    },
+                    "varName": "x",
+                    "varValue": {
+                        "type": "BinaryExpression",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 17,
+                            "tokenIdx": 87
+                        },
+                        "operator": "+",
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "name": "x",
+                            "value": 15,
+                            "valueType": "int_c"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "valueType": "int_c",
+                            "raw": "1",
+                            "value": 1
+                        },
+                        "valueType": "int_c",
+                        "value": 16
+                    },
+                    "declares": false
+                },
+                {
+                    "type": "McCommand",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 16,
+                        "tokenIdx": 72
+                    },
+                    "command": "say",
+                    "args": [
+                        {
+                            "type": "TemplateStringLiteral",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 16,
+                                "tokenIdx": 75
+                            },
+                            "templateQuasis": [
+                                "e ",
+                                " e"
+                            ],
+                            "templateExpressions": [
+                                {
+                                    "type": "Identifier",
+                                    "location": {
+                                        "fileName": "source.oph",
+                                        "line": 16,
+                                        "tokenIdx": 79
+                                    },
+                                    "name": "x",
+                                    "value": 15,
+                                    "valueType": "int_c"
+                                }
+                            ],
+                            "valueType": "string",
+                            "value": "e 15 e"
+                        }
+                    ],
+                    "message": " say e 15 e"
+                },
+                {
+                    "type": "VariableAssign",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 17,
+                        "tokenIdx": 85
+                    },
+                    "varName": "x",
+                    "varValue": {
+                        "type": "BinaryExpression",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 17,
+                            "tokenIdx": 87
+                        },
+                        "operator": "+",
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "name": "x",
+                            "value": 15,
+                            "valueType": "int_c"
+                        },
+                        "right": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 17,
+                                "tokenIdx": 87
+                            },
+                            "valueType": "int_c",
+                            "raw": "1",
+                            "value": 1
+                        },
+                        "valueType": "int_c",
+                        "value": 16
+                    },
+                    "declares": false
                 }
             ]
         }

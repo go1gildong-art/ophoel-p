@@ -65,7 +65,7 @@ export class AST {
 
         // holds an array of nodes as code block
         // Uses: IfStatement, WhileStatement, ForStatement, 
-        // Uses: RepeatStatement, McExecStatement,
+        // Uses: RepeatStatement, McExecStatement, Block,
         // Uses: FunctionCall, MacroInvoc, Program
         // Type: AST[]
         this.body = ast.body ?? [];
@@ -141,15 +141,26 @@ export const BuildAST = {
         body
     }),
 
-    VariableDecl: (varType, varName, varValue, location) => ({
+    Block: (body, location) => ({
+        ...makeNode('Block', location),
+        body
+    }),
+
+    VariableDecl: (varType, varName, mutability, location) => ({
         ...makeNode('VariableDecl', location),
         varType,
         varName,
-        varValue
+        mutability
+    }),
+
+    VariableAssign: (varName, varValue, declares, location) => ({
+        ...makeNode('VariableAssign', location),
+        varName,
+        varValue,
+        declares
     }),
 
     McCommand: (command, args, location) => {
-        // console.log("parsed mccommand!");
         return ({
             ...makeNode('McCommand', location),
             command,
@@ -166,7 +177,6 @@ export const BuildAST = {
     }),
 
     Literal: (valueType, raw, location) => {
-        // console.log("parsed literal!");
         return ({
             ...makeNode('Literal', location),
             valueType,

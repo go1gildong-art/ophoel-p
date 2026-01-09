@@ -8,24 +8,13 @@ export function generate(ast) {
 function getCommands(node) {
     const commands = [];
 
-    if (node.type === "McCommand") {
-        let synthesized = "";
-        if ((node.prefixes?.length ?? 0) === 0) {
-            synthesized = "";
-        } else {
-            synthesized = "execute " + node.prefixes.join(" run execute ") + " run";
-        }
+    commands.push(node.message);
 
-        commands.push([synthesized, node.command, node.args[0].value].join(" "));
-    }
-
-    if (node.type === "PreservedComment") {
-        // remove /# and switch to #
-        commands.push(node.message.slice(1));
-    }
-
-    const deepCommands = node.body?.map(node => generate(node, commands));
+    const deepCommands = node.body?.map(node => {
+        return getCommands(node)
+        .filter(msg => msg != null);
+    });
     if (deepCommands) commands.push(deepCommands);
 
-    return commands.flat(Infinity).map(cmd => cmd.trim());
+    return commands.flat(Infinity).map(cmd => cmd?.trim());
 }

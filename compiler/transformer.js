@@ -1,5 +1,9 @@
-import { AST, Location } from "./ast.js";
+import { AST, BuildAST, Location } from "./ast.js";
 
+function print(x) {
+    console.log(x);
+    return x;
+}
 class OphoelSemanticError extends Error {
     constructor(msg, node) {
         return new Error(msg + ` at ${node?.location.fileName}:${node?.location.line}, ${node?.location.tokenIdx}`);
@@ -8,84 +12,97 @@ class OphoelSemanticError extends Error {
 
 export function transform(_ast, config) {
     let ast = { ..._ast };
-    // console.log(JSON.stringify(ast) + "\n");
 
-    ast = borrowCheck(ast);
-    // console.log(JSON.stringify(ast) + "\n");
+    transformNode(ast, config);
 
-    ast = resolveConfigs(ast, config);
-    // console.log(JSON.stringify(ast) + "\n");
-
-    ast = evaluateValues(ast);
-    // console.log(JSON.stringify(ast) + "\n");
-
-    ast = unrollConstRepeat(ast);
-    // console.log(JSON.stringify(ast) + "\n");
-
-    ast = unrollMcExec(ast);
-
+    // print(JSON.stringify(ast));
     return ast;
 }
 
-function affectRecursively(node, transformation, args = []) {
-    if (node == null) return
-    if (node.type === "Literal") return node;
-    // goes recursive by structures
-    node.varBody = node.varBody?.map(node => transformation(node, ...args));
-    node.args = node.args?.map(node => transformation(node, ...args));
-    node.body = node.body?.map(node => transformation(node, ...args));
-    node.templateExpressions = node.templateExpressions?.map(node => transformation(node, ...args));
+class Context {
+    constructor() { this.scopes = []; }
 
-    node.varValue = transformation(node.varValue, ...args);
-    node.left = transformation(node.left, ...args);
-    node.right = transformation(node.right, ...args);
-
-    return node;
-}
-
-// dummy data
-function borrowCheck(node) {
-    return node;
-}
-
-function resolveConfigs(node, config) {
-    if (node == null) return;
-    if (node.type === "Literal") return node;
-
-    if (node.type === "ConfigRef") {
-        let configElement = { ...config };
-
-        // slice out the "config" at front
-        let access = node.access.slice(6);
-        while (access.length > 0) {
-            // if matches .field syntax
-            if (access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)) {
-                const field = access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)[0];
-                configElement = configElement[field.slice(1)];
-                access = access.slice(field.length);
-            }
-
-            // if matches [index] syntax
-            if (access.match(/^\[\d+\]/)) {
-                const index = access.match(/^\[\d+\]/)[0];
-                configElement = configElement[Number(index.slice(1, index.length - 1))];
-                access = access.slice(index.length);
-            }
-        }
-        node.value = configElement;
+    pushNewScope() {
+        this.scopes.push({
+            variables: {},
+            mcPrefix: ""
+        });
     }
 
-    node = affectRecursively(node, resolveConfigs, [config]);
+    popScope() { this.scopes.pop(); }
 
-    return node;
+    peek() { return this.scopes[this.scopes.length - 1]; }
+
+    declareVariable(node) {
+        if (this.peek().variables[node.varName]) throw new OphoelSemanticError(`Variable ${node.varName} already exists`, node);
+
+        this.peek().variables[node.varName] = {
+            type: node.varType,
+            value: null,
+            mutability: node.mutability
+        };
+    }
+
+    assignVariable(node) {
+        // reverse to check leaf scope first
+        for (const scope of this.scopes.toReversed()) {
+            const vars = scope.variables;
+            if (vars[node.varName]) {
+                const variable = vars[node.varName];
+
+                if (!variable.mutability && !node.declares) {
+                    throw new OphoelSemanticError(`Variable ${node.varName} is immutable, but tried to mutate`, node);
+                }
+                if (variable.type !== node.varValue.valueType) {
+                    console.log(variable.type, node.varValue);
+                    throw new OphoelSemanticError(`Type mismatch: Tried to assign ${node.varValue.value}(${node.varValue.valueType}) to ${node.varName}(${variable.type})`, node);
+                }
+
+                vars[node.varName].value = node.varValue.value;
+                console.log("assigned! " + vars[node.varName].value);
+                return;
+            }
+        }
+
+        throw new OphoelSemanticError(`${node.varName} is not declared yet or unreachable`, node);
+    }
+
+    getVariable(node) {
+        for (let scope of this.scopes.toReversed()) {
+            const vars = scope.variables;
+            if (vars[node.name]) {
+                return vars[node.name];
+            }
+        }
+
+        throw new OphoelSemanticError(`${node.varName} is not declared yet or unreachable`, node);
+    }
+
+    setMcPrefix(prefix) { this.peek().mcPrefix = prefix; }
+
+    getPrefixChain() {
+        const prefix = this.scopes
+            .map(scope => scope.mcPrefix)
+            .filter(prefix => prefix !== "")
+            .join(" run execute ");
+
+        return (prefix !== "") ? ("execute " + prefix + " run") : "";
+    }
 }
+let ctx = new Context();
 
-// evaluate expressions and turn them into literal values
-// recursively effect all nodes under
-// also will resolve all compile time variables (technically constants)
-function evaluateValues(node, _ctx = { variables: {} }) {
-    if (node == null) return;
-    const ctx = { ..._ctx };
+function transformNode(node, config) {
+
+    if (node.type === "McCommand") {
+        transformNode(node.args[0], config);
+        console.log("mccommand");
+
+        node.message = [ctx.getPrefixChain(), node.command, node.args[0].value].join(" ");
+    }
+
+    if (node.type === "ConfigRef") {
+        resolveConfigs(node, config);
+    }
 
     if (node.type === "Literal") {
         node.value =
@@ -94,32 +111,49 @@ function evaluateValues(node, _ctx = { variables: {} }) {
                     node.valueType === "string" ? String(node.raw) : node.raw);
     }
 
+    if (node.type === "TemplateStringLiteral") {
+        if (node.type === "TemplateStringLiteral") {
+            const components = [];
+            node.templateExpressions.forEach(node => transformNode(node, config));
+
+            for (let i = 0; i < node.templateQuasis.length - 1; i++) {
+                components.push(node.templateQuasis[i]);
+                components.push(node.templateExpressions[i].value);
+            }
+
+            // pull out the last TEMPLATE_TAIL of the quasis
+            components.push(node.templateQuasis[node.templateQuasis.length - 1]);
+            node.value = components.join("");
+        }
+    }
 
     if (node.type === "VariableDecl") {
-        node.varValue = evaluateValues(node.varValue, ctx);
-        ctx.variables[node.varName] = { type: node.varType, value: node.varValue.value };
+        ctx.declareVariable(node);
+    }
+
+    if (node.type === "VariableAssign") {
+
+        transformNode(node.varValue);
+        ctx.assignVariable(node);
     }
 
     if (node.type === "Identifier") {
-        node.value = ctx.variables[node.name].value;
-        node.varType = ctx.variables[node.name].type;
-    }
-
-    if (node.type === "TemplateStringLiteral") {
-        const components = [];
-        node.templateExpressions = node.templateExpressions.map(node => evaluateValues(node, ctx));
-        while (node.templateQuasis.length > 0 && node.templateExpressions.length > 0) {
-            components.push(node.templateQuasis.splice(0, 1)[0]);
-            components.push(node.templateExpressions.splice(0, 1)[0].value);
-        }
-        // pull out the last TEMPLATE_TAIL of the quasis
-        components.push(node.templateQuasis.splice(0, 1)[0]);
-        node.value = components.join("");
+        const variable = ctx.getVariable(node);
+        node.value = variable.value;
+        console.log("got variable: " + variable.value);
+        node.valueType = variable.type;
     }
 
     if (node.type === "BinaryExpression") {
-        node.left = evaluateValues(node.left, ctx);
-        node.right = evaluateValues(node.right, ctx);
+        transformNode(node.left, config);
+        transformNode(node.right, config);
+
+        if (node.left.valueType === node.right.valueType) {
+            node.valueType = node.left.valueType;
+        } else {
+            throw new OphoelSemanticError(`Type mismatch: tried to perform ${node.operator} operation between ${node.left.value}(${node.left.valueType}) and ${node.right.value}(${node.right.valueType})`, node);
+        }
+
         let result;
         switch (node.operator) {
             case "+":
@@ -145,66 +179,56 @@ function evaluateValues(node, _ctx = { variables: {} }) {
             default:
                 throw new OphoelSemanticError(`Undefined operator ${node.operator}`, node);
         }
+
         node.value = (typeof result === "number") ? Math.round(result) : result;
     }
 
-    // goes recursive by structures
-    node = affectRecursively(node, evaluateValues, [ctx]);
-
-    return node;
-}
-
-// unrolls all repeat(){} structure, if the arg is constant (literal or int_c variable)
-function unrollConstRepeat(node) {
-    if (node == null) return;
-    if (node.type === "Literal") return node;
-
-    // helper function to create an array of repeating element
-    const proliferate = (element, count) => {
-        const arr = [];
-        for (let i = 0; i < count; i++) arr.push(element);
-        return arr;
-    }
-
-    // helper function to check if a value is constant integer
-    const isConstant = (inputNode) => {
-        if (inputNode.valueType === "int_c"
-            && Number.isInteger(inputNode.value)
-            && inputNode.value > 0)
-            return true;
-
-        throw new OphoelSemanticError(`Invalid argument ${inputNode.type}:${inputNode.valueType} for repeat statement`, inputNode);
-    }
-
     if (node.type === "RepeatStatement") {
-        if (isConstant(node.args[0])) {
-            const count = node.args[0].value;
-            node.body = proliferate(node.body, count).flat(1);
+        const proliferate = (obj, count) => {
+            const arr = [];
+            for (let i = 0; i < count; i++) arr.push(structuredClone(obj));
+            return arr;
         }
+
+        transformNode(node.args[0]);
+        node.body = proliferate(BuildAST.Block(node.body, node.location), node.args[0].value);
+
+        for (let nodee of node.body) {
+            transformNode(nodee, config);
+            console.log(node.body[0].body[0]?.message + " " + node.body[1].body[0]?.message + " " + node.body[2].body[0]?.message)
+        }
+
+        console.log(node.body);
+        node.body
+            .flatMap(node => node.body)
+            .filter(node => node.type === "McCommand")
+            .forEach(node => console.log("xnrrrrrr" + node.message));
     }
 
-    node = affectRecursively(node, unrollConstRepeat);
+    if (node.type === "Block") {
+        ctx.pushNewScope();
 
-    return node;
-}
-
-// unrolls all mc_exec(){} structure, 
-// applying the prefix to every individual mc_command
-function unrollMcExec(node) {
-    if (node == null) return;
-    if (node.type === "Literal") return node;
+        for (const _node of node.body) transformNode(_node, config);
+        // node.body.forEach(node => transformNode(node, config));
+        ctx.popScope();
+    }
 
     if (node.type === "McExecStatement") {
+        transformNode(node.args[0]);
         const prefix = node.args[0].value;
-        node.body.forEach(node => {
-            if (node.type === "McCommand") {
-                node.prefixes = (node.prefixes == null) ? [] : node.prefixes; 
-                node.prefixes.unshift(prefix);
-            }
-        });
+        ctx.setMcPrefix(prefix);
+
+        ctx.pushNewScope();
+        node.body.forEach(node => transformNode(node, config));
+        ctx.popScope();
     }
 
-    node = affectRecursively(node, unrollMcExec);
-
-    return node;
+    // place lower than statement check to avoid recursion
+    if (node.type === "Program") {
+        ctx.pushNewScope();
+        node.body.forEach(node => {
+            transformNode(node, config);
+        });
+        ctx.popScope();
+    }
 }

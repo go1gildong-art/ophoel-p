@@ -12,13 +12,16 @@ const tokenPatterns = {
         { "type": "BANG", "regex": "^!(?!!)" },
         { "type": "SYMBOL", "regex": "^(!!|::|[(){}\\[\\],;:`$!])" },
         { "type": "OPERATOR", "regex": "^[=+\\-*/%<>]+" },
-        { "type": "CONFIG_REF", "regex": "^config\\.[a-zA-Z_][a-zA-Z0-9_]*(\\.[A-Za-z0-9_]+|\\[[0-9]+\\])*" },
+        { "type": "CONFIG_REF", "regex": "^config\\.[a-zA-Z_][a-zA-Z0-9_]*(\\.[A-Za-z0-9_]+|\\[[A-Za-z0-9_]+\\])*" },
         { "type": "WORD", "regex": "^[a-zA-Z_][a-zA-Z0-9_]*" },
         { "type": "INVALID", "regex": "^.+" }
     ]
 };
 
 const reservedKeywords = {
+    "KW_SPECIFIER": [
+        "mut"
+    ],
     "KW_CONTROL": [
         "if",
         "else",
@@ -28,6 +31,11 @@ const reservedKeywords = {
     ],
     "KW_BUILTIN": [
         "mc_exec"
+    ],
+    "KW_DECL": [
+        "let",
+        "fn",
+        "macro"
     ],
     "KW_TYPE": [
         "int_c",

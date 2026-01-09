@@ -235,17 +235,51 @@ class OphoelParser {
 
     handlePreservedComment() {
         const pc = this.eat();
-        this.emit(BuildAST.PreservedComment(pc.value, pc.location));
+        this.emit(BuildAST.PreservedComment(pc.value.slice(1), pc.location)); // change /#comment to #comment
+    }
+
+    handleDeclaration() {
+        const declTypeMap = {
+            let: "variable",
+            fn: "function",
+            macro: "macro"
+        }
+        const decl = this.eat();
+        const declType = declTypeMap[decl.value];
+
+        let mutability;
+        if (this.peek()?.type === "KW_SPECIFIER"
+            && this.peek()?.value === "mut") {
+            this.eat();
+            mutability = true;
+        } else {
+            mutability = false;
+        }
+
+        if (declType === "variable") {
+            const name = this.expect("IDENTIFIER");
+            this.expect("SYMBOL", ":");
+            const type = this.expect("KW_TYPE");
+            this.emit(BuildAST.VariableDecl(type.value, name.value, mutability, decl.location));
+
+            // if declaration contains assignment
+            if (this.peek()?.type === "OPERATOR" && this.peek()?.value === "=") {
+                this.expect("OPERATOR", "=");
+                const expr = this.getTokensUntil("SYMBOL", ";");
+                this.expect("SYMBOL", ";");
+
+                this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), true, type.location));
+            }
+        }
     }
 
     handleAssignment() {
-        const type = this.expect("KW_TYPE");
         const name = this.expect("IDENTIFIER");
         this.expect("OPERATOR", "=");
         const expr = this.getTokensUntil("SYMBOL", ";");
         this.expect("SYMBOL", ";");
 
-        this.emit(BuildAST.VariableDecl(type.value, name.value, new ExpressionParser(expr).parse(), type.location))
+        this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), false, name.location));
 
         // save the variable inside storage
         // this.symbols[name.value] = value.value;
@@ -320,8 +354,14 @@ class OphoelParser {
                 continue;
             }
 
-            // 3. Handle Assignments (string x = "y")
-            if (token.type === 'KW_TYPE') {
+            // 3. Handle Declarations (let x: string)
+            if (token.type === 'KW_DECL') {
+                this.handleDeclaration();
+                continue;
+            }
+
+            // 4. Handle variable assignments (x = "y")
+            if (token.type === 'IDENTIFIER') {
                 this.handleAssignment();
                 continue;
             }

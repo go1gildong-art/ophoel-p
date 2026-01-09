@@ -21,6 +21,9 @@ class ExpressionParser {
     // Helper to move forward
     eat() { return this.tokens[this.pos++]; }
 
+    // Helper to check next token
+    next() { return this.tokens[this.pos + 1]; }
+
     // Helper to catch syntax errors
     expect(type, value = null) {
         const token = this.eat();
@@ -172,6 +175,9 @@ class OphoelParser {
     // Helper to move forward
     eat() { return this.tokens[this.pos++]; }
 
+    // Helper to check next token
+    next() { return this.tokens[this.pos + 1]; }
+
     // Helper to remove top level Program node
     unprogram(program) { return program.body; }
 
@@ -179,7 +185,7 @@ class OphoelParser {
     expect(type, value = null) {
         const token = this.eat();
         if (token == null || token.type !== type || (value && (token.value !== value))) {
-            throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.type}`, token);
+            throw new OphoelParseError(`Error: Expected ${type} ${value || ''} but got ${token?.type} ${token?.value}`, token);
         }
         return token;
     }
@@ -275,11 +281,25 @@ class OphoelParser {
 
     handleAssignment() {
         const name = this.expect("IDENTIFIER");
-        this.expect("OPERATOR", "=");
-        const expr = this.getTokensUntil("SYMBOL", ";");
-        this.expect("SYMBOL", ";");
 
-        this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), false, name.location));
+        if (this.peek()?.type === "OPERATOR" && ["+", "-", "*", "/", "%"].includes(this.peek()?.value)) {
+            // if operand is += style shorthand
+            const oper = this.expect("OPERATOR");
+            this.expect("OPERATOR", "=");
+            const expr = this.getTokensUntil("SYMBOL", ";");
+            this.expect("SYMBOL", ";");
+
+            this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser([name, oper, ...expr]).parse(), false, name.location));
+        } else {
+            // classic x = expr style operand
+            this.expect("OPERATOR", "=");
+            const expr = this.getTokensUntil("SYMBOL", ";");
+            this.expect("SYMBOL", ";");
+
+            this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), false, name.location));
+        }
+
+
 
         // save the variable inside storage
         // this.symbols[name.value] = value.value;

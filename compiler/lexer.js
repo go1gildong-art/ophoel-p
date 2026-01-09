@@ -11,7 +11,7 @@ const tokenPatterns = {
         { "type": "DOUBLE_BANG", "regex": "^!!" },
         { "type": "BANG", "regex": "^!(?!!)" },
         { "type": "SYMBOL", "regex": "^(!!|::|[(){}\\[\\],;:`$!])" },
-        { "type": "OPERATOR", "regex": "^[=+\\-*/%<>]+" },
+        { "type": "OPERATOR", "regex": "^[\\=\\+\\-*/%<>]" },
         { "type": "CONFIG_REF", "regex": "^config\\.[a-zA-Z_][a-zA-Z0-9_]*(\\.[A-Za-z0-9_]+|\\[[A-Za-z0-9_]+\\])*" },
         { "type": "WORD", "regex": "^[a-zA-Z_][a-zA-Z0-9_]*" },
         { "type": "INVALID", "regex": "^.+" }

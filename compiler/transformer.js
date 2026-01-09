@@ -54,12 +54,10 @@ class Context {
                     throw new OphoelSemanticError(`Variable ${node.varName} is immutable, but tried to mutate`, node);
                 }
                 if (variable.type !== node.varValue.valueType) {
-                    console.log(variable.type, node.varValue);
                     throw new OphoelSemanticError(`Type mismatch: Tried to assign ${node.varValue.value}(${node.varValue.valueType}) to ${node.varName}(${variable.type})`, node);
                 }
 
                 vars[node.varName].value = node.varValue.value;
-                console.log("assigned! " + vars[node.varName].value);
                 return;
             }
         }
@@ -95,7 +93,6 @@ function transformNode(node, config) {
 
     if (node.type === "McCommand") {
         transformNode(node.args[0], config);
-        console.log("mccommand");
 
         node.message = [ctx.getPrefixChain(), node.command, node.args[0].value].join(" ");
     }
@@ -140,7 +137,6 @@ function transformNode(node, config) {
     if (node.type === "Identifier") {
         const variable = ctx.getVariable(node);
         node.value = variable.value;
-        console.log("got variable: " + variable.value);
         node.valueType = variable.type;
     }
 
@@ -195,14 +191,11 @@ function transformNode(node, config) {
 
         for (let nodee of node.body) {
             transformNode(nodee, config);
-            console.log(node.body[0].body[0]?.message + " " + node.body[1].body[0]?.message + " " + node.body[2].body[0]?.message)
         }
 
-        console.log(node.body);
         node.body
             .flatMap(node => node.body)
             .filter(node => node.type === "McCommand")
-            .forEach(node => console.log("xnrrrrrr" + node.message));
     }
 
     if (node.type === "Block") {

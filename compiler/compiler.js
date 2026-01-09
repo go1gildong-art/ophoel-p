@@ -10,7 +10,16 @@ import { generate } from "./generator.js"
 const code =
     `
 /# brrrr
+let mut x: int_c = 10;
+let mut y: int_c = 20;
 
+repeat(4) {
+setblock!!(\`~\${x} ~ ~\${y} dirt\`);
+
+x += 10;
+y *= 2;
+
+}
 
 `;
 
@@ -33,7 +42,7 @@ export function compile(sourceCode, config, fileName) {
 }
 
 // console.log("");
-// console.log(JSON.stringify(tokenize(code, config, "source.oph")) + "\n");
+// console.log(tokenize(code, config, "source.oph"));
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
 // console.log(JSON.stringify(transform(parse(tokenize(code, config, "source.oph")), config)) + "\n");
-// console.log(compile(code, config, "source.oph") + "\n\n");
+console.log(compile(code, config, "source.oph") + "\n\n");

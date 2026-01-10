@@ -253,19 +253,29 @@ class OphoelParser {
         const decl = this.eat();
         const declType = declTypeMap[decl.value];
 
-        let mutability;
-        if (this.peek()?.type === "KW_SPECIFIER"
-            && this.peek()?.value === "mut") {
-            this.eat();
-            mutability = true;
-        } else {
-            mutability = false;
-        }
 
         if (declType === "variable") {
+
+            let mutability;
+            if (this.peek()?.type === "KW_SPECIFIER"
+                && this.peek()?.value === "mut") {
+                this.eat();
+                mutability = true;
+            } else {
+                mutability = false;
+            }
+
             const name = this.expect("IDENTIFIER");
-            this.expect("SYMBOL", ":");
-            const type = this.expect("KW_TYPE");
+
+            let type;
+            if (this.peek().type === "SYMBOL" && this.peek().value == ":") {
+                this.expect("SYMBOL", ":");
+                type = this.expect("KW_TYPE");
+            } else {
+                type = { value: "deduct" };
+            }
+
+
             this.emit(BuildAST.VariableDecl(type.value, name.value, mutability, decl.location));
 
             // if declaration contains assignment

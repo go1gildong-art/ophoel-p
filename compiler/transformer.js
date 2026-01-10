@@ -52,9 +52,11 @@ class Context {
             if (vars[node.varName]) {
                 const variable = vars[node.varName];
 
-                if (!variable.mutability && !node.declares) {
+                if (!variable.mutability && variable.value != null ) {
                     throw new OphoelSemanticError(`Variable ${node.varName} is immutable, but tried to mutate`, node);
                 }
+
+                deductType(node);
                 if (variable.type !== node.varValue.valueType) {
                     throw new OphoelSemanticError(`Type mismatch: Tried to assign ${node.varValue.value}(${node.varValue.valueType}) to ${node.varName}(${variable.type})`, node);
                 }
@@ -71,6 +73,9 @@ class Context {
         for (let scope of this.scopes.toReversed()) {
             const vars = scope.variables;
             if (vars[node.name]) {
+                if (vars[node.name].value == null) {
+                    throw new OphoelSemanticError(`Attempted to access uninitialized variable ${node.varName}`, node);
+                }
                 return vars[node.name];
             }
         }
@@ -101,6 +106,7 @@ function transformNode(node, config) {
 
     if (node.type === "ConfigRef") {
         resolveConfigs(node, config);
+        deductType(node);
     }
 
     if (node.type === "Literal") {
@@ -250,4 +256,23 @@ function resolveConfigs(node, config) {
             }
         }
         node.value = configElement;
+}
+
+function deductType(node) {
+
+    // if type is predefined
+    if (["int_c", "bool", "string"].includes(node.valueType)) {
+        return;
+    }
+    
+    switch (typeof node.value) {
+        case "string":
+            node.valueType = "string";
+
+        case "number":
+            node.valueType = "int_c";
+
+        case "boolean":
+            node.valueTyep = "bool";
+    }
 }

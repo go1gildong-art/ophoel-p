@@ -8,16 +8,15 @@ import { generate } from "./generator.js"
 
 
 const code =
-    `
-/# base line to select all room_s anchors
-mc_exec(\`as @e tag=\${config.room_anchor_tag} tag=\${config.room_s.tag}\`) {
-        setblock!!("~ ~ ~ dirt");
+`
+mc_exec(\`as @e[tag=\${config.room_anchor_tag}, tag=\${config.room_s.tag}]\`) {
+        let mut foo: int_c = config.room_s.radius;
+        setblock!!(\`~ ~\${foo} ~ dirt\`);
 }
-fill!!("~ ~ ~ dirt");
 
 `;
 
-const config = { room_anchor_tag: "room_anchor", room_s: { tag: "room_s" } };
+const config = { room_anchor_tag: "room_anchor", room_s: { radius: 7, tag: "room_s" } };
 
 export function compile(sourceCode, config, fileName) {
     // 1. Raw text to Tokens

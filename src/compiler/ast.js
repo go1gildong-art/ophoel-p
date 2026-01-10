@@ -154,11 +154,17 @@ export const BuildAST = {
         mutability
     }),
 
-    VariableAssign: (varName, varValue, declares, location) => ({
+    VariableAssign: (varName, varValue, location) => ({
         ...makeNode('VariableAssign', location),
         varName,
         varValue,
-        declares
+    }),
+
+    VariableAssignShorten: (varName, varValue, operator, location) => ({
+        ...makeNode('VariableAssign', location),
+        varName,
+        varValue,
+        operator
     }),
 
     McCommand: (command, args, location) => {

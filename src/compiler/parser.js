@@ -243,7 +243,7 @@ class OphoelParser {
 
     handlePreservedComment() {
         const pc = this.eat();
-        this.emit(BuildAST.PreservedComment(pc.value.slice(1), pc.location)); // change /#comment to #comment
+        this.emit(BuildAST.PreservedComment(pc.value, pc.location));
     }
 
     handlePreservedNewline() {
@@ -309,14 +309,14 @@ class OphoelParser {
             const expr = this.getTokensUntil("SYMBOL", ";");
             this.expect("SYMBOL", ";");
 
-            this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser([name, oper, ...expr]).parse(), false, name.location));
+            this.emit(BuildAST.VariableAssignShorten(name.value, new ExpressionParser(expr).parse(), oper.value, name.location));
         } else {
             // classic x = expr style operand
             this.expect("OPERATOR", "=");
             const expr = this.getTokensUntil("SYMBOL", ";");
             this.expect("SYMBOL", ";");
 
-            this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), false, name.location));
+            this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), name.location));
         }
 
 

@@ -120,7 +120,17 @@ class Code {
 
     addCode(ln) { this.lines.push(" ".repeat(this.depth * this.indentSpaces) + ln); }
 
-    openBlock(code) { this.depth += 1; this.addLn(code + " {"); }
+    openBlock(code) {
+        if (this.braceStyle === "K&R") {
+            this.addLn(code + " {");
+        } else if (this.braceStyle === "Allman") {
+            this.addLn(code);
+            this.addLn("{");
+        }
+        
+        this.depth += 1;
+    }
+
     closeBlock() { this.depth -= 1; this.addLn("}"); }
 }
 let resultCode = new Code("K&R", 2);
@@ -128,11 +138,15 @@ let resultCode = new Code("K&R", 2);
 function stringifyNode(node) {
 
     if (node.type === "McCommand") {
-        resultCode.addLn(``);
+        stringifyNode(node.args[0]);
+        node.stringified = `${node.command}!!(${node.args[0]});`
+
+        resultCode.addLn(node.stringified);
     }
 
     if (node.type === "PreservedNewline") {
-        resultCode.addLn(`\n`);
+        node.stringified = "/."
+        resultCode.addLn(node.stringified);
     }
 
     if (node.type === "ConfigRef") {
@@ -140,7 +154,7 @@ function stringifyNode(node) {
     }
 
     if (node.type === "Literal") {
-        if (node.valueType === "string") node.stringified = `"${node.raw}"`;
+        node.stringified = (node.valueType === "string") ? `"${node.raw}"` : node.raw;
     }
 
     if (node.type === "TemplateStringLiteral") {
@@ -162,13 +176,16 @@ function stringifyNode(node) {
     }
 
     if (node.type === "VariableDecl") {
-        node.stringified = `let ${node.mutability ? "mut " : ""} ${node.varName}`
+        if (node.varValue) stringifyNode(node.varValue);
+        node.stringified = `let ${node.mutability ? "mut" : ""} ${node.varName}${node.type !== "deduct" ? `: ${node.varType}` : ""} ${node.varValue ? `= ${node.varValue.stringified}` : ""};`;
+        resultCode.addLn(node.stringified);
     }
 
     if (node.type === "VariableAssign") {
-
+        stringifyNode(node.name, config);
         stringifyNode(node.varValue, config);
-        ctx.assignVariable(node);
+        
+        node.stringified = `${node.name}`
     }
 
     if (node.type === "Identifier") {

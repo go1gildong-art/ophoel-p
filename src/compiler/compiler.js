@@ -12,9 +12,16 @@ const code =
 mc_exec(\`as @e[tag=\${config.room_anchor_tag}, tag=\${config.room_s.tag}]\`) {
 /.
 /.
-        let mut foo: int_c = config.room_s.radius;
+let mut foo: int_c = config.room_s.radius;
+let mut x = 1;
+repeat(4) {
         setblock!!(\`~ ~\${foo} ~ dirt\`);
+        say!!(\`\${x}\`);
+        /.
+        x += 1;
+        x = x + 1;
 }
+        }
 
 `;
 

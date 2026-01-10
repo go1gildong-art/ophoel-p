@@ -44,7 +44,6 @@ class Context {
         };
 
         if (node.varValue != null) {
-            node.declares = true;
             this.assignVariable(node);
         }
     }
@@ -56,7 +55,7 @@ class Context {
             if (vars[node.varName]) {
                 const variable = vars[node.varName];
 
-                if (!variable.mutability && variable.value != null ) {
+                if (!variable.mutability && variable.value != null) {
                     throw new OphoelSemanticError(`Variable ${node.varName} is immutable, but tried to mutate`, node);
                 }
 
@@ -69,6 +68,7 @@ class Context {
                     variable.type = node.varValue.valueType;
                 }
 
+                print(`assigned ${node.varName} = ${node.varValue.value}!`);
                 vars[node.varName].value = node.varValue.value;
                 return;
             }
@@ -116,6 +116,9 @@ function transformNode(node, config) {
         node.message = "\n";
     }
 
+    if (node.type === "PreservedComment") {
+        node.message = node.message.slice(1); // "/# comment" to "# comment"
+    }
 
     if (node.type === "ConfigRef") {
         resolveConfigs(node, config);
@@ -151,7 +154,12 @@ function transformNode(node, config) {
     }
 
     if (node.type === "VariableAssign") {
+        transformNode(node.varValue, config);
+        ctx.assignVariable(node);
+    }
 
+    if (node.type === "VariableAssignShorten") {
+        node.varValue = BuildAST.BinaryExpression(node.operator, BuildAST.Identifier(node.name, node.location), node.varValue, false, node.location);
         transformNode(node.varValue, config);
         ctx.assignVariable(node);
     }
@@ -210,7 +218,7 @@ function transformNode(node, config) {
         }
 
         transformNode(node.args[0], config);
-        node.body = BuildAST.Block( proliferate(BuildAST.Block(node.body, node.location), node.args[0].value), node.location);
+        node.body = BuildAST.Block(proliferate(BuildAST.Block(node.body, node.location), node.args[0].value), node.location);
 
         for (let nodee of node.body.body) {
             transformNode(nodee, config);
@@ -221,7 +229,12 @@ function transformNode(node, config) {
     if (node.type === "Block") {
         ctx.pushNewScope();
 
-        for (const _node of node.body) transformNode(_node, config);
+        if (node.body.type === "Block") {
+            transformNode(node.body);
+        } else {
+            for (const _node of node.body) transformNode(_node, config);
+        }
+
         // node.body.forEach(node => transformNode(node, config));
         ctx.popScope();
     }
@@ -244,26 +257,26 @@ function transformNode(node, config) {
 
 function resolveConfigs(node, config) {
 
-        let configElement = { ...config };
+    let configElement = { ...config };
 
-        // slice out the "config" at front
-        let access = node.access.slice(6);
-        while (access.length > 0) {
-            // if matches .field syntax
-            if (access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)) {
-                const field = access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)[0];
-                configElement = configElement[field.slice(1)];
-                access = access.slice(field.length);
-            }
-
-            // if matches [index] syntax
-            if (access.match(/^\[\d+\]/)) {
-                const index = access.match(/^\[\d+\]/)[0];
-                configElement = configElement[Number(index.slice(1, index.length - 1))];
-                access = access.slice(index.length);
-            }
+    // slice out the "config" at front
+    let access = node.access.slice(6);
+    while (access.length > 0) {
+        // if matches .field syntax
+        if (access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)) {
+            const field = access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)[0];
+            configElement = configElement[field.slice(1)];
+            access = access.slice(field.length);
         }
-        node.value = configElement;
+
+        // if matches [index] syntax
+        if (access.match(/^\[\d+\]/)) {
+            const index = access.match(/^\[\d+\]/)[0];
+            configElement = configElement[Number(index.slice(1, index.length - 1))];
+            access = access.slice(index.length);
+        }
+    }
+    node.value = configElement;
 }
 
 function deductType(node) {
@@ -272,7 +285,7 @@ function deductType(node) {
     if (["int_c", "bool", "string"].includes(node.valueType)) {
         return;
     }
-    
+
     switch (typeof node.value) {
         case "string":
             node.valueType = "string";

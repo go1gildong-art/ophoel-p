@@ -1,35 +1,58 @@
 {
-  "name": "ophoel",
+  "name": "ophoel-language",
+  "displayName": "Ophoel Language Support",
   "version": "0.1.0",
-  "description": "",
-  "main": "index.js",
+
+  "engines": { "vscode": "^1.88.0" },
+
+  "categories": [ "Programming Languages" ],
+
+  
+
+  "contributes": {
+    "languages": [{
+      "id": "ophoel",
+      "aliases": ["Ophoel", "oph"],
+      "extensions": [".oph"],
+      "configuration": "./language-configuration.json"
+    }],
+
+    "grammars": [{
+      "language": "ophoel",
+      "scopeName": "source.oph",
+      "path": "./syntaxes/ophoel.tmLanguage.json"
+    }]
+  },
+
+  "main": "./src/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skibidi/ophoel-formatter"
+  },
   "scripts": {
+    "compile": "tsc",
+    "watch": "tsc -w",
+
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node build.js",
-    "dev": "nodemon --prefix \"C:/Users/nines/Desktop/릴름즈/ophoel\" --watch \"ophoel_config.json\" --watch \"data/*/ophoel\" --ext oph,json --exec \"node compiler/build.js\""
+    "dev": "nodemon --prefix \"C:/Users/nines/Desktop/릴름즈/ophoel\" --watch \"ophoel_config.json\" --watch \"data/*/ophoel\" --ext oph,json --exec \"node out/compiler/build.js\""
   },
+  "devDependencies": {
+    "@types/node": "^20.19.28",
+    "@types/vscode": "^1.88.0",
+    "typescript": "^5.2.2"
+  },
+  "activationEvents": [
+    "onLanguage:ophoel"
+  ],
+
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "bin": {
     "ophoel-build": "./compiler/build.js"
-  },
-
-  "contributes": {
-    "languages": [
-      {
-        "id": "ophoel",
-        "aliases": ["Ophoel"],
-        "extensions": [".oph"]
-      }
-    ],
-    "grammars": [
-      {
-        "language": "ophoel",
-        "scopeName": "source.oph",
-        "path": "./syntaxes/.tmLanguage.json"
-      }
-    ]
   }
+
+
 }

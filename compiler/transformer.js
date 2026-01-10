@@ -6,14 +6,13 @@ function print(x) {
 }
 class OphoelSemanticError extends Error {
     constructor(msg, node) {
-        return new Error(msg + ` at ${node?.location.fileName}:${node?.location.line}, ${node?.location.tokenIdx}`);
+        return new Error(msg + ` at ${node?.location?.fileName}:${node?.location?.line}, ${node?.location?.tokenIdx}`);
     }
 };
 
 export function transform(_ast, config) {
     const ast = { ..._ast };
 
-    console.log("got config: " + JSON.stringify(config));
 
     transformNode(ast, config);
 
@@ -57,8 +56,12 @@ class Context {
                 }
 
                 deductType(node);
-                if (variable.type !== node.varValue.valueType) {
+                if (variable.type !== node.varValue.valueType && variable.type !== "deduct") {
                     throw new OphoelSemanticError(`Type mismatch: Tried to assign ${node.varValue.value}(${node.varValue.valueType}) to ${node.varName}(${variable.type})`, node);
+                }
+
+                if (variable.type === "deduct") {
+                    variable.type = node.varValue.valueType;
                 }
 
                 vars[node.varName].value = node.varValue.value;
@@ -143,6 +146,7 @@ function transformNode(node, config) {
     }
 
     if (node.type === "Identifier") {
+        deductType(node);
         const variable = ctx.getVariable(node);
         node.value = variable.value;
         node.valueType = variable.type;

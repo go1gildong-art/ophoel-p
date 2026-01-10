@@ -14,5 +14,22 @@
   "type": "module",
   "bin": {
     "ophoel-build": "./compiler/build.js"
+  },
+
+  "contributes": {
+    "languages": [
+      {
+        "id": "ophoel",
+        "aliases": ["Ophoel"],
+        "extensions": [".oph"]
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ophoel",
+        "scopeName": "source.oph",
+        "path": "./syntaxes/.tmLanguage.json"
+      }
+    ]
   }
 }

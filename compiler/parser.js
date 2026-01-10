@@ -284,7 +284,7 @@ class OphoelParser {
                 const expr = this.getTokensUntil("SYMBOL", ";");
                 this.expect("SYMBOL", ";");
 
-                this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), true, type.location));
+                this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), true, decl.location));
             }
         }
     }

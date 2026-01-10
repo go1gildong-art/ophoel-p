@@ -10,6 +10,8 @@ import { generate } from "./generator.js"
 const code =
 `
 mc_exec(\`as @e[tag=\${config.room_anchor_tag}, tag=\${config.room_s.tag}]\`) {
+/.
+/.
         let mut foo: int_c = config.room_s.radius;
         setblock!!(\`~ ~\${foo} ~ dirt\`);
 }
@@ -35,7 +37,7 @@ export function compile(sourceCode, config, fileName) {
 }
 
 // console.log("");
-// console.log(tokenize(code, config, "source.oph"));
+console.log(tokenize(code, config, "source.oph"));
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
 // console.log(JSON.stringify(transform(parse(tokenize(code, config, "source.oph")), config)) + "\n");
-// console.log(compile(code, config, "source.oph") + "\n\n");
+console.log(compile(code, config, "source.oph") + "\n\n");

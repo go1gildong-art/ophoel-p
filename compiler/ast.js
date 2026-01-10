@@ -218,6 +218,11 @@ export const BuildAST = {
     PreservedComment: (message, location) => ({
         ...makeNode("PreservedComment", location),
         message,
+    }),
+
+    PreservedNewline: (message, location) => ({
+        ...makeNode("PreservedNewline", location),
+        message,
     })
 }
 

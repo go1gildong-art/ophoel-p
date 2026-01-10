@@ -1,0 +1,46 @@
+{
+  "name": "ophoel-language",
+  "displayName": "Ophoel Language Support",
+  "version": "0.1.0",
+
+  "engines": { "vscode": "^1.88.0" },
+
+  "categories": [ "Programming Languages" ],
+
+  
+
+  "contributes": {
+    "languages": [{
+      "id": "ophoel",
+      "aliases": ["Ophoel", "oph"],
+      "extensions": [".oph"],
+      "configuration": "./language-configuration.json"
+    }],
+
+    "grammars": [{
+      "language": "ophoel",
+      "scopeName": "source.oph",
+      "path": "./syntaxes/ophoel.tmLanguage.json"
+    }]
+  },
+
+  "main": "./out/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skibidi/ophoel-formatter"
+  },
+  "scripts": {
+    "compile": "tsc",
+    "watch": "tsc -w"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.28",
+    "@types/vscode": "^1.88.0",
+    "typescript": "^5.2.2"
+  },
+  "activationEvents": [
+    "onLanguage:ophoel"
+    ]
+
+
+}

@@ -107,6 +107,11 @@ function transformNode(node, config) {
         node.message = [ctx.getPrefixChain(), node.command, node.args[0].value].join(" ");
     }
 
+    if (node.type === "PreservedNewline") {
+        node.message = "\n";
+    }
+
+
     if (node.type === "ConfigRef") {
         resolveConfigs(node, config);
         deductType(node);

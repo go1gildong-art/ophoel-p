@@ -244,6 +244,11 @@ class OphoelParser {
         this.emit(BuildAST.PreservedComment(pc.value.slice(1), pc.location)); // change /#comment to #comment
     }
 
+    handlePreservedNewline() {
+        const pn = this.eat();
+        this.emit(BuildAST.PreservedNewline(pn.value.slice(0, 2), pn.location)); // change /.\n to /.
+    }
+
     handleDeclaration() {
         const declTypeMap = {
             let: "variable",
@@ -381,6 +386,12 @@ class OphoelParser {
             // 2. emit preserved comments
             if (token.type === 'PRESERVED_COMMENT') {
                 this.handlePreservedComment();
+                continue;
+            }
+
+            // 2. emit preserved comments
+            if (token.type === 'PRESERVED_NEWLINE') {
+                this.handlePreservedNewline();
                 continue;
             }
 

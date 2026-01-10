@@ -4,6 +4,7 @@ const tokenPatterns = {
     "patterns": [
         { "type": "WHITESPACE", "regex": "^\\s+" },
         { "type": "PRESERVED_COMMENT", "regex": "^(\\/#[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)" },
+        { "type": "PRESERVED_NEWLINE", "regex": "^(\\/\\.)\n" },
         { "type": "COMMENT", "regex": "^(\\/\\/[^\\n]*|\\/\\*[\\s\\S]*?\\*\\/)" },
         { "type": "STRING", "regex": "^\"([^\"\\\\]|\\\\.)*\"" },
         { "type": "NUMBER", "regex": "^\\-?\\d+" },
@@ -109,12 +110,14 @@ export function tokenize(source, config, fileName) {
         }
 
         // Skip Whitespace
+        
         match = substring.match(/^\s+/);
         if (match) {
             cursor += match[0].length;
             line += match[0].match(/\n/g)?.length ?? 0;
             continue;
         }
+            
 
         // Match patterns from your JSON
         for (let { type, regex } of tokenPatterns.patterns) {

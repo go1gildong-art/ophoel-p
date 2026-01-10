@@ -1,0 +1,103 @@
+{
+  "scopeName": "source.oph",
+  "patterns": [
+    {
+      "name": "comment.line.double-slash.oph",
+      "match": "//.*$"
+    },
+    {
+      "name": "comment.line.slash-sharp.oph",
+      "match": "/#.*$"
+    },
+    {
+      "name": "comment.line.slash-period.oph",
+      "match": "/\\.$"
+    },
+    {
+      "name": "keyword.declaration.oph",
+      "match": "\\b(let|fn|macro)\\b"
+    },
+    {
+      "name": "keyword.control.macro.oph",
+      "match": "\\b(mc_exec|repeat)\\b"
+    },
+    {
+      "name": "keyword.specifier.oph",
+      "match": "\\b(mut)\\b"
+    },
+    {
+      "name": "storage.type.oph",
+      "match": "\\b(string|int_s|int_c|bool)\\b"
+    },
+    {
+      "name": "keyword.other.command.oph",
+      "match": "\\b[a-zA-Z_]+\\!\\!"
+    },
+    {
+      "name": "keyword.operator.assignment.oph",
+      "match": "="
+    },
+    {
+      "name": "punctuation.accessor.oph",
+      "match": "\\."
+    },
+    {
+      "name": "punctuation.double-bang.oph",
+      "match": "\\!\\!"
+    },
+    {
+      "name": "variable.ophoel-config.oph",
+      "match": "\\bconfig\\b"
+    },
+    {
+      "name": "variable.other.oph",
+      "match": "\\b[A-Za-z_][A-Za-z0-9_]*\\b"
+    },
+    {
+      "name": "constant.numeric.oph",
+      "match": "\\b[0-9]+\\b"
+    },
+    {
+      "name": "string.quoted.double.oph",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.oph",
+          "match": "\\\\."
+        }
+      ]
+    },
+    {
+      "name": "constant.language.oph",
+      "match": "\\b(true|false|null)\\b"
+    },
+    {
+      "name": "string.template.oph",
+      "begin": "`",
+      "end": "`",
+      "patterns": [
+        {
+          "name": "interpolation.oph",
+          "begin": "\\$\\{",
+          "end": "\\}",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.template-expression.oph"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.template-expression.oph"
+            }
+          },
+          "patterns": [
+            {
+              "include": "source.oph"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -76,7 +76,7 @@ class ExpressionParser {
             const right = this.parse();
 
             // Wrap the current 'left' in a new tree
-            left = BuildAST.BinaryExpression(operator, left, right, this.getExprLocation());
+            left = BuildAST.BinaryExpression(operator, left, right, false, this.getExprLocation());
             this.eat();
         }
 
@@ -86,10 +86,10 @@ class ExpressionParser {
     parseMultiplicative() {
         let left = this.parsePrimary();
 
-        while (this.peek()?.type === 'OPERATOR' && ['*', '/'].includes(this.peek().value)) {
+        while (this.peek()?.type === 'OPERATOR' && ['*', '/', "%"].includes(this.peek().value)) {
             const operator = this.eat().value;
             const right = this.parse();
-            left = BuildAST.BinaryExpression(operator, left, right, this.getExprLocation());
+            left = BuildAST.BinaryExpression(operator, left, right, false, this.getExprLocation());
         }
 
         return left;
@@ -154,6 +154,7 @@ class ExpressionParser {
             this.eat(); // eat (
             const exprTokens = this.getTokensBetween("SYMBOL", "(", ")");
             const expr = new ExpressionParser(exprTokens).parse();
+            expr.hasParenthesis = true;
             this.eat(); // eat )
             return expr;
         }
@@ -179,7 +180,7 @@ class OphoelParser {
     next() { return this.tokens[this.pos + 1]; }
 
     // Helper to remove top level Program node
-    unprogram(program) { return program.body; }
+    unprogram(program) { return program.body.body; }
 
     // Helper to catch syntax errors
     expect(type, value = null) {
@@ -191,7 +192,8 @@ class OphoelParser {
     }
 
     // Helper to build commands
-    emit(ast) { this.ast.body.push(ast); }
+    // need double .body for accessing Program -> Block.body
+    emit(ast) { this.ast.body.body.push(ast); }
 
     // Helper to find out the tokens belong inside braces
     // mostly will work with braces
@@ -281,7 +283,7 @@ class OphoelParser {
             }
 
 
-            this.emit(BuildAST.VariableDecl(type.value, name.value, mutability, decl.location));
+            
 
             // if declaration contains assignment
             if (this.peek()?.type === "OPERATOR" && this.peek()?.value === "=") {
@@ -289,7 +291,10 @@ class OphoelParser {
                 const expr = this.getTokensUntil("SYMBOL", ";");
                 this.expect("SYMBOL", ";");
 
-                this.emit(BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), true, decl.location));
+                this.emit(BuildAST.VariableDecl(type.value, name.value, mutability, new ExpressionParser(expr).parse(), decl.location));
+            } else {
+                this.expect("SYMBOL", ";");
+                this.emit(BuildAST.VariableDecl(type.value, name.value, mutability, null, decl.location));
             }
         }
     }

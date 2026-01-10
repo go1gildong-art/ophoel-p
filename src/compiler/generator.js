@@ -10,7 +10,7 @@ function getCommands(node) {
 
     commands.push(node.message);
 
-    const deepCommands = node.body?.map(node => {
+    const deepCommands = node.body?.body.map(node => {
         return getCommands(node)
         .filter(msg => msg != null);
     });

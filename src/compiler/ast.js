@@ -47,7 +47,7 @@ export class AST {
 
         // holds the code block body for declarations
         // Uses: FunctionDecl, MacroDecl
-        // Type: AST[]
+        // Type: AST(block)
         this.varBody = ast.varBody ?? [];
 
         // ---------- CALLS & INVOCATIONS ----------
@@ -67,7 +67,7 @@ export class AST {
         // Uses: IfStatement, WhileStatement, ForStatement, 
         // Uses: RepeatStatement, McExecStatement, Block,
         // Uses: FunctionCall, MacroInvoc, Program
-        // Type: AST[]
+        // Type: AST(block) (AST[] for Program node)
         this.body = ast.body ?? [];
 
         // ---------- EXPRESSIONS ----------
@@ -138,7 +138,7 @@ export const BuildAST = {
     // 1. Statements (top level items)
     Program: (body, location) => ({
         ...makeNode('Program', location), 
-        body
+        body: BuildAST.Block(body, location)
     }),
 
     Block: (body, location) => ({
@@ -146,10 +146,11 @@ export const BuildAST = {
         body
     }),
 
-    VariableDecl: (varType, varName, mutability, location) => ({
+    VariableDecl: (varType, varName, mutability, varValue, location) => ({
         ...makeNode('VariableDecl', location),
         varType,
         varName,
+        varValue,
         mutability
     }),
 
@@ -169,11 +170,12 @@ export const BuildAST = {
     },
 
     // 2. Expressions (nested math/logic)
-    BinaryExpression: (operator, left, right, location) => ({
+    BinaryExpression: (operator, left, right, hasParenthesis, location) => ({
         ...makeNode("BinaryExpression", location),
         operator, // +-*/
         left, // node
-        right // node
+        right, // node
+        hasParenthesis
     }),
 
     Literal: (valueType, raw, location) => {
@@ -184,10 +186,11 @@ export const BuildAST = {
         });
     },
 
-    TemplateStringLiteral: (templateQuasis, templateExpressions, location) => ({
+    TemplateStringLiteral: (templateQuasis, templateExpressions, raw, location) => ({
         ...makeNode('TemplateStringLiteral', location),
         templateQuasis, // array of strings
         templateExpressions, // array of expressions, go between quasis strings
+        raw, // raw string entered
         valueType: "string"
     }),
 
@@ -205,13 +208,13 @@ export const BuildAST = {
     RepeatStatement: (args, body, location) => ({
         ...makeNode("RepeatStatement", location),
         args,
-        body
+        body: BuildAST.Block(body, location)
     }),
 
     McExecStatement: (args, body, location) => ({
         ...makeNode("McExecStatement", location),
         args,
-        body
+        body: BuildAST.Block(body, location)
     }),
 
     // 4. Perserved comments (appear on compiled mcfunction)

@@ -35,7 +35,7 @@
 
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node build.js",
-    "dev": "nodemon --prefix \"C:/Users/nines/Desktop/릴름즈/ophoel\" --watch \"ophoel_config.json\" --watch \"data/*/ophoel\" --ext oph,json --exec \"node out/compiler/build.js\""
+    "dev": "nodemon --prefix \"C:/Users/nines/Desktop/릴름즈/ophoel\" --watch \"ophoel_config.json\" --watch \"data/*/ophoel\" --ext oph,json --exec \"node src/compiler/build.js\""
   },
   "devDependencies": {
     "@types/node": "^20.19.28",

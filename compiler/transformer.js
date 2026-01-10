@@ -11,7 +11,9 @@ class OphoelSemanticError extends Error {
 };
 
 export function transform(_ast, config) {
-    let ast = { ..._ast };
+    const ast = { ..._ast };
+
+    console.log("got config: " + JSON.stringify(config));
 
     transformNode(ast, config);
 
@@ -130,7 +132,7 @@ function transformNode(node, config) {
 
     if (node.type === "VariableAssign") {
 
-        transformNode(node.varValue);
+        transformNode(node.varValue, config);
         ctx.assignVariable(node);
     }
 
@@ -186,7 +188,7 @@ function transformNode(node, config) {
             return arr;
         }
 
-        transformNode(node.args[0]);
+        transformNode(node.args[0], config);
         node.body = proliferate(BuildAST.Block(node.body, node.location), node.args[0].value);
 
         for (let nodee of node.body) {
@@ -207,7 +209,7 @@ function transformNode(node, config) {
     }
 
     if (node.type === "McExecStatement") {
-        transformNode(node.args[0]);
+        transformNode(node.args[0], config);
         const prefix = node.args[0].value;
         ctx.setMcPrefix(prefix);
 
@@ -224,4 +226,28 @@ function transformNode(node, config) {
         });
         ctx.popScope();
     }
+}
+
+function resolveConfigs(node, config) {
+
+        let configElement = { ...config };
+
+        // slice out the "config" at front
+        let access = node.access.slice(6);
+        while (access.length > 0) {
+            // if matches .field syntax
+            if (access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)) {
+                const field = access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)[0];
+                configElement = configElement[field.slice(1)];
+                access = access.slice(field.length);
+            }
+
+            // if matches [index] syntax
+            if (access.match(/^\[\d+\]/)) {
+                const index = access.match(/^\[\d+\]/)[0];
+                configElement = configElement[Number(index.slice(1, index.length - 1))];
+                access = access.slice(index.length);
+            }
+        }
+        node.value = configElement;
 }

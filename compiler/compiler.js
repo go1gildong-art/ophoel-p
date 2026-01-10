@@ -9,17 +9,11 @@ import { generate } from "./generator.js"
 
 const code =
     `
-/# brrrr
-let mut x: int_c = 10;
-let mut y: int_c = 20;
-
-repeat(4) {
-setblock!!(\`~\${x} ~ ~\${y} dirt\`);
-
-x += 10;
-y *= 2;
-
+/# base line to select all room_s anchors
+mc_exec(\`as @e tag=\${config.room_anchor_tag} tag=\${config.room_s.tag}\`) {
+        setblock!!("~ ~ ~ dirt");
 }
+fill!!("~ ~ ~ dirt");
 
 `;
 

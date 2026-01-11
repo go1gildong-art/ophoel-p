@@ -1,4 +1,4 @@
-public class lol {
+public class X {
     private int x;
 
     public int getX() {

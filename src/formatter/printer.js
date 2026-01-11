@@ -2,106 +2,6 @@ import { tokenize } from "../compiler/lexer.js";
 import { parse } from "../compiler/parser.js";
 import { AST } from "../compiler/ast.js";
 
-
-function print(x) {
-    console.log(x);
-    return x;
-}
-class OphoelSemanticError extends Error {
-    constructor(msg, node) {
-        return new Error(msg + ` at ${node?.location?.fileName}:${node?.location?.line}, ${node?.location?.tokenIdx}`);
-    }
-};
-
-export function transform(_ast, config) {
-    const ast = { ..._ast };
-
-
-    stringifyNode(ast, config);
-
-    // print(JSON.stringify(ast));
-    return ast;
-}
-
-class Context {
-    constructor() { this.scopes = []; }
-
-    pushNewScope() {
-        this.scopes.push({
-            variables: {},
-            mcPrefix: ""
-        });
-    }
-
-    popScope() { this.scopes.pop(); }
-
-    peek() { return this.scopes[this.scopes.length - 1]; }
-
-    declareVariable(node) {
-        if (this.peek().variables[node.varName]) throw new OphoelSemanticError(`Variable ${node.varName} already exists`, node);
-
-        this.peek().variables[node.varName] = {
-            type: node.varType,
-            value: null,
-            mutability: node.mutability
-        };
-    }
-
-    assignVariable(node) {
-        // reverse to check leaf scope first
-        for (const scope of this.scopes.toReversed()) {
-            const vars = scope.variables;
-            if (vars[node.varName]) {
-                const variable = vars[node.varName];
-
-                if (!variable.mutability && variable.value != null) {
-                    throw new OphoelSemanticError(`Variable ${node.varName} is immutable, but tried to mutate`, node);
-                }
-
-                deductType(node);
-                if (variable.type !== node.varValue.valueType && variable.type !== "deduct") {
-                    throw new OphoelSemanticError(`Type mismatch: Tried to assign ${node.varValue.value}(${node.varValue.valueType}) to ${node.varName}(${variable.type})`, node);
-                }
-
-                if (variable.type === "deduct") {
-                    variable.type = node.varValue.valueType;
-                }
-
-                vars[node.varName].value = node.varValue.value;
-                return;
-            }
-        }
-
-        throw new OphoelSemanticError(`${node.varName} is not declared yet or unreachable`, node);
-    }
-
-    getVariable(node) {
-        for (let scope of this.scopes.toReversed()) {
-            const vars = scope.variables;
-            if (vars[node.name]) {
-                if (vars[node.name].value == null) {
-                    throw new OphoelSemanticError(`Attempted to access uninitialized variable ${node.varName}`, node);
-                }
-                return vars[node.name];
-            }
-        }
-
-        throw new OphoelSemanticError(`${node.varName} is not declared yet or unreachable`, node);
-    }
-
-    setMcPrefix(prefix) { this.peek().mcPrefix = prefix; }
-
-    getPrefixChain() {
-        const prefix = this.scopes
-            .map(scope => scope.mcPrefix)
-            .filter(prefix => prefix !== "")
-            .join(" run execute ");
-
-        return (prefix !== "") ? ("execute " + prefix + " run") : "";
-    }
-}
-let ctx = new Context();
-
 class Code {
     constructor(braceStyle, indentSpaces) {
         this.lines = [];
@@ -111,41 +11,54 @@ class Code {
         this.indentSpaces = indentSpaces;
     }
 
-    addLn(ln) {
-        this.addCode(ln);
+    addLn(ln, indent = (this.depth * this.indentSpaces)) {
+        this.addCode(ln, indent);
         this.newLine();
     }
 
     newLine() { this.lines.push("\n"); }
 
-    addCode(ln) { this.lines.push(" ".repeat(this.depth * this.indentSpaces) + ln); }
+    addCode(ln, indent = (this.depth * this.indentSpaces)) { this.lines.push(" ".repeat(indent) + ln); }
 
     openBlock(code) {
         if (this.braceStyle === "K&R") {
-            this.addLn(code + " {");
+            this.addLn(code + " {", 0);
         } else if (this.braceStyle === "Allman") {
-            this.addLn(code);
+            this.addLn(code, 0);
             this.addLn("{");
         }
-        
+
         this.depth += 1;
     }
 
     closeBlock() { this.depth -= 1; this.addLn("}"); }
+
+    getCode() { return this.lines.join(""); }
 }
-let resultCode = new Code("K&R", 2);
+let resultCode = new Code("Allman", 2);
 
 function stringifyNode(node) {
 
     if (node.type === "McCommand") {
         stringifyNode(node.args[0]);
-        node.stringified = `${node.command}!!(${node.args[0]});`
+        node.stringified = `${node.command}!!(${node.args[0].stringified});`
 
         resultCode.addLn(node.stringified);
     }
 
     if (node.type === "PreservedNewline") {
         node.stringified = "/."
+        resultCode.addLn(node.stringified);
+    }
+
+    if (node.type === "PreservedComment") {
+        console.log("pcomment")
+        node.stringified = node.message;
+        resultCode.addLn(node.stringified);
+    }
+
+    if (node.type === "Comment") {
+        node.stringified = node.commentMessage;
         resultCode.addLn(node.stringified);
     }
 
@@ -159,13 +72,13 @@ function stringifyNode(node) {
 
     if (node.type === "TemplateStringLiteral") {
         const components = [];
-        node.templateExpressions.forEach(node => stringifyNode(node, config));
+        node.templateExpressions.forEach(node => stringifyNode(node));
 
         components.push("`");
         for (let i = 0; i < node.templateQuasis.length - 1; i++) {
             components.push(node.templateQuasis[i]);
             components.push("${");
-            components.push(node.templateExpressions[i].raw);
+            components.push(node.templateExpressions[i].stringified);
             components.push("}");
         }
 
@@ -177,15 +90,23 @@ function stringifyNode(node) {
 
     if (node.type === "VariableDecl") {
         if (node.varValue) stringifyNode(node.varValue);
-        node.stringified = `let ${node.mutability ? "mut" : ""} ${node.varName}${node.type !== "deduct" ? `: ${node.varType}` : ""} ${node.varValue ? `= ${node.varValue.stringified}` : ""};`;
+        node.stringified = `let ${node.mutability ? "mut " : ""}${node.varName}${node.varType !== "deduct" ? `: ${node.varType}` : ""} ${node.varValue ? `= ${node.varValue.stringified}` : ""};`;
         resultCode.addLn(node.stringified);
     }
 
     if (node.type === "VariableAssign") {
-        stringifyNode(node.name, config);
-        stringifyNode(node.varValue, config);
-        
-        node.stringified = `${node.name}`
+        // stringifyNode(node.name);
+        stringifyNode(node.varValue);
+
+        node.stringified = `${node.name} = ${node.varValue.stringified};`;
+        resultCode.addLn(node.stringified);
+    }
+
+    if (node.type === "VariableAssignShorten") {
+        stringifyNode(node.varValue);
+
+        node.stringified = `${node.name} ${node.operator}= ${node.varValue.stringified};`;
+        stringifyNode(node.stringified);
     }
 
     if (node.type === "Identifier") {
@@ -193,105 +114,46 @@ function stringifyNode(node) {
     }
 
     if (node.type === "BinaryExpression") {
-        stringifyNode(node.left, config);
-        stringifyNode(node.right, config);
-
-        if (node.left.valueType === node.right.valueType) {
-            node.valueType = node.left.valueType;
-        } else {
-            throw new OphoelSemanticError(`Type mismatch: tried to perform ${node.operator} operation between ${node.left.value}(${node.left.valueType}) and ${node.right.value}(${node.right.valueType})`, node);
-        }
-
-
-        node.value = (typeof result === "number") ? Math.round(result) : result;
+        stringifyNode(node.left);
+        stringifyNode(node.right);
+        node.stringified = `${node.left.stringified} ${node.operator} ${node.right.stringified}`;
     }
 
     if (node.type === "RepeatStatement") {
-        const proliferate = (obj, count) => {
-            const arr = [];
-            for (let i = 0; i < count; i++) arr.push(structuredClone(obj));
-            return arr;
-        }
+        stringifyNode(node.args[0]);
+        node.stringified = `repeat(${node.args[0].stringified})`;
+        resultCode.addCode(node.stringified);
 
-        stringifyNode(node.args[0], config);
-        node.body = proliferate(BuildAST.Block(node.body, node.location), node.args[0].value);
-
-        for (let nodee of node.body) {
-            stringifyNode(nodee, config);
-        }
-
-        node.body
-            .flatMap(node => node.body)
-            .filter(node => node.type === "McCommand")
+        stringifyNode(node.body);
     }
 
     if (node.type === "Block") {
-        ctx.pushNewScope();
-
-        for (const _node of node.body) stringifyNode(_node, config);
-        // node.body.forEach(node => stringifyNode(node, config));
-        ctx.popScope();
+        resultCode.openBlock("");
+        node.body.forEach(node => {
+            stringifyNode(node);
+        });
+        resultCode.closeBlock();
     }
 
     if (node.type === "McExecStatement") {
-        stringifyNode(node.args[0], config);
-        const prefix = node.args[0].value;
-        ctx.setMcPrefix(prefix);
+        stringifyNode(node.args[0]);
+        node.stringified = `mc_exec(${node.args[0].stringified}) `;
+        resultCode.addCode(node.stringified);
 
-        ctx.pushNewScope();
-        node.body.forEach(node => stringifyNode(node, config));
-        ctx.popScope();
+        stringifyNode(node.body);
     }
 
-    // place lower than statement check to avoid recursion
+    // instead of using body, directly iterate over the Block node(body)'s body
+    // so all nodes at Program level will be at top level
     if (node.type === "Program") {
-        ctx.pushNewScope();
-        node.body.forEach(node => {
-            stringifyNode(node, config);
+        node.body.body.forEach(node => {
+            stringifyNode(node);
         });
-        ctx.popScope();
     }
 }
 
-function resolveConfigs(node, config) {
-
-    let configElement = { ...config };
-
-    // slice out the "config" at front
-    let access = node.access.slice(6);
-    while (access.length > 0) {
-        // if matches .field syntax
-        if (access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)) {
-            const field = access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)[0];
-            configElement = configElement[field.slice(1)];
-            access = access.slice(field.length);
-        }
-
-        // if matches [index] syntax
-        if (access.match(/^\[\d+\]/)) {
-            const index = access.match(/^\[\d+\]/)[0];
-            configElement = configElement[Number(index.slice(1, index.length - 1))];
-            access = access.slice(index.length);
-        }
-    }
-    node.value = configElement;
-}
-
-function deductType(node) {
-
-    // if type is predefined
-    if (["int_c", "bool", "string"].includes(node.valueType)) {
-        return;
-    }
-
-    switch (typeof node.value) {
-        case "string":
-            node.valueType = "string";
-
-        case "number":
-            node.valueType = "int_c";
-
-        case "boolean":
-            node.valueTyep = "bool";
-    }
+export function rePrint(_ast) {
+    const ast = { ..._ast };
+    stringifyNode(ast);
+    return resultCode.getCode();
 }

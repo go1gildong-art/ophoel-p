@@ -159,8 +159,9 @@ function transformNode(node, config) {
     }
 
     if (node.type === "VariableAssignShorten") {
-        node.varValue = BuildAST.BinaryExpression(node.operator, BuildAST.Identifier(node.name, node.location), node.varValue, false, node.location);
+        node.varValue = BuildAST.BinaryExpression(node.operator, BuildAST.Identifier(node.varName, node.location), node.varValue, false, node.location);
         transformNode(node.varValue, config);
+        print(node.varValue);
         ctx.assignVariable(node);
     }
 

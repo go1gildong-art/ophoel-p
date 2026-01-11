@@ -240,6 +240,11 @@ class OphoelParser {
         this.pos = endPos;
         return expr;
     }
+    
+    handleComment() {
+        const c = this.eat();
+        this.emit(BuildAST.Comment(c.value, c.location));
+    }
 
     handlePreservedComment() {
         const pc = this.eat();
@@ -384,7 +389,7 @@ class OphoelParser {
 
             // 1. Skip Comments
             if (token.type === 'COMMENT') {
-                this.eat();
+                this.handleComment();
                 continue;
             }
 

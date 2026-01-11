@@ -161,7 +161,7 @@ export const BuildAST = {
     }),
 
     VariableAssignShorten: (varName, varValue, operator, location) => ({
-        ...makeNode('VariableAssign', location),
+        ...makeNode('VariableAssignShorten', location),
         varName,
         varValue,
         operator
@@ -232,6 +232,11 @@ export const BuildAST = {
     PreservedNewline: (message, location) => ({
         ...makeNode("PreservedNewline", location),
         message,
+    }),
+
+    Comment: (commentMessage, location) => ({
+        ...makeNode("Comment", location),
+        commentMessage,
     })
 }
 

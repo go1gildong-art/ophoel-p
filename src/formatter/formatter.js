@@ -12,20 +12,20 @@ mc_exec(\`as @e[tag=\${config.room_anchor_tag}, tag=\${config.room_s.tag}]\`) {
 let wow = "this_is_string";
 let mut foo: int_c = config.room_s.radius;
 let mut x = 1;
-repeat(4) {
-        setblock!!(\`~ ~\${foo} ~ dirt\`);
-        say!!(\`\${x}\`);
-        /.
-        x += 7;
-        x = x + 1;
+repeat(4) 
+  setblock!!(\`~ ~\${foo} ~ dirt\`);
+  say!!(\`\${x}\`);
+  /.
+  x += 7;
+  x = x + 1;
 }
-        }
-
+}
 `;
 
 const config = { room_anchor_tag: "room_anchor", room_s: { radius: 7, tag: "room_s" } };
 
 export function format(sourceCode, config, fileName) {
+  try {
     // 1. Raw text to Tokens
     let tokens = tokenize(sourceCode, config, fileName);
 
@@ -36,6 +36,16 @@ export function format(sourceCode, config, fileName) {
     let newSource = rePrint(ast);
 
     return newSource;
+  } catch (err) {
+    if (err instanceof OphoelParseError) {
+      console.error("formatting failed due to parse error: " + err.message);
+      return sourceCode;
+    }
+
+    throw err;
+  }
+
+
 }
 
 // console.log("");

@@ -1,10 +1,6 @@
 import { BuildAST, Location } from "./ast.js";
+import { OphoelParseError } from "../errors.js";
 
-class OphoelParseError extends Error {
-    constructor(msg, token) {
-        return new Error(msg + ` at ${token?.location.fileName}:${token?.location.line}, ${token?.location.tokenIdx}`);
-    }
-};
 
 class ExpressionParser {
     constructor(tokens) {

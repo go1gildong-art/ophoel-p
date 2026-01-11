@@ -1,14 +1,10 @@
 import { AST, BuildAST, Location } from "./ast.js";
+import { OphoelSemanticError } from "../errors.js";
 
 function print(x) {
     console.log(x);
     return x;
 }
-class OphoelSemanticError extends Error {
-    constructor(msg, node) {
-        return new Error(msg + ` at ${node?.location?.fileName}:${node?.location?.line}, ${node?.location?.tokenIdx}`);
-    }
-};
 
 export function transform(_ast, config) {
     const ast = { ..._ast };

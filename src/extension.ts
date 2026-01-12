@@ -1,21 +1,35 @@
+
 import * as vscode from 'vscode';
-import { format } from './formatter/formatter.js'; // your existing function
+import * as path from 'path';
+import { format } from './formatter/formatter.js';
+
 
 export function activate(context: vscode.ExtensionContext) {
-    const selector: vscode.DocumentSelector = { scheme: 'file', language: 'mydsl' };
+    vscode.window.showInformationMessage("dsl test");
+
+
+    const selector: vscode.DocumentSelector = { language: 'ophoel' };
 
     const provider: vscode.DocumentFormattingEditProvider = {
         provideDocumentFormattingEdits(document: vscode.TextDocument): vscode.TextEdit[] {
             const text = document.getText();
-            const formattedText = format(text); // your pipeline
+            const fileName = path.basename(document.uri.fsPath);
+            let formattedText = format(text, {}, fileName);
 
-            const firstLine = document.lineAt(0);
-            const lastLine = document.lineAt(document.lineCount - 1);
+            console.log('Original text length:', text.length);
+            console.log('Formatted text length:', formattedText.length);
 
-            return [vscode.TextEdit.replace(
-                new vscode.Range(firstLine.range.start, lastLine.range.end),
-                formattedText
-            )];
+            // Full document range
+            const fullRange = new vscode.Range(
+                document.positionAt(0),
+                document.positionAt(text.length)
+            );
+
+            if (!formattedText.endsWith('\n')) {
+                formattedText += '\n';
+            }
+
+            return [vscode.TextEdit.replace(fullRange, formattedText)];
         }
     };
 

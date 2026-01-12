@@ -24,7 +24,7 @@
     }]
   },
 
-  "main": "./src/extension.js",
+  "main": "./out/extension.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/skibidi/ophoel-formatter"
@@ -42,6 +42,7 @@
     "@types/vscode": "^1.88.0",
     "typescript": "^5.2.2"
   },
+
   "activationEvents": [
     "onLanguage:ophoel"
   ],
@@ -49,9 +50,8 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "bin": {
-    "ophoel-build": "./compiler/build.js"
+    "ophoel-build": "./src/compiler/build.js"
   }
 
 

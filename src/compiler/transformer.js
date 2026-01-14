@@ -2,7 +2,7 @@ import { AST, BuildAST, Location } from "./ast.js";
 import { OphoelSemanticError } from "../errors.js";
 
 function print(x) {
-    console.log(x);
+    // console.log(x);
     return x;
 }
 
@@ -92,20 +92,20 @@ class Context {
     getPrefixChain() {
         const prefix = this.scopes
             .map(scope => scope.mcPrefix)
-            .filter(prefix => prefix !== "")
-            .join(" run execute ");
+            .filter(prefix => prefix !== "");
+            
 
-        return (prefix !== "") ? ("execute " + prefix + " run") : "";
+        return prefix;
     }
 }
 let ctx = new Context();
 
 function transformNode(node, config) {
+    if (config == undefined) print("AAA");
 
     if (node.type === "McCommand") {
         transformNode(node.args[0], config);
-
-        node.message = [ctx.getPrefixChain(), node.command, node.args[0].value].join(" ");
+        node.prefixes = ctx.getPrefixChain();
     }
 
     if (node.type === "PreservedNewline") {
@@ -214,24 +214,16 @@ function transformNode(node, config) {
             return arr;
         }
 
+        console.log(node.body.type);
         transformNode(node.args[0], config);
-        node.body = BuildAST.Block(proliferate(BuildAST.Block(node.body, node.location), node.args[0].value), node.location);
+        node.body = BuildAST.Block(proliferate(node.body, node.args[0].value), node.location);
 
-        for (let nodee of node.body.body) {
-            transformNode(nodee, config);
-        }
-
+        transformNode(node.body, config);
     }
 
     if (node.type === "Block") {
         ctx.pushNewScope();
-
-        if (node.body.type === "Block") {
-            transformNode(node.body);
-        } else {
-            for (const _node of node.body) transformNode(_node, config);
-        }
-
+        for (const _node of node.body) transformNode(_node, config);
         // node.body.forEach(node => transformNode(node, config));
         ctx.popScope();
     }
@@ -242,20 +234,20 @@ function transformNode(node, config) {
         ctx.setMcPrefix(prefix);
 
 
-        node.body.body.forEach(node => transformNode(node, config));
+        transformNode(node.body, config);
 
     }
 
     // place lower than statement check to avoid recursion
     if (node.type === "Program") {
-        transformNode(node.body, config)
+        transformNode(node.body, config);
     }
 }
 
 function resolveConfigs(node, config) {
 
-    let configElement = { ...config };
-
+    let configElement = config;
+    
     // slice out the "config" at front
     let access = node.access.slice(6);
     while (access.length > 0) {
@@ -263,13 +255,19 @@ function resolveConfigs(node, config) {
         if (access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)) {
             const field = access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)[0];
             configElement = configElement[field.slice(1)];
+            if (configElement == undefined) {
+                throw new OphoelSemanticError(`Invalid field ${field} inside ${node.access}`, node);
+            }
             access = access.slice(field.length);
         }
 
         // if matches [index] syntax
         if (access.match(/^\[\d+\]/)) {
             const index = access.match(/^\[\d+\]/)[0];
-            configElement = configElement[Number(index.slice(1, index.length - 1))];
+            configElement = configElement[Number(index.slice(1))];
+            if (configElement == undefined) {
+                throw new OphoelSemanticError(`Invalid index ${index} inside ${node.access}`, node);
+            }
             access = access.slice(index.length);
         }
     }

@@ -5,7 +5,6 @@ import { format } from './formatter/formatter.js';
 
 
 export function activate(context: vscode.ExtensionContext) {
-    vscode.window.showInformationMessage("dsl test");
 
 
     const selector: vscode.DocumentSelector = { language: 'ophoel' };

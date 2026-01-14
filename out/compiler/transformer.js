@@ -203,7 +203,7 @@ function transformNode(node, config) {
     }
 }
 function resolveConfigs(node, config) {
-    let configElement = { ...config };
+    let configElement = structuredClone(config);
     // slice out the "config" at front
     let access = node.access.slice(6);
     while (access.length > 0) {
@@ -211,12 +211,18 @@ function resolveConfigs(node, config) {
         if (access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)) {
             const field = access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)[0];
             configElement = configElement[field.slice(1)];
+            if (configElement == undefined) {
+                throw new errors_js_1.OphoelSemanticError(`Invalid field ${field} inside ${node.access}`, node);
+            }
             access = access.slice(field.length);
         }
         // if matches [index] syntax
         if (access.match(/^\[\d+\]/)) {
             const index = access.match(/^\[\d+\]/)[0];
             configElement = configElement[Number(index.slice(1, index.length - 1))];
+            if (configElement == undefined) {
+                throw new errors_js_1.OphoelSemanticError(`Invalid index ${index} inside ${node.access}`, node);
+            }
             access = access.slice(index.length);
         }
     }

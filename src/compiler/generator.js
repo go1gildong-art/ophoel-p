@@ -1,20 +1,18 @@
 
 
-export function generate(ast) {
-    const commands = getCommands(ast, []);
+export function generate(ir) {
+    const commands = ir.instructions
+    .map(instr => generate_OphoelVm(instr))
+    .filter(line => line != null);
     return commands;
 }
 
-function getCommands(node) {
-    const commands = [];
+function generate_OphoelVm(instr) {
+    if (instr.kind === "TextEmit") {
+        return instr.content;
+    }
 
-    commands.push(node.message);
-
-    const deepCommands = node.body?.body.map(node => {
-        return getCommands(node)
-        .filter(msg => msg != null);
-    });
-    if (deepCommands) commands.push(deepCommands);
-
-    return commands.flat(Infinity).map(cmd => cmd?.trim());
+    if (instr.kind === "Comment") {
+        return instr.content;
+    }
 }

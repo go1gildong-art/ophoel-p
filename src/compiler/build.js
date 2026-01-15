@@ -38,7 +38,6 @@ function build() {
         if (fs.existsSync(srcDir)) {
             const configDir = path.join(ophoelFolder, "ophoel_config.json");
             const config = JSON.parse(fs.readFileSync(configDir, 'utf8'));
-            console.log(config);
             
             console.log(`Namespace found: ${ns}`);
             const outDir = path.join(dataDir, ns, "functions");

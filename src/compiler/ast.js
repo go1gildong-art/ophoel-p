@@ -39,7 +39,7 @@ export class VariableAssign extends AST {
 
 export class VariableAssignShorten extends AST {
     constructor(varName, varValue, operator, location) {
-        super("VariableAssign", location);
+        super("VariableAssignShorten", location);
         this.varName = varName;
         this.varValue = varValue;
         this.operator = operator;

@@ -4,7 +4,7 @@ exports.transform = transform;
 const ast_js_1 = require("./ast.js");
 const errors_js_1 = require("../errors.js");
 function print(x) {
-    console.log(x);
+    // console.log(x);
     return x;
 }
 function transform(_ast, config) {
@@ -63,27 +63,28 @@ class Context {
             const vars = scope.variables;
             if (vars[node.name]) {
                 if (vars[node.name].value == null) {
-                    throw new errors_js_1.OphoelSemanticError(`Attempted to access uninitialized variable ${node.varName}`, node);
+                    throw new errors_js_1.OphoelSemanticError(`Attempted to access uninitialized variable ${node.name}`, node);
                 }
                 return vars[node.name];
             }
         }
-        throw new errors_js_1.OphoelSemanticError(`${node.varName} is not declared yet or unreachable`, node);
+        throw new errors_js_1.OphoelSemanticError(`${node.name} is not declared yet or unreachable`, node);
     }
     setMcPrefix(prefix) { this.peek().mcPrefix = prefix; }
     getPrefixChain() {
         const prefix = this.scopes
             .map(scope => scope.mcPrefix)
-            .filter(prefix => prefix !== "")
-            .join(" run execute ");
-        return (prefix !== "") ? ("execute " + prefix + " run") : "";
+            .filter(prefix => prefix !== "");
+        return prefix;
     }
 }
 let ctx = new Context();
 function transformNode(node, config) {
+    if (config == undefined)
+        print("AAA");
     if (node.type === "McCommand") {
         transformNode(node.args[0], config);
-        node.message = [ctx.getPrefixChain(), node.command, node.args[0].value].join(" ");
+        node.prefixes = ctx.getPrefixChain();
     }
     if (node.type === "PreservedNewline") {
         node.message = "\n";
@@ -174,20 +175,13 @@ function transformNode(node, config) {
             return arr;
         };
         transformNode(node.args[0], config);
-        node.body = ast_js_1.BuildAST.Block(proliferate(ast_js_1.BuildAST.Block(node.body, node.location), node.args[0].value), node.location);
-        for (let nodee of node.body.body) {
-            transformNode(nodee, config);
-        }
+        node.body = ast_js_1.BuildAST.Block(proliferate(node.body, node.args[0].value), node.location);
+        transformNode(node.body, config);
     }
     if (node.type === "Block") {
         ctx.pushNewScope();
-        if (node.body.type === "Block") {
-            transformNode(node.body);
-        }
-        else {
-            for (const _node of node.body)
-                transformNode(_node, config);
-        }
+        for (const _node of node.body)
+            transformNode(_node, config);
         // node.body.forEach(node => transformNode(node, config));
         ctx.popScope();
     }
@@ -195,7 +189,7 @@ function transformNode(node, config) {
         transformNode(node.args[0], config);
         const prefix = node.args[0].value;
         ctx.setMcPrefix(prefix);
-        node.body.body.forEach(node => transformNode(node, config));
+        transformNode(node.body, config);
     }
     // place lower than statement check to avoid recursion
     if (node.type === "Program") {
@@ -203,27 +197,48 @@ function transformNode(node, config) {
     }
 }
 function resolveConfigs(node, config) {
-    let configElement = structuredClone(config);
+    let configElement = config;
+    let accumulated = [];
     // slice out the "config" at front
     let access = node.access.slice(6);
+    accumulated.push("config");
     while (access.length > 0) {
         // if matches .field syntax
         if (access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)) {
             const field = access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)[0];
             configElement = configElement[field.slice(1)];
             if (configElement == undefined) {
-                throw new errors_js_1.OphoelSemanticError(`Invalid field ${field} inside ${node.access}`, node);
+                throw new errors_js_1.OphoelSemanticError(`Invalid field ${field} inside ${accumulated.join("")}`, node);
             }
             access = access.slice(field.length);
+            accumulated.push(field);
+            continue;
         }
         // if matches [index] syntax
         if (access.match(/^\[\d+\]/)) {
             const index = access.match(/^\[\d+\]/)[0];
             configElement = configElement[Number(index.slice(1, index.length - 1))];
             if (configElement == undefined) {
-                throw new errors_js_1.OphoelSemanticError(`Invalid index ${index} inside ${node.access}`, node);
+                throw new errors_js_1.OphoelSemanticError(`Invalid index ${index} inside ${accumulated.join("")}`, node);
             }
             access = access.slice(index.length);
+            accumulated.push(index);
+            continue;
+        }
+        // if matches [variable] syntax
+        if (access.match(/^\[[A-Za-z_][A-Za-z0-9_]*]/)) {
+            const rawName = access.match(/^\[[A-Za-z_][A-Za-z0-9_]*]/)[0];
+            const variable = ctx.getVariable({ name: rawName.slice(1, rawName.length - 1) }).value;
+            if (configElement.length <= variable) {
+                throw new errors_js_1.OphoelSemanticError(`dynamic field ${rawName.slice(1, rawName.length - 1)}(${variable}) exceeds max length of ${accumulated.join("")}(length: ${configElement.length})`, node);
+            }
+            configElement = configElement[variable];
+            if (configElement == undefined) {
+                throw new errors_js_1.OphoelSemanticError(`Invalid dynamic field ${variable}(${rawName}) inside ${accumulated.join("")}`, node);
+            }
+            access = access.slice(rawName.length);
+            accumulated.push(rawName);
+            continue;
         }
     }
     node.value = configElement;

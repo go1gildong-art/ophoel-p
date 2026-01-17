@@ -11,14 +11,28 @@ import { lispify } from "./lispifyast.js";
 
 const code =
 `
-let mut ii = 0;
-repeat(config.my_arr.length) {
-say!!(\`bar \${ii}\`);
-say!!(\`foo \${config.my_arr[ii]}\`);
-ii += 1;
+
+mc_exec(\`as @e[tag=\${config.room_anchor_tag}, tag=\${config.room_s.tag}]\`) {
+  let mut x: int_c = config.room_s.radius;
+  let mut y: int_c = config.room_s.radius;
+  /.
+  let mut ii = 0;
+  // iterator
+  repeat(config.room_types.length) {
+    let room_type = config.room_types[ii];
+    mc_exec(\`if entity @s[tag=\${config.room_tags.type[room_type]}]\`) {
+      repeat(4) {
+        setblock!!(\`~\${x} ~ ~\${y} \${config.corridor_lamps.type[room_type]}\`);
+        let temp = x;
+        x = y * -1;
+        y = temp;
+      }
+      /.
+      ii += 1;
+
+    }
+  }
 }
-
-
 
 `;
 
@@ -48,6 +62,6 @@ export function compile(sourceCode, config, fileName) {
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
 // console.log(JSON.stringify(transform(parse(tokenize(code, config, "source.oph")), config)) + "\n");
 // console.log(JSON.stringify(makeIr(transform(parse(tokenize(code, config, "source.oph")), config))) + "\n");
-console.log(compile(code, config, "source.oph") + "\n\n");
+// console.log(compile(code, config, "source.oph") + "\n\n");
 
 // console.log(lispify(parse(tokenize(code, config, "source.oph"))) + "\n");

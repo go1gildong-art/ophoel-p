@@ -103,8 +103,8 @@ function stringifyNode(node, resultCode) {
     if (node.type === "VariableAssignShorten") {
         stringifyNode(node.varValue, resultCode);
 
-        node.stringified = `${node.name} ${node.operator}= ${node.varValue.stringified};`;
-        stringifyNode(node.stringified, resultCode);
+        node.stringified = `${node.varName} ${node.operator}= ${node.varValue.stringified};`;
+        resultCode.addLn(node.stringified);
     }
 
     if (node.type === "Identifier") {

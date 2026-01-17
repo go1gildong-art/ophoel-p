@@ -40,7 +40,7 @@ function stringifyNode(node, resultCode) {
     }
 
     if (node.type === "PreservedNewline") {
-        node.stringified = "/.";
+        node.stringified = "(/.)";
         resultCode.addLn(node.stringified);
     }
 
@@ -50,7 +50,7 @@ function stringifyNode(node, resultCode) {
     }
 
     if (node.type === "Comment") {
-        node.stringified = `// ${node.commentMessage}`;
+        node.stringified = `(${node.commentMessage})`;
         resultCode.addLn(node.stringified);
     }
 
@@ -64,7 +64,7 @@ function stringifyNode(node, resultCode) {
 
     if (node.type === "TemplateStringLiteral") {
         node.templateExpressions.forEach(node => stringifyNode(node, resultCode));
-        node.stringified = `TemplateString (${node.templateQuasis.map(str => `"${str}"`).join(" ")}) (${node.templateExpressions.map(node => node.stringified).join(" ")})`;
+        node.stringified = `(TemplateString  ${node.templateQuasis.map(str => `"${str}"`).join(" ")}) (${node.templateExpressions.map(node => node.stringified).join(" ")})`;
     }
 
     if (node.type === "VariableDecl") {

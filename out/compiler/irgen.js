@@ -33,27 +33,33 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.activate = activate;
-const vscode = __importStar(require("vscode"));
-const path = __importStar(require("path"));
-const formatter_js_1 = require("./formatter/formatter.js");
-function activate(context) {
-    const selector = { language: 'ophoel' };
-    const provider = {
-        provideDocumentFormattingEdits(document) {
-            const text = document.getText();
-            const fileName = path.basename(document.uri.fsPath);
-            let formattedText = (0, formatter_js_1.format)(text, {}, fileName);
-            console.log('Original text length:', text.length);
-            console.log('Formatted text length:', formattedText.length);
-            // Full document range
-            const fullRange = new vscode.Range(document.positionAt(0), document.positionAt(text.length));
-            if (!formattedText.endsWith('\n')) {
-                formattedText += '\n';
-            }
-            return [vscode.TextEdit.replace(fullRange, formattedText)];
-        }
-    };
-    context.subscriptions.push(vscode.languages.registerDocumentFormattingEditProvider(selector, provider));
+exports.makeIr = makeIr;
+const Ir = __importStar(require("./ir.js"));
+function makeIr(ast) {
+    const ir = new Ir.IR();
+    findCommands(ast, ir);
+    return ir;
 }
-//# sourceMappingURL=extension.js.map
+function findCommands(node, targetIr) {
+    if (node.type === "McCommand") {
+        const prefix = node.prefixes.join(" run execute ");
+        const instr = new Ir.TextEmit([(prefix !== "" ? "execute " + prefix + " run" : ""), node.command, node.args[0].value].join(" "));
+        targetIr.emitInstr(instr);
+    }
+    if (node.type === "PreservedComment") {
+        const instr = new Ir.Comment(node.message);
+        targetIr.emitInstr(instr);
+    }
+    if (node.type === "PreservedNewline") {
+        const instr = new Ir.Comment("");
+        targetIr.emitInstr(instr);
+    }
+    if (node.type === "Block") {
+        for (const _node of node.body)
+            findCommands(_node, targetIr);
+    }
+    if (["McExecStatement", "RepeatStatement", "Program"].includes(node.type)) {
+        findCommands(node.body, targetIr);
+    }
+}
+//# sourceMappingURL=irgen.js.map

@@ -1,9 +1,176 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BuildAST = exports.AST = exports.Location = void 0;
-function makeNode(type, location) {
-    return { type, location };
+exports.Location = exports.BuildAST = exports.Comment = exports.PreservedNewline = exports.PreservedComment = exports.McExecStatement = exports.RepeatStatement = exports.ConfigRef = exports.Identifier = exports.TemplateStringLiteral = exports.JsonValue = exports.Literal = exports.BinaryExpression = exports.McCommand = exports.VariableAssignShorten = exports.VariableAssign = exports.VariableDecl = exports.Block = exports.Program = exports.AST = void 0;
+class AST {
+    constructor(type, location) {
+        this.type = type;
+        this.location = location;
+    }
 }
+exports.AST = AST;
+class Program extends AST {
+    constructor(body, location) {
+        super("Program", location);
+        this.body = body;
+    }
+}
+exports.Program = Program;
+class Block extends AST {
+    constructor(body, location) {
+        super("Block", location);
+        this.body = body;
+    }
+}
+exports.Block = Block;
+class VariableDecl extends AST {
+    constructor(varType, varName, mutability, varValue, location) {
+        super("VariableDecl", location);
+        this.varType = varType;
+        this.varName = varName;
+        this.mutability = mutability;
+        this.varValue = varValue;
+    }
+}
+exports.VariableDecl = VariableDecl;
+class VariableAssign extends AST {
+    constructor(varName, varValue, location) {
+        super("VariableAssign", location);
+        this.varName = varName;
+        this.varValue = varValue;
+    }
+}
+exports.VariableAssign = VariableAssign;
+class VariableAssignShorten extends AST {
+    constructor(varName, varValue, operator, location) {
+        super("VariableAssignShorten", location);
+        this.varName = varName;
+        this.varValue = varValue;
+        this.operator = operator;
+    }
+}
+exports.VariableAssignShorten = VariableAssignShorten;
+class McCommand extends AST {
+    constructor(command, args, location) {
+        super("McCommand", location);
+        this.command = command;
+        this.args = args;
+    }
+}
+exports.McCommand = McCommand;
+class BinaryExpression extends AST {
+    constructor(operator, left, right, hasParenthesis, location) {
+        super("BinaryExpression", location);
+        this.left = left;
+        this.right = right;
+        this.hasParenthesis = hasParenthesis;
+        this.operator = operator;
+        this.value = null;
+    }
+}
+exports.BinaryExpression = BinaryExpression;
+class Literal extends AST {
+    constructor(valueType, raw, location) {
+        super("Literal", location);
+        this.valueType = valueType;
+        this.raw = raw;
+        this.value = null;
+    }
+}
+exports.Literal = Literal;
+class JsonValue extends AST {
+    constructor(raw, location) {
+        super("JsonValue", location);
+        this.raw = raw;
+    }
+}
+exports.JsonValue = JsonValue;
+class TemplateStringLiteral extends AST {
+    constructor(templateQuasis, templateExpressions, raw, location) {
+        super("TemplateStringLiteral", location);
+        this.templateQuasis = templateQuasis;
+        this.templateExpressions = templateExpressions;
+        this.raw = raw;
+        this.value = null;
+    }
+}
+exports.TemplateStringLiteral = TemplateStringLiteral;
+class Identifier extends AST {
+    constructor(name, location) {
+        super("Identifier", location);
+        this.name = name;
+        this.value = null;
+        this.valueType = null;
+    }
+}
+exports.Identifier = Identifier;
+class ConfigRef extends AST {
+    constructor(access, location) {
+        super("ConfigRef", location);
+        this.access = access;
+        this.value = null;
+        this.valueType = null;
+    }
+}
+exports.ConfigRef = ConfigRef;
+class RepeatStatement extends AST {
+    constructor(args, body, location) {
+        super("RepeatStatement", location);
+        this.args = args;
+        this.body = exports.BuildAST.Block(body, location);
+    }
+}
+exports.RepeatStatement = RepeatStatement;
+class McExecStatement extends AST {
+    constructor(args, body, location) {
+        super("McExecStatement", location);
+        this.args = args;
+        this.body = exports.BuildAST.Block(body, location);
+    }
+}
+exports.McExecStatement = McExecStatement;
+class PreservedComment extends AST {
+    constructor(message, location) {
+        super("PreservedComment", location);
+        this.message = message;
+    }
+}
+exports.PreservedComment = PreservedComment;
+class PreservedNewline extends AST {
+    constructor(location) {
+        super("PreservedNewline", location);
+        this.message = "\n";
+    }
+}
+exports.PreservedNewline = PreservedNewline;
+class Comment extends AST {
+    constructor(commentMessage, location) {
+        super("Comment", location);
+        this.commentMessage = commentMessage;
+    }
+}
+exports.Comment = Comment;
+exports.BuildAST = {
+    // 1. Statements (top level items)
+    Program: (body, location) => new Program(body, location),
+    Block: (body, location) => new Block(body, location),
+    VariableDecl: (varType, varName, mutability, varValue, location) => new VariableDecl(varType, varName, mutability, varValue, location),
+    VariableAssign: (varName, varValue, location) => new VariableAssign(varName, varValue, location),
+    VariableAssignShorten: (varName, varValue, operator, location) => new VariableAssignShorten(varName, varValue, operator, location),
+    McCommand: (command, args, location) => new McCommand(command, args, location),
+    // 2. Expressions
+    BinaryExpression: (operator, left, right, hasParenthesis, location) => new BinaryExpression(operator, left, right, hasParenthesis, location),
+    Literal: (valueType, raw, location) => new Literal(valueType, raw, location),
+    TemplateStringLiteral: (templateQuasis, templateExpressions, raw, location) => new TemplateStringLiteral(templateQuasis, templateExpressions, raw, location),
+    Identifier: (name, location) => new Identifier(name, location),
+    ConfigRef: (access, location) => new ConfigRef(access, location),
+    // 3. Control flows & Macro invocations
+    RepeatStatement: (args, body, location) => new RepeatStatement(args, body, location),
+    McExecStatement: (args, body, location) => new McExecStatement(args, body, location),
+    // 4. Preserved comments
+    PreservedComment: (message, location) => new PreservedComment(message, location),
+    PreservedNewline: (message, location) => new PreservedNewline(message, location),
+    Comment: (commentMessage, location) => new Comment(commentMessage, location),
+};
 class Location {
     constructor(fileName, line, tokenIdx = null) {
         this.fileName = fileName;
@@ -12,200 +179,4 @@ class Location {
     }
 }
 exports.Location = Location;
-class AST {
-    constructor(ast) {
-        var _a, _b, _c, _d, _e, _f, _g;
-        // ---------- GENERAL ----------
-        // holds the node type. McCommand, Literal, VariableDecl, etc
-        // Uses: ALL
-        // Type: string
-        this.type = ast.type;
-        // holds the location of the node with Location object
-        // Uses: ALL
-        // Type: Location
-        this.location = ast.location;
-        // ---------- DECLARATION ----------
-        // holds the type for variable or function declaration
-        // Uses: VariableDecl, FunctionDecl, MacroDecl
-        // Type: string
-        this.varType = ast.varType;
-        // holds the name for variable or function declaration
-        // Uses: VariableDecl, FunctionDecl, MacroDecl
-        // Type: string
-        this.varName = ast.varName;
-        // holds the assigned value for declarations
-        // Uses: VariableDecl
-        // Type: AST
-        this.varValue = ast.varValue;
-        // holds the array of assigned parameters for declarations
-        // Uses: FunctionDecl, MacroDecl
-        // Type: string[]
-        this.varParam = (_a = ast.varParam) !== null && _a !== void 0 ? _a : [];
-        // holds the code block body for declarations
-        // Uses: FunctionDecl, MacroDecl
-        // Type: AST(block)
-        this.varBody = (_b = ast.varBody) !== null && _b !== void 0 ? _b : [];
-        // ---------- CALLS & INVOCATIONS ----------
-        // holds the name for invoked value
-        // Uses: Identifier, FunctionCall, MacroInvoc
-        // Type: string
-        this.name = ast.name;
-        // holds an array of arguments passed inside
-        // Uses: IfStatement, WhileStatement, ForStatement, 
-        // Uses: RepeatStatement, McExecStatement,
-        // Uses: FunctionCall, MacroInvoc
-        // Type: AST[]
-        this.args = (_c = ast.args) !== null && _c !== void 0 ? _c : [];
-        // holds an array of nodes as code block
-        // Uses: IfStatement, WhileStatement, ForStatement, 
-        // Uses: RepeatStatement, McExecStatement, Block,
-        // Uses: FunctionCall, MacroInvoc, Program
-        // Type: AST(block) (AST[] for Program node)
-        this.body = (_d = ast.body) !== null && _d !== void 0 ? _d : [];
-        // ---------- EXPRESSIONS ----------
-        // holds the value's type that the node would have
-        // Uses: Literal, TemplateStringLiteral,
-        // Uses: Identifier, FunctionCall, MacroInvoc
-        // Type: string
-        this.valueType = ast.valueType;
-        // holds the value that the node would finally have
-        // Uses: Literal, TemplateStringLiteral,
-        // Uses: Identifier, FunctionCall?, MacroInvoc?, 
-        // Uses: ConfigRef
-        // Type: Primitive
-        this.value = ast.value;
-        // holds the operation the node performs
-        // Uses: UnaryExpression, BinaryExpression
-        // Type: string
-        this.operator = ast.operator;
-        // holds the leftside value 
-        // Uses: UnaryExpression, BinaryExpression
-        // Type: AST
-        this.left = ast.left;
-        // holds the rightside value 
-        // Uses: UnaryExpression, BinaryExpression
-        // Type: AST
-        this.right = ast.right;
-        // ---------- MISC ----------
-        // holds the array of quasis strings for a template string
-        // Uses: TemplateStringLiteral
-        // Type: string[]
-        this.templateQuasis = (_e = ast.templateQuasis) !== null && _e !== void 0 ? _e : [];
-        // holds the array of expression nodes for a template string
-        // Uses: TemplateStringLiteral
-        // Type: AST[]
-        this.templateExpressions = (_f = ast.templateExpressions) !== null && _f !== void 0 ? _f : [];
-        // holds the command for minecraft commands
-        // Uses: McCommand
-        // Type: string
-        this.command = ast.command;
-        // holds the value of whole preserved comment (including /# part!)
-        // Uses: PreservedCommand
-        // Type: string
-        this.message = ast.message;
-        // holds the execute prefix for minecraft command
-        // Only generated by transformer
-        // Uses: McCommand
-        // Type: AST[]
-        this.prefixes = (_g = ast.prefixes) !== null && _g !== void 0 ? _g : [];
-    }
-    setValue(value) {
-        this.value = value;
-    }
-}
-exports.AST = AST;
-exports.BuildAST = {
-    // 1. Statements (top level items)
-    Program: (body, location) => ({
-        ...makeNode('Program', location),
-        body: exports.BuildAST.Block(body, location)
-    }),
-    Block: (body, location) => ({
-        ...makeNode('Block', location),
-        body
-    }),
-    VariableDecl: (varType, varName, mutability, varValue, location) => ({
-        ...makeNode('VariableDecl', location),
-        varType,
-        varName,
-        varValue,
-        mutability
-    }),
-    VariableAssign: (varName, varValue, location) => ({
-        ...makeNode('VariableAssign', location),
-        varName,
-        varValue,
-    }),
-    VariableAssignShorten: (varName, varValue, operator, location) => ({
-        ...makeNode('VariableAssignShorten', location),
-        varName,
-        varValue,
-        operator
-    }),
-    McCommand: (command, args, location) => {
-        return ({
-            ...makeNode('McCommand', location),
-            command,
-            args
-        });
-    },
-    // 2. Expressions (nested math/logic)
-    BinaryExpression: (operator, left, right, hasParenthesis, location) => ({
-        ...makeNode("BinaryExpression", location),
-        operator, // +-*/
-        left, // node
-        right, // node
-        hasParenthesis
-    }),
-    Literal: (valueType, raw, location) => {
-        return ({
-            ...makeNode('Literal', location),
-            valueType,
-            raw, // string source
-        });
-    },
-    TemplateStringLiteral: (templateQuasis, templateExpressions, raw, location) => ({
-        ...makeNode('TemplateStringLiteral', location),
-        templateQuasis, // array of strings
-        templateExpressions, // array of expressions, go between quasis strings
-        raw, // raw string entered
-        valueType: "string"
-    }),
-    Identifier: (name, location) => ({
-        ...makeNode('Identifier', location),
-        name
-    }),
-    ConfigRef: (access, location) => ({
-        ...makeNode('ConfigRef', location),
-        access
-    }),
-    // 3. Control flows & Macro invocations
-    RepeatStatement: (args, body, location) => ({
-        ...makeNode("RepeatStatement", location),
-        args,
-        body: exports.BuildAST.Block(body, location)
-    }),
-    McExecStatement: (args, body, location) => ({
-        ...makeNode("McExecStatement", location),
-        args,
-        body: exports.BuildAST.Block(body, location)
-    }),
-    // 4. Perserved comments (appear on compiled mcfunction)
-    PreservedComment: (message, location) => ({
-        ...makeNode("PreservedComment", location),
-        message,
-    }),
-    PreservedNewline: (message, location) => ({
-        ...makeNode("PreservedNewline", location),
-        message,
-    }),
-    Comment: (commentMessage, location) => ({
-        ...makeNode("Comment", location),
-        commentMessage,
-    })
-};
-/*
-field meanings:
-
-*/ 
 //# sourceMappingURL=ast.js.map

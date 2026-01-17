@@ -127,10 +127,10 @@ class ExpressionParser {
 }
 class OphoelParser {
     constructor(tokens, config = {}, symbols = {}) {
-        var _a;
+        var _a, _b;
         this.tokens = tokens;
         this.pos = 0;
-        this.ast = ast_js_1.BuildAST.Program([], (_a = tokens[0]) === null || _a === void 0 ? void 0 : _a.location);
+        this.ast = ast_js_1.BuildAST.Program(ast_js_1.BuildAST.Block([], (_a = tokens[0]) === null || _a === void 0 ? void 0 : _a.location), (_b = tokens[0]) === null || _b === void 0 ? void 0 : _b.location);
     }
     // Helper to get current token
     peek() { return this.tokens[this.pos]; }
@@ -294,7 +294,6 @@ class OphoelParser {
     parse() {
         var _a;
         // first, check all invalid tokens
-        let invalidFlag = false;
         this.tokens
             .filter(token => token.type === "INVALID")
             .forEach(token => {

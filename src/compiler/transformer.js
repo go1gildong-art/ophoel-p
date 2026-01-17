@@ -121,6 +121,7 @@ function transformNode(node, config) {
     if (node.type === "ConfigRef") {
         resolveConfigs(node, config);
         deductType(node);
+        console.log(`got ${node.valueType} for ${node.value} at config`)
     }
 
     if (node.type === "Literal") {
@@ -174,11 +175,16 @@ function transformNode(node, config) {
         transformNode(node.left, config);
         transformNode(node.right, config);
 
-        if (node.left.valueType === node.right.valueType) {
-            node.valueType = node.left.valueType;
+        if (node.operator === "==") {
+            node.valueType = "bool";
         } else {
-            throw new OphoelSemanticError(`Type mismatch: tried to perform ${node.operator} operation between ${node.left.value}(${node.left.valueType}) and ${node.right.value}(${node.right.valueType})`, node);
+            if (node.left.valueType === node.right.valueType) {
+                node.valueType = node.left.valueType;
+            } else {
+                throw new OphoelSemanticError(`Type mismatch: tried to perform ${node.operator} operation between ${node.left.value}(${node.left.valueType}) and ${node.right.value}(${node.right.valueType})`, node);
+            }
         }
+
 
         let result;
         switch (node.operator) {
@@ -207,7 +213,7 @@ function transformNode(node, config) {
                 break;
 
             case "<":
-                result = node.left.value % node.right.value;
+                result = node.left.value < node.right.value;
                 break;
 
             case "==":
@@ -251,7 +257,6 @@ function transformNode(node, config) {
 
     if (node.type === "IfStatement") {
         transformNode(node.args[0], config);
-        console.log(node.args[0]);
         if (node.args[0].value === true) {
             transformNode(node.body, config);
         } else {
@@ -333,11 +338,14 @@ function deductType(node) {
     switch (typeof node.value) {
         case "string":
             node.valueType = "string";
+            break;
 
         case "number":
             node.valueType = "int_c";
+            break;
 
         case "boolean":
-            node.valueTyep = "bool";
+            node.valueType = "bool";
+            break;
     }
 }

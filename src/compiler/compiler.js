@@ -11,8 +11,8 @@ import { lispify } from "./lispifyast.js";
 
 const code =
 `
-let mut x = 5;
-if (x == 5) {
+let mut x = config.room_anchor_tag;
+if (x == "room_anchor") {
 say!!(\`yee\`);
 } 
 

@@ -162,6 +162,15 @@ function transformNode(node, config) {
             case "%":
                 result = node.left.value % node.right.value;
                 break;
+            case ">":
+                result = node.left.value > node.right.value;
+                break;
+            case "<":
+                result = node.left.value % node.right.value;
+                break;
+            case "==":
+                result = node.left.value === node.right.value && node.left.valueType === node.right.valueType;
+                break;
             default:
                 throw new errors_js_1.OphoelSemanticError(`Undefined operator ${node.operator}`, node);
         }
@@ -190,6 +199,16 @@ function transformNode(node, config) {
         const prefix = node.args[0].value;
         ctx.setMcPrefix(prefix);
         transformNode(node.body, config);
+    }
+    if (node.type === "IfStatement") {
+        transformNode(node.args[0], config);
+        console.log(node.args[0]);
+        if (node.args[0].value === true) {
+            transformNode(node.body, config);
+        }
+        else {
+            node.body = ast_js_1.BuildAST.Block([], node.location);
+        }
     }
     // place lower than statement check to avoid recursion
     if (node.type === "Program") {

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Location = exports.BuildAST = exports.Comment = exports.PreservedNewline = exports.PreservedComment = exports.McExecStatement = exports.RepeatStatement = exports.ConfigRef = exports.Identifier = exports.TemplateStringLiteral = exports.JsonValue = exports.Literal = exports.BinaryExpression = exports.McCommand = exports.VariableAssignShorten = exports.VariableAssign = exports.VariableDecl = exports.Block = exports.Program = exports.AST = void 0;
+exports.Location = exports.BuildAST = exports.Comment = exports.PreservedNewline = exports.PreservedComment = exports.IfStatement = exports.McExecStatement = exports.RepeatStatement = exports.ConfigRef = exports.Identifier = exports.TemplateStringLiteral = exports.JsonValue = exports.Literal = exports.BinaryExpression = exports.McCommand = exports.VariableAssignShorten = exports.VariableAssign = exports.VariableDecl = exports.Block = exports.Program = exports.AST = void 0;
 class AST {
     constructor(type, location) {
         this.type = type;
@@ -128,6 +128,14 @@ class McExecStatement extends AST {
     }
 }
 exports.McExecStatement = McExecStatement;
+class IfStatement extends AST {
+    constructor(args, body, location) {
+        super("IfStatement", location);
+        this.args = args;
+        this.body = exports.BuildAST.Block(body, location);
+    }
+}
+exports.IfStatement = IfStatement;
 class PreservedComment extends AST {
     constructor(message, location) {
         super("PreservedComment", location);
@@ -166,6 +174,7 @@ exports.BuildAST = {
     // 3. Control flows & Macro invocations
     RepeatStatement: (args, body, location) => new RepeatStatement(args, body, location),
     McExecStatement: (args, body, location) => new McExecStatement(args, body, location),
+    IfStatement: (args, body, location) => new IfStatement(args, body, location),
     // 4. Preserved comments
     PreservedComment: (message, location) => new PreservedComment(message, location),
     PreservedNewline: (message, location) => new PreservedNewline(message, location),

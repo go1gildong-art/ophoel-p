@@ -55,7 +55,8 @@ const reservedKeywords = {
         "summon",
         "effect",
         "fill",
-        "setblock"
+        "setblock",
+        "place"
     ]
 }
 

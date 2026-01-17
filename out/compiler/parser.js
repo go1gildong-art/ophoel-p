@@ -48,7 +48,19 @@ class ExpressionParser {
         return block;
     }
     parse() {
-        let left = this.parseAdditive();
+        let left = this.parseComparison();
+        return left;
+    }
+    parseComparison() {
+        var _a;
+        let left = this.parseMultiplicative();
+        while (((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === 'OPERATOR' && ['>', '<', "=="].includes(this.peek().value)) {
+            const operator = this.eat().value;
+            const right = this.parse();
+            // Wrap the current 'left' in a new tree
+            left = ast_js_1.BuildAST.BinaryExpression(operator, left, right, false, this.getExprLocation());
+            this.eat();
+        }
         return left;
     }
     parseAdditive() {
@@ -282,6 +294,16 @@ class OphoelParser {
         this.expect("SYMBOL", "}");
         this.emit(ast_js_1.BuildAST.RepeatStatement([new ExpressionParser(count).parse()], [...this.unprogram(new OphoelParser(block).parse())], keyword.location));
     }
+    handleIf() {
+        const keyword = this.expect("KW_CONTROL", "if");
+        this.expect("SYMBOL", "(");
+        const condition = this.getTokensBetween("SYMBOL", "(", ")");
+        this.expect("SYMBOL", ")");
+        this.expect("SYMBOL", "{");
+        const block = this.getTokensBetween("SYMBOL", "{", "}");
+        this.expect("SYMBOL", "}");
+        this.emit(ast_js_1.BuildAST.IfStatement([new ExpressionParser(condition).parse()], [...this.unprogram(new OphoelParser(block).parse())], keyword.location));
+    }
     handleRawCommand() {
         const command = this.expect("KW_MCCOMMAND");
         this.expect("DOUBLE_BANG", "!!");
@@ -334,6 +356,11 @@ class OphoelParser {
             // 5. Handle repeat
             if (token.type === "KW_CONTROL" && token.value === 'repeat') {
                 this.handleRepeat();
+                continue;
+            }
+            // 5. Handle if
+            if (token.type === "KW_CONTROL" && token.value === 'if') {
+                this.handleIf();
                 continue;
             }
             // 6. Handle Raw Commands (give!!, summon!!, etc)

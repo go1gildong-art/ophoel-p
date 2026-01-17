@@ -141,6 +141,14 @@ function stringifyNode(node, resultCode) {
         stringifyNode(node.body, resultCode);
     }
 
+    if (node.type === "IfStatement") {
+        stringifyNode(node.args[0], resultCode);
+        node.stringified = `if(${node.args[0].stringified})`;
+        resultCode.addCode(node.stringified);
+
+        stringifyNode(node.body, resultCode);
+    }
+
     // instead of using body, directly iterate over the Block node(body)'s body
     // so all nodes at Program level will be at top level
     if (node.type === "Program") {

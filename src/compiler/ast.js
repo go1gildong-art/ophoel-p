@@ -125,6 +125,14 @@ export class McExecStatement extends AST {
     }
 }
 
+export class IfStatement extends AST {
+    constructor(args, body, location) {
+        super("IfStatement", location);
+        this.args = args;
+        this.body = BuildAST.Block(body, location);
+    }
+}
+
 export class PreservedComment extends AST {
     constructor(message, location) {
         super("PreservedComment", location);
@@ -193,6 +201,9 @@ export const BuildAST = {
 
     McExecStatement: (args, body, location) =>
         new McExecStatement(args, body, location),
+
+    IfStatement: (args, body, location) =>
+        new IfStatement(args, body, location),
 
     // 4. Preserved comments
     PreservedComment: (message, location) =>

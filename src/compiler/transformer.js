@@ -202,6 +202,18 @@ function transformNode(node, config) {
                 result = node.left.value % node.right.value;
                 break;
 
+            case ">":
+                result = node.left.value > node.right.value;
+                break;
+
+            case "<":
+                result = node.left.value % node.right.value;
+                break;
+
+            case "==":
+                result = node.left.value === node.right.value && node.left.valueType === node.right.valueType;
+                break;
+
             default:
                 throw new OphoelSemanticError(`Undefined operator ${node.operator}`, node);
         }
@@ -234,10 +246,19 @@ function transformNode(node, config) {
         const prefix = node.args[0].value;
         ctx.setMcPrefix(prefix);
 
-
         transformNode(node.body, config);
-
     }
+
+    if (node.type === "IfStatement") {
+        transformNode(node.args[0], config);
+        console.log(node.args[0]);
+        if (node.args[0].value === true) {
+            transformNode(node.body, config);
+        } else {
+            node.body = BuildAST.Block([], node.location);
+        }
+    }
+
 
     // place lower than statement check to avoid recursion
     if (node.type === "Program") {
@@ -287,7 +308,7 @@ function resolveConfigs(node, config) {
 
             if (configElement.length <= variable) {
                 throw new OphoelSemanticError(`dynamic field ${rawName.slice(1, rawName.length - 1)}(${variable}) exceeds max length of ${accumulated.join("")}(length: ${configElement.length})`, node);
-            } 
+            }
 
             configElement = configElement[variable];
 

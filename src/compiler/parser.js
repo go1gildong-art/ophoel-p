@@ -60,7 +60,22 @@ class ExpressionParser {
     }
 
     parse() {
-        let left = this.parseAdditive();
+        let left = this.parseComparison();
+        return left;
+    }
+
+    parseComparison() {
+        let left = this.parseMultiplicative();
+
+        while (this.peek()?.type === 'OPERATOR' && ['>', '<', "=="].includes(this.peek().value)) {
+            const operator = this.eat().value;
+            const right = this.parse();
+
+            // Wrap the current 'left' in a new tree
+            left = BuildAST.BinaryExpression(operator, left, right, false, this.getExprLocation());
+            this.eat();
+        }
+
         return left;
     }
 
@@ -236,7 +251,7 @@ class OphoelParser {
         this.pos = endPos;
         return expr;
     }
-    
+
     handleComment() {
         const c = this.eat();
         this.emit(BuildAST.Comment(c.value, c.location));
@@ -284,7 +299,7 @@ class OphoelParser {
             }
 
 
-            
+
 
             // if declaration contains assignment
             if (this.peek()?.type === "OPERATOR" && this.peek()?.value === "=") {
@@ -356,6 +371,20 @@ class OphoelParser {
         );
     }
 
+    handleIf() {
+        const keyword = this.expect("KW_CONTROL", "if");
+        this.expect("SYMBOL", "(");
+        const condition = this.getTokensBetween("SYMBOL", "(", ")");
+        this.expect("SYMBOL", ")");
+        this.expect("SYMBOL", "{");
+        const block = this.getTokensBetween("SYMBOL", "{", "}");
+        this.expect("SYMBOL", "}");
+
+        this.emit(
+            BuildAST.IfStatement([new ExpressionParser(condition).parse()], [...this.unprogram(new OphoelParser(block).parse())], keyword.location)
+        );
+    }
+
     handleRawCommand() {
         const command = this.expect("KW_MCCOMMAND");
         this.expect("DOUBLE_BANG", "!!");
@@ -420,6 +449,12 @@ class OphoelParser {
             // 5. Handle repeat
             if (token.type === "KW_CONTROL" && token.value === 'repeat') {
                 this.handleRepeat();
+                continue;
+            }
+
+            // 5. Handle if
+            if (token.type === "KW_CONTROL" && token.value === 'if') {
+                this.handleIf();
                 continue;
             }
 

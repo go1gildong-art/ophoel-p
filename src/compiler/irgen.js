@@ -27,7 +27,7 @@ function findCommands(node, targetIr) {
     for (const _node of node.body) findCommands(_node, targetIr);
   }
 
-  if (["McExecStatement", "RepeatStatement", "Program"].includes(node.type)) {
+  if (["IfStatement", "McExecStatement", "RepeatStatement", "Program"].includes(node.type)) {
     findCommands(node.body, targetIr);
   }
 }

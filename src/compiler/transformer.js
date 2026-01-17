@@ -2,7 +2,7 @@ import { AST, BuildAST, Location } from "./ast.js";
 import { OphoelSemanticError } from "../errors.js";
 
 function print(x) {
-    console.log(x);
+    // console.log(x);
     return x;
 }
 
@@ -76,9 +76,6 @@ class Context {
     getVariable(node) {
         for (let scope of this.scopes.toReversed()) {
             const vars = scope.variables;
-            console.log(vars);
-            console.log(node.name);
-            console.log(vars[node.name]);
             if (vars[node.name]) {
                 if (vars[node.name].value == null) {
                     throw new OphoelSemanticError(`Attempted to access uninitialized variable ${node.name}`, node);
@@ -219,7 +216,6 @@ function transformNode(node, config) {
             return arr;
         }
 
-        console.log(node.body.type);
         transformNode(node.args[0], config);
         node.body = BuildAST.Block(proliferate(node.body, node.args[0].value), node.location);
 

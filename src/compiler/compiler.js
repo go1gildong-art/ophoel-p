@@ -1,16 +1,23 @@
 import { tokenize } from './lexer.js';
 import { parse } from './parser.js';
-import { transform } from "./transformer.js"
-import { makeIr } from "./irgen.js"
-import { generate } from "./generator.js"
+import { transform } from "./transformer.js";
+import { makeIr } from "./irgen.js";
+import { generate } from "./generator.js";
+
+import { lispify } from "./lispifyast.js";
 // Load Configs
 // const config = JSON.parse(fs.readFileSync('./configs.json', 'utf8'));
 
 
 const code =
 `
-let ii = 3;
+let mut ii = 0;
+repeat(config.my_arr.length) {
+say!!(\`bar \${ii}\`);
 say!!(\`foo \${config.my_arr[ii]}\`);
+ii += 1;
+}
+
 
 
 `;
@@ -37,8 +44,10 @@ export function compile(sourceCode, config, fileName) {
 }
 
 // console.log("");
-console.log(tokenize(code, config, "source.oph"));
+// console.log(tokenize(code, config, "source.oph"));
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
 // console.log(JSON.stringify(transform(parse(tokenize(code, config, "source.oph")), config)) + "\n");
 // console.log(JSON.stringify(makeIr(transform(parse(tokenize(code, config, "source.oph")), config))) + "\n");
 console.log(compile(code, config, "source.oph") + "\n\n");
+
+// console.log(lispify(parse(tokenize(code, config, "source.oph"))) + "\n");

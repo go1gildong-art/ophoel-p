@@ -2,7 +2,7 @@ import { AST, BuildAST, Location } from "./ast.js";
 import { OphoelSemanticError } from "../errors.js";
 
 function print(x) {
-    // console.log(x);
+    console.log(x);
     return x;
 }
 
@@ -76,15 +76,19 @@ class Context {
     getVariable(node) {
         for (let scope of this.scopes.toReversed()) {
             const vars = scope.variables;
+            console.log(vars);
+            console.log(node.name);
+            console.log(vars[node.name]);
             if (vars[node.name]) {
                 if (vars[node.name].value == null) {
-                    throw new OphoelSemanticError(`Attempted to access uninitialized variable ${node.varName}`, node);
+                    throw new OphoelSemanticError(`Attempted to access uninitialized variable ${node.name}`, node);
                 }
                 return vars[node.name];
             }
         }
 
-        throw new OphoelSemanticError(`${node.varName} is not declared yet or unreachable`, node);
+
+        throw new OphoelSemanticError(`${node.name} is not declared yet or unreachable`, node);
     }
 
     setMcPrefix(prefix) { this.peek().mcPrefix = prefix; }
@@ -93,7 +97,7 @@ class Context {
         const prefix = this.scopes
             .map(scope => scope.mcPrefix)
             .filter(prefix => prefix !== "");
-            
+
 
         return prefix;
     }
@@ -101,6 +105,7 @@ class Context {
 let ctx = new Context();
 
 function transformNode(node, config) {
+
     if (config == undefined) print("AAA");
 
     if (node.type === "McCommand") {
@@ -247,28 +252,55 @@ function transformNode(node, config) {
 function resolveConfigs(node, config) {
 
     let configElement = config;
-    
+    let accumulated = [];
+
     // slice out the "config" at front
     let access = node.access.slice(6);
+    accumulated.push("config");
+
     while (access.length > 0) {
         // if matches .field syntax
         if (access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)) {
             const field = access.match(/^\.[A-Za-z_][A-Za-z0-9_]*/)[0];
             configElement = configElement[field.slice(1)];
             if (configElement == undefined) {
-                throw new OphoelSemanticError(`Invalid field ${field} inside ${node.access}`, node);
+                throw new OphoelSemanticError(`Invalid field ${field} inside ${accumulated.join("")}`, node);
             }
             access = access.slice(field.length);
+            accumulated.push(field);
+            continue;
         }
 
         // if matches [index] syntax
         if (access.match(/^\[\d+\]/)) {
             const index = access.match(/^\[\d+\]/)[0];
-            configElement = configElement[Number(index.slice(1))];
+            configElement = configElement[Number(index.slice(1, index.length - 1))];
             if (configElement == undefined) {
-                throw new OphoelSemanticError(`Invalid index ${index} inside ${node.access}`, node);
+                throw new OphoelSemanticError(`Invalid index ${index} inside ${accumulated.join("")}`, node);
             }
             access = access.slice(index.length);
+            accumulated.push(index);
+            continue;
+        }
+
+        // if matches [variable] syntax
+        if (access.match(/^\[[A-Za-z_][A-Za-z0-9_]*]/)) {
+            const rawName = access.match(/^\[[A-Za-z_][A-Za-z0-9_]*]/)[0];
+
+            const variable = ctx.getVariable({ name: rawName.slice(1, rawName.length - 1) }).value;
+
+            if (configElement.length <= variable) {
+                throw new OphoelSemanticError(`dynamic field ${rawName.slice(1, rawName.length - 1)}(${variable}) exceeds max length of ${accumulated.join("")}(length: ${configElement.length})`, node);
+            } 
+
+            configElement = configElement[variable];
+
+            if (configElement == undefined) {
+                throw new OphoelSemanticError(`Invalid dynamic field ${variable}(${rawName}) inside ${accumulated.join("")}`, node);
+            }
+            access = access.slice(rawName.length);
+            accumulated.push(rawName);
+            continue;
         }
     }
     node.value = configElement;

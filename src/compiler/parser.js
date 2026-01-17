@@ -163,7 +163,7 @@ class OphoelParser {
     constructor(tokens, config = {}, symbols = {}) {
         this.tokens = tokens;
         this.pos = 0;
-        this.ast = BuildAST.Program([], tokens[0]?.location);
+        this.ast = BuildAST.Program(BuildAST.Block([], tokens[0]?.location), tokens[0]?.location);
     }
 
     // Helper to get current token
@@ -371,7 +371,6 @@ class OphoelParser {
 
     parse() {
         // first, check all invalid tokens
-        let invalidFlag = false;
         this.tokens
             .filter(token => token.type === "INVALID")
             .forEach(token => {

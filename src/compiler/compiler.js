@@ -9,27 +9,13 @@ import { generate } from "./generator.js"
 
 const code =
 `
-/# foo
-mc_exec(\`as @e[tag=\${config.room_anchor_tag}, tag=\${config.room_s.tag}]\`) {
-/.
-/.
-// oh cmn pls
-let mut foo: int_c = config.room_s.radius;
-let mut x = 1;
-repeat(4) {
-        setblock!!(\`~ ~\${foo} ~ dirt\`);
-        say!!(\`\${x}\`);
-        /.
-        x += 7;
-        x = x + 1;
-}
-}
-
+let ii = 3;
+say!!(\`foo \${config.my_arr[ii]}\`);
 
 
 `;
 
-const config = { room_anchor_tag: "room_anchor", room_s: { radius: 7, tag: "room_s" } };
+const config = { my_arr: [1, 2, 3], room_anchor_tag: "room_anchor", room_s: { radius: 7, tag: "room_s" } };
 
 export function compile(sourceCode, config, fileName) {
     // 1. Raw text to Tokens
@@ -51,7 +37,7 @@ export function compile(sourceCode, config, fileName) {
 }
 
 // console.log("");
-// console.log(tokenize(code, config, "source.oph"));
+console.log(tokenize(code, config, "source.oph"));
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
 // console.log(JSON.stringify(transform(parse(tokenize(code, config, "source.oph")), config)) + "\n");
 // console.log(JSON.stringify(makeIr(transform(parse(tokenize(code, config, "source.oph")), config))) + "\n");

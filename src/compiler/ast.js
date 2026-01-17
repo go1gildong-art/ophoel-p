@@ -74,6 +74,13 @@ export class Literal extends AST {
     }
 }
 
+export class JsonValue extends AST {
+    constructor(raw, location) {
+        super("JsonValue", location);
+        this.raw = raw;
+    }
+}
+
 export class TemplateStringLiteral extends AST {
     constructor(templateQuasis, templateExpressions, raw, location) {
         super("TemplateStringLiteral", location);
@@ -85,7 +92,7 @@ export class TemplateStringLiteral extends AST {
 }
 
 export class Identifier extends AST {
-    constructor(name, locaiton) {
+    constructor(name, location) {
         super("Identifier", location);
         this.name = name;
         this.value = null;

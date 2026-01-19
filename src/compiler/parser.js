@@ -385,6 +385,26 @@ class OphoelParser {
         );
     }
 
+    handleChoose() {
+        const keyword = this.expect("KW_CONTROL", "choose");
+        this.expect("SYMBOL", "{");
+        const bodies = [];
+        bodies.push(this.getTokensBetween("SYMBOL", "{", "}"));
+        this.expect("SYMBOL", "}");
+
+        while (this.peek()?.type === "KW_CONTROL" && this.peek()?.value === "or") {
+            this.expect("KW_CONTROL", "or");
+            this.expect("SYMBOL", "{");
+            bodies.push(this.getTokensBetween("SYMBOL", "{", "}"));
+            this.expect("SYMBOL", "}");
+        }
+
+        this.emit( BuildAST.ChooseStatement(
+            bodies.map(body => this.unprogram(new OphoelParser(body).parse())),
+            keyword.location
+        ));
+    }
+
     handleRawCommand() {
         const command = this.expect("KW_MCCOMMAND");
         this.expect("DOUBLE_BANG", "!!");
@@ -455,6 +475,12 @@ class OphoelParser {
             // 5. Handle if
             if (token.type === "KW_CONTROL" && token.value === 'if') {
                 this.handleIf();
+                continue;
+            }
+
+            // 5. Handle choose
+            if (token.type === "KW_CONTROL" && token.value === 'choose') {
+                this.handleChoose();
                 continue;
             }
 

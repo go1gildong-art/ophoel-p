@@ -30,6 +30,8 @@ class Context {
 
     peek() { return this.scopes[this.scopes.length - 1]; }
 
+    getDepth() { return this.scopes.length; }
+
     declareVariable(node) {
         if (this.peek().variables[node.varName]) throw new OphoelSemanticError(`Variable ${node.varName} already exists`, node);
 
@@ -121,7 +123,6 @@ function transformNode(node, config) {
     if (node.type === "ConfigRef") {
         resolveConfigs(node, config);
         deductType(node);
-        console.log(`got ${node.valueType} for ${node.value} at config`)
     }
 
     if (node.type === "Literal") {
@@ -184,7 +185,6 @@ function transformNode(node, config) {
                 throw new OphoelSemanticError(`Type mismatch: tried to perform ${node.operator} operation between ${node.left.value}(${node.left.valueType}) and ${node.right.value}(${node.right.valueType})`, node);
             }
         }
-
 
         let result;
         switch (node.operator) {
@@ -262,6 +262,16 @@ function transformNode(node, config) {
         } else {
             node.body = BuildAST.Block([], node.location);
         }
+    }
+
+    if (node.type === "ChooseStatement") {
+        node.prefixes = ctx.getPrefixChain();
+        node.depth = ctx.getDepth();
+        node.bodies.forEach((block, i) => {
+            ctx.setMcPrefix(`if score @e[tag=Oph_ChooseRes_d${node.depth}, sort=nearest, limit=1] Oph_ChooseVar_d${node.depth} matches ${i}`);
+            transformNode(block, config);
+        });
+        ctx.setMcPrefix("");
     }
 
 

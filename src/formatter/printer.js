@@ -31,7 +31,7 @@ class Code {
         this.depth += 1;
     }
 
-    closeBlock() { this.depth -= 1; this.addLn("}"); }
+    closeBlock() { this.depth -= 1; this.addCode("}"); }
 
     getCode() { return this.lines.join(""); }
 }
@@ -139,6 +139,7 @@ function stringifyNode(node, resultCode) {
         resultCode.addCode(node.stringified);
 
         stringifyNode(node.body, resultCode);
+        resultCode.addLn("", 0);
     }
 
     if (node.type === "IfStatement") {
@@ -147,6 +148,22 @@ function stringifyNode(node, resultCode) {
         resultCode.addCode(node.stringified);
 
         stringifyNode(node.body, resultCode);
+        resultCode.addLn("", 0);
+    }
+
+    if (node.type === "ChooseStatement") {
+        node.stringified = `choose`
+        resultCode.addCode(node.stringified);
+
+        let firstBody = true;
+        node.bodies.forEach(body => {
+            if (!firstBody) {
+                resultCode.addCode(" do", 0);
+            }
+            stringifyNode(body, resultCode);
+            firstBody = false;
+        })
+        resultCode.addLn("", 9);
     }
 
     // instead of using body, directly iterate over the Block node(body)'s body

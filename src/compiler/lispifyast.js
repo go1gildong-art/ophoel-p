@@ -19,7 +19,7 @@ class Code {
     addCode(ln, indent = (this.depth * this.indentSpaces)) { this.lines.push(" ".repeat(indent) + ln); }
 
     openBlock(code) {
-      
+
         this.addLn(code);
         this.depth += 1;
     }
@@ -130,6 +130,17 @@ function stringifyNode(node, resultCode) {
         resultCode.openBlock(node.stringified);
 
         stringifyNode(node.body, resultCode);
+        resultCode.addCode(")", 0);
+    }
+
+    if (node.type === "ChooseStatement") {
+        node.stringified = `(Choose`;
+        resultCode.openBlock(node.stringified);
+
+        node.bodies.forEach(node => {
+            stringifyNode(node, resultCode);
+        });
+
         resultCode.addCode(")", 0);
     }
 

@@ -11,10 +11,13 @@ import { lispify } from "./lispifyast.js";
 
 const code =
 `
-let mut x = config.room_anchor_tag;
-if (x == "room_anchor") {
-say!!(\`yee\`);
-} 
+choose {
+say!!("1");
+} or {
+say!!("2");
+} or {
+say!!("3");
+}
 
 `;
 

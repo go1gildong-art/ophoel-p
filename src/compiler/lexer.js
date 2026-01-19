@@ -28,7 +28,9 @@ const reservedKeywords = {
         "else",
         "for",
         "while",
-        "repeat"
+        "repeat",
+        "choose",
+        "or"
     ],
     "KW_BUILTIN": [
         "mc_exec"

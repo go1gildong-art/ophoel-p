@@ -5,21 +5,12 @@ import { OphoelParseError } from "../errors.js";
 
 const code =
 `
-/# foo
-mc_exec(\`as @e[tag=\${config.room_anchor_tag}, tag=\${config.room_s.tag}]\`) {
-/.
-/.
-// oh cmn pls
-let wow = "this_is_string";
-let mut foo: int_c = config.room_s.radius;
-let mut x = 1;
-repeat(4)                                                                        {
-  setblock!!(\`~ ~\${foo} ~ dirt\`);
-  say!!(\`\${x}\`);
-  /.
-  x += 7;
-  x = x + 1;
-}
+choose {
+say!!("1");
+} or {
+say!!("2");
+} or {
+say!!("3");
 }
 `;
 
@@ -51,4 +42,4 @@ export function format(sourceCode, config, fileName) {
 // console.log("");
 // console.log(tokenize(code, config, "source.oph"));
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
-// console.log(format(code, config, "source.oph") + "\n\n");
+console.log(format(code, config, "source.oph") + "\n\n");

@@ -44,11 +44,16 @@ function findCommands(node, targetIr) {
 }
 
 function lowerChoose(node, targetIr) {
-  const rngMax = node.bodies.length;
+  
+
+  const rngMax = node.weights
+    .map(weight => weight.value)
+    .reduce((acc, val) => acc + val, 0);
+  
   const setups = [];
   const cleanups = [];
 
-  // redundant parts on commands
+  // redundant parts inside commands
   const near1 = "sort=nearest, limit=1"
   const chooseVar = `Oph_ChooseVar_d${node.depth}`;
   const chooseRes = `Oph_ChooseRes_d${node.depth}`;
@@ -87,8 +92,28 @@ function lowerChoose(node, targetIr) {
     const instr = new Ir.TextEmit([(prefix !== "" ? "execute " + prefix + " run" : ""), cmd].join(" "));
     targetIr.emitInstr(instr);
   });
+
   // emit bodies BETWEEN setup and cleanup
-  node.bodies.forEach(block => findCommands(block, targetIr));
+  let bodyIdx = 0;
+  let acc = 0;
+  for (let i = 0; i < rngMax; i++) {
+    const body = structuredClone(node.bodies[bodyIdx]);
+    body.body.forEach(node => {
+      // setup prefixes for each branches
+      if (node.type === "McCommand") node.prefixes.unshift(`if score @e[tag=${chooseRes}, ${near1}] ${chooseVar} matches ${i}`);
+    });
+      findCommands(body, targetIr);
+
+      acc++;
+    if (acc >= node.weights[bodyIdx].value) {
+      bodyIdx++;
+      acc = 0;
+    } else {
+      
+    }
+    
+  }
+  
   // emit cleanup
   cleanups.forEach(cmd => {
     const prefix = node.prefixes.join(" run execute ");

@@ -152,13 +152,15 @@ function stringifyNode(node, resultCode) {
     }
 
     if (node.type === "ChooseStatement") {
-        node.stringified = `choose`
+        node.weights.forEach(weight => stringifyNode(weight, resultCode));
+        node.stringified = `choose${node.weights[0].stringified === "1" ? "" : `(${node.weights[0].stringified})`}`
+        
         resultCode.addCode(node.stringified);
 
         let firstBody = true;
-        node.bodies.forEach(body => {
+        node.bodies.forEach((body, idx) => {
             if (!firstBody) {
-                resultCode.addCode(" do", 0);
+                resultCode.addCode(` or${node.weights[idx].stringified === "1" ? "" : `(${node.weights[idx].stringified})`}`, 0);
             }
             stringifyNode(body, resultCode);
             firstBody = false;

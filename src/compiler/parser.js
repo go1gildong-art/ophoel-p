@@ -386,7 +386,23 @@ class OphoelParser {
     }
 
     handleChoose() {
+        const weights = [];
+
         const keyword = this.expect("KW_CONTROL", "choose");
+
+        if (this.peek()?.type === "SYMBOL" && this.peek()?.value === "(") {
+            this.expect("SYMBOL", "(");
+            const weight = (this.getTokensBetween("SYMBOL", "(", ")"));
+            weights.push(weight);
+            this.expect("SYMBOL", ")");
+        } else {
+            weights.push([ {
+                type: "NUMBER",
+                value: "1",
+                location: keyword.location
+            } ]);
+        }
+
         this.expect("SYMBOL", "{");
         const bodies = [];
         bodies.push(this.getTokensBetween("SYMBOL", "{", "}"));
@@ -394,13 +410,28 @@ class OphoelParser {
 
         while (this.peek()?.type === "KW_CONTROL" && this.peek()?.value === "or") {
             this.expect("KW_CONTROL", "or");
+
+            if (this.peek()?.type === "SYMBOL" && this.peek()?.value === "(") {
+                this.expect("SYMBOL", "(");
+                const weight = (this.getTokensBetween("SYMBOL", "(", ")"));
+                weights.push(weight);
+                this.expect("SYMBOL", ")");
+            } else {
+                weights.push([ {
+                    type: "NUMBER",
+                    value: "1",
+                    location: keyword.location
+                }] );
+            }
+
             this.expect("SYMBOL", "{");
             bodies.push(this.getTokensBetween("SYMBOL", "{", "}"));
             this.expect("SYMBOL", "}");
         }
 
-        this.emit( BuildAST.ChooseStatement(
+        this.emit(BuildAST.ChooseStatement(
             bodies.map(body => this.unprogram(new OphoelParser(body).parse())),
+            weights.map(weight => new ExpressionParser(weight).parse()),
             keyword.location
         ));
     }

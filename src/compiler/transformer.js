@@ -267,8 +267,16 @@ function transformNode(node, config) {
     if (node.type === "ChooseStatement") {
         node.prefixes = ctx.getPrefixChain();
         node.depth = ctx.getDepth();
+        node.weights.forEach(weight => {
+            transformNode(weight, config);
+            if (weight.valueType !== "int_c") {
+                throw new OphoelSemanticError(`Choose weight must be an int_s but got ${weight.valueType}(${weight.value})`, node);
+            }
+            if (weight.value < 1) {
+                throw new OphoelSemanticError(`Choose weight must be one or more but got ${weight.value}`, node);
+            }
+        });
         node.bodies.forEach((block, i) => {
-            ctx.setMcPrefix(`if score @e[tag=Oph_ChooseRes_d${node.depth}, sort=nearest, limit=1] Oph_ChooseVar_d${node.depth} matches ${i}`);
             transformNode(block, config);
         });
         ctx.setMcPrefix("");

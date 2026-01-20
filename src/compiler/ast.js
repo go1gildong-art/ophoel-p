@@ -134,9 +134,10 @@ export class IfStatement extends AST {
 }
 
 export class ChooseStatement extends AST {
-    constructor(bodies, location) {
+    constructor(bodies, weights, location) {
         super("ChooseStatement", location);
         this.bodies = bodies.map(body => BuildAST.Block(body, location));
+        this.weights = weights,
         this.prefixes = null; // to manage choose setups and cleanups
         this.depth = null; // to avoid clashes upon nested choose statements
     }
@@ -214,8 +215,8 @@ export const BuildAST = {
     IfStatement: (args, body, location) =>
         new IfStatement(args, body, location),
 
-    ChooseStatement: (bodies, location) =>
-        new ChooseStatement(bodies, location),
+    ChooseStatement: (bodies, weights, location) =>
+        new ChooseStatement(bodies, weights, location),
 
     // 4. Preserved comments
     PreservedComment: (message, location) =>

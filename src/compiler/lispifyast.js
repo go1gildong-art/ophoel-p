@@ -137,8 +137,11 @@ function stringifyNode(node, resultCode) {
         node.stringified = `(Choose`;
         resultCode.openBlock(node.stringified);
 
-        node.bodies.forEach(node => {
-            stringifyNode(node, resultCode);
+        node.bodies.forEach((_node, idx) => {
+            stringifyNode(node.weights[idx]);
+            resultCode.addLn(node.weights[idx].stringified);
+
+            stringifyNode(_node, resultCode);
         });
 
         resultCode.addCode(")", 0);

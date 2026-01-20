@@ -7,9 +7,9 @@ const code =
 `
 choose {
 say!!("1");
-} or {
+} or(2) {
 say!!("2");
-} or {
+} or(3) {
 say!!("3");
 }
 `;

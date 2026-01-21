@@ -304,6 +304,48 @@ class OphoelParser {
         this.expect("SYMBOL", "}");
         this.emit(ast_js_1.BuildAST.IfStatement([new ExpressionParser(condition).parse()], [...this.unprogram(new OphoelParser(block).parse())], keyword.location));
     }
+    handleChoose() {
+        var _a, _b, _c, _d, _e, _f;
+        const weights = [];
+        const keyword = this.expect("KW_CONTROL", "choose");
+        if (((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === "SYMBOL" && ((_b = this.peek()) === null || _b === void 0 ? void 0 : _b.value) === "(") {
+            this.expect("SYMBOL", "(");
+            const weight = (this.getTokensBetween("SYMBOL", "(", ")"));
+            weights.push(weight);
+            this.expect("SYMBOL", ")");
+        }
+        else {
+            weights.push([{
+                    type: "NUMBER",
+                    value: "1",
+                    location: keyword.location
+                }]);
+        }
+        this.expect("SYMBOL", "{");
+        const bodies = [];
+        bodies.push(this.getTokensBetween("SYMBOL", "{", "}"));
+        this.expect("SYMBOL", "}");
+        while (((_c = this.peek()) === null || _c === void 0 ? void 0 : _c.type) === "KW_CONTROL" && ((_d = this.peek()) === null || _d === void 0 ? void 0 : _d.value) === "or") {
+            this.expect("KW_CONTROL", "or");
+            if (((_e = this.peek()) === null || _e === void 0 ? void 0 : _e.type) === "SYMBOL" && ((_f = this.peek()) === null || _f === void 0 ? void 0 : _f.value) === "(") {
+                this.expect("SYMBOL", "(");
+                const weight = (this.getTokensBetween("SYMBOL", "(", ")"));
+                weights.push(weight);
+                this.expect("SYMBOL", ")");
+            }
+            else {
+                weights.push([{
+                        type: "NUMBER",
+                        value: "1",
+                        location: keyword.location
+                    }]);
+            }
+            this.expect("SYMBOL", "{");
+            bodies.push(this.getTokensBetween("SYMBOL", "{", "}"));
+            this.expect("SYMBOL", "}");
+        }
+        this.emit(ast_js_1.BuildAST.ChooseStatement(bodies.map(body => this.unprogram(new OphoelParser(body).parse())), weights.map(weight => new ExpressionParser(weight).parse()), keyword.location));
+    }
     handleRawCommand() {
         const command = this.expect("KW_MCCOMMAND");
         this.expect("DOUBLE_BANG", "!!");
@@ -361,6 +403,11 @@ class OphoelParser {
             // 5. Handle if
             if (token.type === "KW_CONTROL" && token.value === 'if') {
                 this.handleIf();
+                continue;
+            }
+            // 5. Handle choose
+            if (token.type === "KW_CONTROL" && token.value === 'choose') {
+                this.handleChoose();
                 continue;
             }
             // 6. Handle Raw Commands (give!!, summon!!, etc)

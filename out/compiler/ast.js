@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Location = exports.BuildAST = exports.Comment = exports.PreservedNewline = exports.PreservedComment = exports.IfStatement = exports.McExecStatement = exports.RepeatStatement = exports.ConfigRef = exports.Identifier = exports.TemplateStringLiteral = exports.JsonValue = exports.Literal = exports.BinaryExpression = exports.McCommand = exports.VariableAssignShorten = exports.VariableAssign = exports.VariableDecl = exports.Block = exports.Program = exports.AST = void 0;
+exports.Location = exports.BuildAST = exports.Comment = exports.PreservedNewline = exports.PreservedComment = exports.ChooseStatement = exports.IfStatement = exports.McExecStatement = exports.RepeatStatement = exports.ConfigRef = exports.Identifier = exports.TemplateStringLiteral = exports.JsonValue = exports.Literal = exports.BinaryExpression = exports.McCommand = exports.VariableAssignShorten = exports.VariableAssign = exports.VariableDecl = exports.Block = exports.Program = exports.AST = void 0;
 class AST {
     constructor(type, location) {
         this.type = type;
@@ -136,6 +136,16 @@ class IfStatement extends AST {
     }
 }
 exports.IfStatement = IfStatement;
+class ChooseStatement extends AST {
+    constructor(bodies, weights, location) {
+        super("ChooseStatement", location);
+        this.bodies = bodies.map(body => exports.BuildAST.Block(body, location));
+        this.weights = weights,
+            this.prefixes = null; // to manage choose setups and cleanups
+        this.depth = null; // to avoid clashes upon nested choose statements
+    }
+}
+exports.ChooseStatement = ChooseStatement;
 class PreservedComment extends AST {
     constructor(message, location) {
         super("PreservedComment", location);
@@ -175,6 +185,7 @@ exports.BuildAST = {
     RepeatStatement: (args, body, location) => new RepeatStatement(args, body, location),
     McExecStatement: (args, body, location) => new McExecStatement(args, body, location),
     IfStatement: (args, body, location) => new IfStatement(args, body, location),
+    ChooseStatement: (bodies, weights, location) => new ChooseStatement(bodies, weights, location),
     // 4. Preserved comments
     PreservedComment: (message, location) => new PreservedComment(message, location),
     PreservedNewline: (message, location) => new PreservedNewline(message, location),

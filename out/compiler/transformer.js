@@ -23,6 +23,7 @@ class Context {
     }
     popScope() { this.scopes.pop(); }
     peek() { return this.scopes[this.scopes.length - 1]; }
+    getDepth() { return this.scopes.length; }
     declareVariable(node) {
         if (this.peek().variables[node.varName])
             throw new errors_js_1.OphoelSemanticError(`Variable ${node.varName} already exists`, node);
@@ -139,11 +140,16 @@ function transformNode(node, config) {
     if (node.type === "BinaryExpression") {
         transformNode(node.left, config);
         transformNode(node.right, config);
-        if (node.left.valueType === node.right.valueType) {
-            node.valueType = node.left.valueType;
+        if (node.operator === "==") {
+            node.valueType = "bool";
         }
         else {
-            throw new errors_js_1.OphoelSemanticError(`Type mismatch: tried to perform ${node.operator} operation between ${node.left.value}(${node.left.valueType}) and ${node.right.value}(${node.right.valueType})`, node);
+            if (node.left.valueType === node.right.valueType) {
+                node.valueType = node.left.valueType;
+            }
+            else {
+                throw new errors_js_1.OphoelSemanticError(`Type mismatch: tried to perform ${node.operator} operation between ${node.left.value}(${node.left.valueType}) and ${node.right.value}(${node.right.valueType})`, node);
+            }
         }
         let result;
         switch (node.operator) {
@@ -166,7 +172,7 @@ function transformNode(node, config) {
                 result = node.left.value > node.right.value;
                 break;
             case "<":
-                result = node.left.value % node.right.value;
+                result = node.left.value < node.right.value;
                 break;
             case "==":
                 result = node.left.value === node.right.value && node.left.valueType === node.right.valueType;
@@ -202,13 +208,29 @@ function transformNode(node, config) {
     }
     if (node.type === "IfStatement") {
         transformNode(node.args[0], config);
-        console.log(node.args[0]);
         if (node.args[0].value === true) {
             transformNode(node.body, config);
         }
         else {
             node.body = ast_js_1.BuildAST.Block([], node.location);
         }
+    }
+    if (node.type === "ChooseStatement") {
+        node.prefixes = ctx.getPrefixChain();
+        node.depth = ctx.getDepth();
+        node.weights.forEach(weight => {
+            transformNode(weight, config);
+            if (weight.valueType !== "int_c") {
+                throw new errors_js_1.OphoelSemanticError(`Choose weight must be an int_s but got ${weight.valueType}(${weight.value})`, node);
+            }
+            if (weight.value < 1) {
+                throw new errors_js_1.OphoelSemanticError(`Choose weight must be one or more but got ${weight.value}`, node);
+            }
+        });
+        node.bodies.forEach((block, i) => {
+            transformNode(block, config);
+        });
+        ctx.setMcPrefix("");
     }
     // place lower than statement check to avoid recursion
     if (node.type === "Program") {
@@ -270,10 +292,13 @@ function deductType(node) {
     switch (typeof node.value) {
         case "string":
             node.valueType = "string";
+            break;
         case "number":
             node.valueType = "int_c";
+            break;
         case "boolean":
-            node.valueTyep = "bool";
+            node.valueType = "bool";
+            break;
     }
 }
 //# sourceMappingURL=transformer.js.map

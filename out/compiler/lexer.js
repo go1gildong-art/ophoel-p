@@ -29,7 +29,9 @@ const reservedKeywords = {
         "else",
         "for",
         "while",
-        "repeat"
+        "repeat",
+        "choose",
+        "or"
     ],
     "KW_BUILTIN": [
         "mc_exec"
@@ -56,7 +58,8 @@ const reservedKeywords = {
         "summon",
         "effect",
         "fill",
-        "setblock"
+        "setblock",
+        "place"
     ]
 };
 function print(x, msg = "") {

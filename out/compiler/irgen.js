@@ -61,5 +61,77 @@ function findCommands(node, targetIr) {
     if (["IfStatement", "McExecStatement", "RepeatStatement", "Program"].includes(node.type)) {
         findCommands(node.body, targetIr);
     }
+    if (node.type === "ChooseStatement") {
+        if (node.bodies.length === 1) {
+            // if branching doesn't matter because there's only one 
+            findCommands(node.bodies[0], targetIr);
+        }
+        else {
+            lowerChoose(node, targetIr);
+        }
+    }
+}
+function lowerChoose(node, targetIr) {
+    const rngMax = node.weights
+        .map(weight => weight.value)
+        .reduce((acc, val) => acc + val, 0);
+    const setups = [];
+    const cleanups = [];
+    // redundant parts inside commands
+    const near1 = "type=minecraft:marker, sort=nearest, limit=1";
+    const chooseVar = `Oph_ChooseVar_d${node.depth}`;
+    const chooseRes = `Oph_ChooseRes_d${node.depth}`;
+    const chooseMar = `Oph_ChooseMarker_d${node.depth}`;
+    const summonMarker = `summon minecraft:marker ~ ~ ~`;
+    const sbPlayer = `scoreboard players`;
+    // setup commands
+    setups.push(`scoreboard objectives add ${chooseVar} dummy`);
+    setups.push(`scoreboard objectives add ${chooseVar} dummy`);
+    for (let i = 0; i < rngMax; i++) {
+        //summon armor stands for random choice
+        setups.push(`${summonMarker} {Tags:["${chooseMar}", "Oph_ChooseMarker${i}_d${node.depth}"]}`);
+        //assign values for each armor stands(rngBase)
+        setups.push(`${sbPlayer} set @e[tag=Oph_ChooseMarker${i}_d${node.depth}, ${near1}] ${chooseVar} ${i}`);
+    }
+    //summon the armor stand for storing the result
+    setups.push(`${summonMarker} {Tags:["${chooseRes}"]}`);
+    setups.push(`${sbPlayer} set @e[tag=${chooseRes}, ${near1}] ${chooseVar} 0`);
+    //choose one of those armor stands randomly, storing its value into the result(rngResult)
+    setups.push(`${sbPlayer} operation @e[tag=${chooseRes}, ${near1}] ${chooseVar} = @e[tag=${chooseMar}, sort=random, limit=1] ${chooseVar}`);
+    // cleanup commands
+    cleanups.push(`kill @e[tag=${chooseMar}, sort=nearest, limit=${rngMax}]`);
+    cleanups.push(`kill @e[tag=${chooseRes}, ${near1}]`);
+    cleanups.push(`scoreboard objectives remove ${chooseVar}`);
+    // emit setup
+    setups.forEach(cmd => {
+        const prefix = node.prefixes.join(" run execute ");
+        const instr = new Ir.TextEmit([(prefix !== "" ? "execute " + prefix + " run" : ""), cmd].join(" "));
+        targetIr.emitInstr(instr);
+    });
+    // emit bodies BETWEEN setup and cleanup
+    let bodyIdx = 0;
+    let acc = 0;
+    for (let i = 0; i < rngMax; i++) {
+        const body = structuredClone(node.bodies[bodyIdx]);
+        body.body.forEach(node => {
+            // setup prefixes for each branches
+            if (node.type === "McCommand")
+                node.prefixes.unshift(`if score @e[tag=${chooseRes}, ${near1}] ${chooseVar} matches ${i}`);
+        });
+        findCommands(body, targetIr);
+        acc++;
+        if (acc >= node.weights[bodyIdx].value) {
+            bodyIdx++;
+            acc = 0;
+        }
+        else {
+        }
+    }
+    // emit cleanup
+    cleanups.forEach(cmd => {
+        const prefix = node.prefixes.join(" run execute ");
+        const instr = new Ir.TextEmit([(prefix !== "" ? "execute " + prefix + " run" : ""), cmd].join(" "));
+        targetIr.emitInstr(instr);
+    });
 }
 //# sourceMappingURL=irgen.js.map

@@ -58,7 +58,8 @@ const reservedKeywords = {
         "effect",
         "fill",
         "setblock",
-        "place"
+        "place",
+        "function"
     ]
 }
 

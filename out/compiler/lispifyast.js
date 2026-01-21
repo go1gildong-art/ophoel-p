@@ -103,6 +103,16 @@ function stringifyNode(node, resultCode) {
         stringifyNode(node.body, resultCode);
         resultCode.addCode(")", 0);
     }
+    if (node.type === "ChooseStatement") {
+        node.stringified = `(Choose`;
+        resultCode.openBlock(node.stringified);
+        node.bodies.forEach((_node, idx) => {
+            stringifyNode(node.weights[idx]);
+            resultCode.addLn(node.weights[idx].stringified);
+            stringifyNode(_node, resultCode);
+        });
+        resultCode.addCode(")", 0);
+    }
     // instead of using body, directly iterate over the Block node(body)'s body
     // so all nodes at Program level will be at top level
     if (node.type === "Program") {

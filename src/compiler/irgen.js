@@ -54,7 +54,7 @@ function lowerChoose(node, targetIr) {
   const cleanups = [];
 
   // redundant parts inside commands
-  const near1 = "sort=nearest, limit=1"
+  const near1 = "type=minecraft:marker, sort=nearest, limit=1"
   const chooseVar = `Oph_ChooseVar_d${node.depth}`;
   const chooseRes = `Oph_ChooseRes_d${node.depth}`;
   const chooseMar = `Oph_ChooseMarker_d${node.depth}`;

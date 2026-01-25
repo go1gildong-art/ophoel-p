@@ -11,15 +11,10 @@ import { lispify } from "./lispifyast.js";
 
 const code =
 `
-let three = 3;
-choose {
-say!!("1");
-} or(2) {
-say!!("2");
-} or(three) {
-say!!("3");
-}
+if (true) {
 
+}
+say!!("yay");
 `;
 
 const config = { my_arr: [1, 2, 3], room_anchor_tag: "room_anchor", room_s: { radius: 7, tag: "room_s" } };

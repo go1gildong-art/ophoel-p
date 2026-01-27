@@ -170,16 +170,20 @@ class OphoelParser {
         const startPos = this.pos;
         let endPos = this.pos;
         while (depth > 0) {
-            endPos++;
-            if (endPos >= this.tokens.length)
+            if (endPos >= this.tokens.length) {
                 throw new errors_js_1.OphoelParseError(`The ${value1}${value2} structure is not closed`, this.tokens[startPos]);
+            }
             if (this.tokens[endPos].type === type && this.tokens[endPos].value === value1) {
                 depth++;
             }
-            else if (this.tokens[endPos].value === value2) {
+            else if (this.tokens[endPos].type === type && this.tokens[endPos].value === value2) {
                 depth--;
             }
+            else {
+            }
+            endPos++;
         }
+        endPos--; // take one extra increment off
         // Capture the inside
         const block = this.tokens.slice(startPos, endPos);
         // Move the main parser's position AT the closing }

@@ -95,7 +95,7 @@ function stringifyNode(node, resultCode) {
     }
     if (node.type === "RepeatStatement") {
         stringifyNode(node.args[0], resultCode);
-        node.stringified = `repeat(${node.args[0].stringified})`;
+        node.stringified = `repeat (${node.args[0].stringified})`;
         resultCode.addCode(node.stringified);
         stringifyNode(node.body, resultCode);
     }
@@ -108,26 +108,26 @@ function stringifyNode(node, resultCode) {
     }
     if (node.type === "McExecStatement") {
         stringifyNode(node.args[0], resultCode);
-        node.stringified = `mc_exec(${node.args[0].stringified})`;
+        node.stringified = `mc_exec (${node.args[0].stringified})`;
         resultCode.addCode(node.stringified);
         stringifyNode(node.body, resultCode);
         resultCode.addLn("", 0);
     }
     if (node.type === "IfStatement") {
         stringifyNode(node.args[0], resultCode);
-        node.stringified = `if(${node.args[0].stringified})`;
+        node.stringified = `if (${node.args[0].stringified})`;
         resultCode.addCode(node.stringified);
         stringifyNode(node.body, resultCode);
         resultCode.addLn("", 0);
     }
     if (node.type === "ChooseStatement") {
         node.weights.forEach(weight => stringifyNode(weight, resultCode));
-        node.stringified = `choose${node.weights[0].stringified === "1" ? "" : `(${node.weights[0].stringified})`}`;
+        node.stringified = `choose ${node.weights[0].stringified === "1" ? "" : `(${node.weights[0].stringified})`}`;
         resultCode.addCode(node.stringified);
         let firstBody = true;
         node.bodies.forEach((body, idx) => {
             if (!firstBody) {
-                resultCode.addCode(` or${node.weights[idx].stringified === "1" ? "" : `(${node.weights[idx].stringified})`}`, 0);
+                resultCode.addCode(` or ${node.weights[idx].stringified === "1" ? "" : `(${node.weights[idx].stringified})`}`, 0);
             }
             stringifyNode(body, resultCode);
             firstBody = false;

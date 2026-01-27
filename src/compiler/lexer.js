@@ -60,7 +60,8 @@ const reservedKeywords = {
         "setblock",
         "place",
         "function",
-        "kill"
+        "kill",
+        "playsound"
     ]
 }
 

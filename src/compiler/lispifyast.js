@@ -10,8 +10,8 @@ class Code {
     }
 
     addLn(ln, indent = (this.depth * this.indentSpaces)) {
-        this.addCode(ln, indent);
         this.newLine();
+        this.addCode(ln, indent);
     }
 
     newLine() { this.lines.push("\n"); }
@@ -19,12 +19,14 @@ class Code {
     addCode(ln, indent = (this.depth * this.indentSpaces)) { this.lines.push(" ".repeat(indent) + ln); }
 
     openBlock(code) {
-
         this.addLn(code);
         this.depth += 1;
     }
 
-    closeBlock() { this.depth -= 1; this.addCode(")", 0); }
+    closeBlock() {
+        this.addCode(")", 0);
+        this.depth -= 2;
+    }
 
     getCode() { return this.lines.join(""); }
 }

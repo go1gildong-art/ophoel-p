@@ -14,12 +14,16 @@ function transform(_ast, config) {
     return ast;
 }
 class Context {
-    constructor() { this.scopes = []; }
+    constructor() { this.scopes = []; this.queuedPrefix = ""; }
     pushNewScope() {
         this.scopes.push({
             variables: {},
             mcPrefix: ""
         });
+        if (this.queuedPrefix !== "") {
+            this.peek().mcPrefix = this.queuedPrefix;
+            this.queuedPrefix = "";
+        }
     }
     popScope() { this.scopes.pop(); }
     peek() { return this.scopes[this.scopes.length - 1]; }
@@ -72,6 +76,7 @@ class Context {
         throw new errors_js_1.OphoelSemanticError(`${node.name} is not declared yet or unreachable`, node);
     }
     setMcPrefix(prefix) { this.peek().mcPrefix = prefix; }
+    appendMcPrefix(prefix) { this.queuedPrefix = prefix; }
     getPrefixChain() {
         const prefix = this.scopes
             .map(scope => scope.mcPrefix)
@@ -203,7 +208,7 @@ function transformNode(node, config) {
     if (node.type === "McExecStatement") {
         transformNode(node.args[0], config);
         const prefix = node.args[0].value;
-        ctx.setMcPrefix(prefix);
+        ctx.appendMcPrefix(prefix);
         transformNode(node.body, config);
     }
     if (node.type === "IfStatement") {
@@ -228,9 +233,9 @@ function transformNode(node, config) {
             }
         });
         node.bodies.forEach((block, i) => {
+            ctx.appendMcPrefix(`if score @e[tag=Oph_ChooseRes_d${node.depth}, sort=nearest, limit=1] Oph_ChooseVar_d${node.depth} matches ${i}`);
             transformNode(block, config);
         });
-        ctx.setMcPrefix("");
     }
     // place lower than statement check to avoid recursion
     if (node.type === "Program") {

@@ -11,13 +11,8 @@ import { lispify } from "./lispifyast.js";
 
 const code =
 `
-mc_exec("as foo") {
-  say!!("bar");
-}
-
-repeat(5) {
-  say!!("baz");
-}
+let x = (7 + 7 + 1) * -1;
+say!!(x);
 `;
 
 const config = { my_arr: [1, 2, 3], room_anchor_tag: "room_anchor", room_s: { radius: 7, tag: "room_s" } };
@@ -45,8 +40,8 @@ export function compile(sourceCode, config, fileName) {
 // console.log(tokenize(code, config, "source.oph"));
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
 // console.log(JSON.stringify(transform(parse(tokenize(code, config, "source.oph")), config)) + "\n");
-console.log(JSON.stringify(makeIr(transform(parse(tokenize(code, config, "source.oph")), config))) + "\n");
-console.log(compile(code, config, "source.oph") + "\n\n");
+// console.log(JSON.stringify(makeIr(transform(parse(tokenize(code, config, "source.oph")), config))) + "\n");
+// console.log(compile(code, config, "source.oph") + "\n\n");
 
-// console.log(lispify(parse(tokenize(code, config, "source.oph"))) + "\n");
+console.log(lispify(parse(tokenize(code, config, "source.oph"))) + "\n");
 

@@ -80,7 +80,7 @@ class ExpressionParser {
     }
 
     parseAdditive() {
-        let left = this.parseMultiplicative();
+        let left = this.parsePrimary();
 
         while (this.peek()?.type === 'OPERATOR' && ['+', '-'].includes(this.peek().value)) {
             const operator = this.eat().value;
@@ -95,7 +95,7 @@ class ExpressionParser {
     }
 
     parseMultiplicative() {
-        let left = this.parsePrimary();
+        let left = this.parseAdditive();
 
         while (this.peek()?.type === 'OPERATOR' && ['*', '/', "%"].includes(this.peek().value)) {
             const operator = this.eat().value;

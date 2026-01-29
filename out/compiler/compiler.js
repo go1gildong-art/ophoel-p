@@ -10,17 +10,12 @@ const lispifyast_js_1 = require("./lispifyast.js");
 // Load Configs
 // const config = JSON.parse(fs.readFileSync('./configs.json', 'utf8'));
 const code = `
-/# 2. replace the gate lamp
-let ii = 0;
-repeat(config.room_types.length) {
-  let room_type = config.room_types[ii];
-  let coordinate = \`dx=\${config.room_s.radius + 1}, dy=\${config.room_s.height}, dz=\${config.room_s.radius + 1}\`;
+mc_exec("as foo") {
+  say!!("bar");
+}
 
-  mc_exec(\`if entity @e[type=markerblocks:marker_block, \${coordinate}, tag=room_\${room_type}]\`) {
-    mc_exec(\`at @e[type=markerblocks:marker_block, tag=\${config.gate_lamp_tag}, \${config.shortcuts.near1}]\`) {
-      setblock!!(\`~ ~ ~ \`);
-    }
-  }
+repeat(5) {
+  say!!("baz");
 }
 `;
 const config = { my_arr: [1, 2, 3], room_anchor_tag: "room_anchor", room_s: { radius: 7, tag: "room_s" } };
@@ -41,7 +36,7 @@ function compile(sourceCode, config, fileName) {
 // console.log(tokenize(code, config, "source.oph"));
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
 // console.log(JSON.stringify(transform(parse(tokenize(code, config, "source.oph")), config)) + "\n");
-// console.log(JSON.stringify(makeIr(transform(parse(tokenize(code, config, "source.oph")), config))) + "\n");
-// console.log(compile(code, config, "source.oph") + "\n\n");
+console.log(JSON.stringify((0, irgen_js_1.makeIr)((0, transformer_js_1.transform)((0, parser_js_1.parse)((0, lexer_js_1.tokenize)(code, config, "source.oph")), config))) + "\n");
+console.log(compile(code, config, "source.oph") + "\n\n");
 // console.log(lispify(parse(tokenize(code, config, "source.oph"))) + "\n");
 //# sourceMappingURL=compiler.js.map

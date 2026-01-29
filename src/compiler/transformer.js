@@ -207,6 +207,7 @@ function transformNode(node, config) {
                 break;
 
             case "/":
+                
                 result = node.left.value / node.right.value;
                 break;
 
@@ -254,6 +255,7 @@ function transformNode(node, config) {
     }
 
     if (node.type === "McExecStatement") {
+        
         transformNode(node.args[0], config);
         const prefix = node.args[0].value;
         ctx.appendMcPrefix(prefix);
@@ -271,6 +273,7 @@ function transformNode(node, config) {
     }
 
     if (node.type === "ChooseStatement") {
+        node.prefixes = ctx.getPrefixChain();
         node.depth = ctx.getDepth();
         node.weights.forEach(weight => {
             transformNode(weight, config);

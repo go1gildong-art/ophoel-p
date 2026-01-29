@@ -86,7 +86,6 @@ function lowerChoose(node, targetIr) {
     const sbPlayer = `scoreboard players`;
     // setup commands
     setups.push(`scoreboard objectives add ${chooseVar} dummy`);
-    setups.push(`scoreboard objectives add ${chooseVar} dummy`);
     for (let i = 0; i < rngMax; i++) {
         //summon armor stands for random choice
         setups.push(`${summonMarker} {Tags:["${chooseMar}", "Oph_ChooseMarker${i}_d${node.depth}"]}`);
@@ -104,7 +103,8 @@ function lowerChoose(node, targetIr) {
     cleanups.push(`scoreboard objectives remove ${chooseVar}`);
     // emit setup
     setups.forEach(cmd => {
-        const prefix = node.prefixes.join(" run execute ");
+        var _a, _b;
+        const prefix = (_b = (_a = node.prefixes) === null || _a === void 0 ? void 0 : _a.join(" run execute ")) !== null && _b !== void 0 ? _b : "";
         const instr = new Ir.TextEmit([(prefix !== "" ? "execute " + prefix + " run" : ""), cmd].join(" "));
         targetIr.emitInstr(instr);
     });
@@ -113,11 +113,6 @@ function lowerChoose(node, targetIr) {
     let acc = 0;
     for (let i = 0; i < rngMax; i++) {
         const body = structuredClone(node.bodies[bodyIdx]);
-        body.body.forEach(node => {
-            // setup prefixes for each branches
-            if (node.type === "McCommand")
-                node.prefixes.unshift(`if score @e[tag=${chooseRes}, ${near1}] ${chooseVar} matches ${i}`);
-        });
         findCommands(body, targetIr);
         acc++;
         if (acc >= node.weights[bodyIdx].value) {
@@ -129,7 +124,8 @@ function lowerChoose(node, targetIr) {
     }
     // emit cleanup
     cleanups.forEach(cmd => {
-        const prefix = node.prefixes.join(" run execute ");
+        var _a, _b;
+        const prefix = (_b = (_a = node.prefixes) === null || _a === void 0 ? void 0 : _a.join(" run execute ")) !== null && _b !== void 0 ? _b : "";
         const instr = new Ir.TextEmit([(prefix !== "" ? "execute " + prefix + " run" : ""), cmd].join(" "));
         targetIr.emitInstr(instr);
     });

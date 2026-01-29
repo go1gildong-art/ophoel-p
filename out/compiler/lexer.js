@@ -60,7 +60,9 @@ const reservedKeywords = {
         "fill",
         "setblock",
         "place",
-        "function"
+        "function",
+        "kill",
+        "playsound"
     ]
 };
 function print(x, msg = "") {

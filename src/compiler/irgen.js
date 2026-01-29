@@ -87,7 +87,7 @@ function lowerChoose(node, targetIr) {
 
   // emit setup
   setups.forEach(cmd => {
-    const prefix = node.prefixes.join(" run execute ");
+    const prefix = node.prefixes?.join(" run execute ") ?? "";
     const instr = new Ir.TextEmit([(prefix !== "" ? "execute " + prefix + " run" : ""), cmd].join(" "));
     targetIr.emitInstr(instr);
   });
@@ -97,10 +97,6 @@ function lowerChoose(node, targetIr) {
   let acc = 0;
   for (let i = 0; i < rngMax; i++) {
     const body = structuredClone(node.bodies[bodyIdx]);
-    body.body.forEach(node => {
-      // setup prefixes for each branches
-      if (node.type === "McCommand") node.prefixes.unshift(`if score @e[tag=${chooseRes}, ${near1}] ${chooseVar} matches ${i}`);
-    });
       findCommands(body, targetIr);
 
       acc++;
@@ -115,7 +111,7 @@ function lowerChoose(node, targetIr) {
   
   // emit cleanup
   cleanups.forEach(cmd => {
-    const prefix = node.prefixes.join(" run execute ");
+    const prefix = node.prefixes?.join(" run execute ") ?? "";
     const instr = new Ir.TextEmit([(prefix !== "" ? "execute " + prefix + " run" : ""), cmd].join(" "));
     targetIr.emitInstr(instr);
   });

@@ -17,13 +17,17 @@ export function transform(_ast, config) {
 }
 
 class Context {
-    constructor() { this.scopes = []; }
+    constructor() { this.scopes = []; this.queuedPrefix = "";}
 
     pushNewScope() {
         this.scopes.push({
             variables: {},
             mcPrefix: ""
         });
+        if (this.queuedPrefix !== "") {
+            this.peek().mcPrefix = this.queuedPrefix;
+            this.queuedPrefix = "";
+        }
     }
 
     popScope() { this.scopes.pop(); }
@@ -91,6 +95,8 @@ class Context {
     }
 
     setMcPrefix(prefix) { this.peek().mcPrefix = prefix; }
+
+    appendMcPrefix(prefix) { this.queuedPrefix = prefix; }
 
     getPrefixChain() {
         const prefix = this.scopes
@@ -250,7 +256,7 @@ function transformNode(node, config) {
     if (node.type === "McExecStatement") {
         transformNode(node.args[0], config);
         const prefix = node.args[0].value;
-        ctx.setMcPrefix(prefix);
+        ctx.appendMcPrefix(prefix);
 
         transformNode(node.body, config);
     }
@@ -265,7 +271,6 @@ function transformNode(node, config) {
     }
 
     if (node.type === "ChooseStatement") {
-        node.prefixes = ctx.getPrefixChain();
         node.depth = ctx.getDepth();
         node.weights.forEach(weight => {
             transformNode(weight, config);
@@ -277,9 +282,9 @@ function transformNode(node, config) {
             }
         });
         node.bodies.forEach((block, i) => {
+            ctx.appendMcPrefix(`if score @e[tag=Oph_ChooseRes_d${node.depth}, sort=nearest, limit=1] Oph_ChooseVar_d${node.depth} matches ${i}`);
             transformNode(block, config);
         });
-        ctx.setMcPrefix("");
     }
 
 

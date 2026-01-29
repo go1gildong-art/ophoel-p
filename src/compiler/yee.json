@@ -1,166 +1,28 @@
 {
-    "type": "Program",
-    "location": {
-        "fileName": "source.oph",
-        "line": 2,
-        "tokenIdx": 0
-    },
-    "body": {
-        "type": "Block",
-        "location": {
-            "fileName": "source.oph",
-            "line": 2,
-            "tokenIdx": 0
+    "instructions": [
+        {
+            "kind": "TextEmit",
+            "content": "execute as foo run say bar"
         },
-        "body": [
-            {
-                "type": "VariableDecl",
-                "location": {
-                    "fileName": "source.oph",
-                    "line": 2,
-                    "tokenIdx": 0
-                },
-                "varType": "deduct",
-                "varName": "ii",
-                "mutability": true,
-                "varValue": {
-                    "type": "Literal",
-                    "location": {
-                        "fileName": "source.oph",
-                        "line": 2,
-                        "tokenIdx": 4
-                    },
-                    "valueType": "int_c",
-                    "raw": "0",
-                    "value": null
-                }
-            },
-            {
-                "type": "RepeatStatement",
-                "location": {
-                    "fileName": "source.oph",
-                    "line": 3,
-                    "tokenIdx": 6
-                },
-                "args": [
-                    {
-                        "type": "ConfigRef",
-                        "location": {
-                            "fileName": "source.oph",
-                            "line": 3,
-                            "tokenIdx": 8
-                        },
-                        "access": "config.my_arr.length",
-                        "value": null,
-                        "valueType": null
-                    }
-                ],
-                "body": {
-                    "type": "Block",
-                    "location": {
-                        "fileName": "source.oph",
-                        "line": 3,
-                        "tokenIdx": 6
-                    },
-                    "body": [
-                        {
-                            "type": "McCommand",
-                            "location": {
-                                "fileName": "source.oph",
-                                "line": 4,
-                                "tokenIdx": 11
-                            },
-                            "command": "say",
-                            "args": [
-                                {
-                                    "type": "TemplateStringLiteral",
-                                    "templateQuasis": [
-                                        "bar ",
-                                        ""
-                                    ],
-                                    "templateExpressions": [
-                                        {
-                                            "type": "Identifier",
-                                            "location": {
-                                                "fileName": "source.oph",
-                                                "line": 4,
-                                                "tokenIdx": 18
-                                            },
-                                            "name": "ii",
-                                            "value": null,
-                                            "valueType": null
-                                        }
-                                    ],
-                                    "raw": {
-                                        "fileName": "source.oph",
-                                        "line": 4,
-                                        "tokenIdx": 14
-                                    },
-                                    "value": null
-                                }
-                            ]
-                        },
-                        {
-                            "type": "McCommand",
-                            "location": {
-                                "fileName": "source.oph",
-                                "line": 5,
-                                "tokenIdx": 24
-                            },
-                            "command": "say",
-                            "args": [
-                                {
-                                    "type": "TemplateStringLiteral",
-                                    "templateQuasis": [
-                                        "foo ",
-                                        ""
-                                    ],
-                                    "templateExpressions": [
-                                        {
-                                            "type": "ConfigRef",
-                                            "location": {
-                                                "fileName": "source.oph",
-                                                "line": 5,
-                                                "tokenIdx": 31
-                                            },
-                                            "access": "config.my_arr[ii]",
-                                            "value": null,
-                                            "valueType": null
-                                        }
-                                    ],
-                                    "raw": {
-                                        "fileName": "source.oph",
-                                        "line": 5,
-                                        "tokenIdx": 27
-                                    },
-                                    "value": null
-                                }
-                            ]
-                        },
-                        {
-                            "type": "VariableAssign",
-                            "location": {
-                                "fileName": "source.oph",
-                                "line": 6,
-                                "tokenIdx": 37
-                            },
-                            "varName": "ii",
-                            "varValue": {
-                                "type": "Literal",
-                                "location": {
-                                    "fileName": "source.oph",
-                                    "line": 6,
-                                    "tokenIdx": 40
-                                },
-                                "valueType": "int_c",
-                                "raw": "2",
-                                "value": null
-                            },
-                            "operator": "+"
-                        }
-                    ]
-                }
-            }
-        ]
-    }
+        {
+            "kind": "TextEmit",
+            "content": "execute as foo run say baz"
+        },
+        {
+            "kind": "TextEmit",
+            "content": "execute as foo run say baz"
+        },
+        {
+            "kind": "TextEmit",
+            "content": "execute as foo run say baz"
+        },
+        {
+            "kind": "TextEmit",
+            "content": "execute as foo run say baz"
+        },
+        {
+            "kind": "TextEmit",
+            "content": "execute as foo run say baz"
+        }
+    ]
 }

@@ -63,7 +63,6 @@ function lowerChoose(node, targetIr) {
 
   // setup commands
   setups.push(`scoreboard objectives add ${chooseVar} dummy`);
-  setups.push(`scoreboard objectives add ${chooseVar} dummy`);
 
   for (let i = 0; i < rngMax; i++) {
     //summon armor stands for random choice

@@ -207,7 +207,9 @@ function transformNode(node, config) {
                 break;
 
             case "/":
-                
+                if (node.right.value === 0) {
+                    throw new OphoelSemanticError(`Division by 0`, node);
+                }
                 result = node.left.value / node.right.value;
                 break;
 

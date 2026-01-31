@@ -280,16 +280,17 @@ function transformNode(node, config) {
         node.weights.forEach(weight => {
             transformNode(weight, config);
             if (weight.valueType !== "int_c") {
-                throw new OphoelSemanticError(`Choose weight must be an int_s but got ${weight.valueType}(${weight.value})`, node);
+                throw new OphoelSemanticError(`Choose weight must be an int_c but got ${weight.valueType}(${weight.value})`, node);
             }
             if (weight.value < 1) {
                 throw new OphoelSemanticError(`Choose weight must be one or more but got ${weight.value}`, node);
             }
         });
         node.bodies.forEach((block, i) => {
-            ctx.appendMcPrefix(`if score @e[tag=Oph_ChooseRes_d${node.depth}, sort=nearest, limit=1] Oph_ChooseVar_d${node.depth} matches ${i}`);
+            ctx.appendMcPrefix(`CHOOSE_d${node.depth}`);
             transformNode(block, config);
         });
+        
     }
 
 

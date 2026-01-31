@@ -44,12 +44,12 @@ function findCommands(node, targetIr) {
 }
 
 function lowerChoose(node, targetIr) {
-  
+
 
   const rngMax = node.weights
     .map(weight => weight.value)
     .reduce((acc, val) => acc + val, 0);
-  
+
   const setups = [];
   const cleanups = [];
 
@@ -97,18 +97,27 @@ function lowerChoose(node, targetIr) {
   let acc = 0;
   for (let i = 0; i < rngMax; i++) {
     const body = structuredClone(node.bodies[bodyIdx]);
-      findCommands(body, targetIr);
+    body.body.forEach((stmt) => {
+      if (stmt.type === "McCommand") {
+        stmt.prefixes.forEach((prefix, idx) => {
+          if (prefix === `CHOOSE_d${node.depth}`) {
+            stmt.prefixes[idx] = `if score @e[tag=Oph_ChooseRes_d${node.depth}, sort=nearest, limit=1] Oph_ChooseVar_d${node.depth} matches ${i}`;
+          }
+        })
+      } 
+    })
 
-      acc++;
+    findCommands(body, targetIr);
+
+    acc++;
     if (acc >= node.weights[bodyIdx].value) {
       bodyIdx++;
       acc = 0;
     } else {
-      
+
     }
-    
+
   }
-  
   // emit cleanup
   cleanups.forEach(cmd => {
     const prefix = node.prefixes?.join(" run execute ") ?? "";

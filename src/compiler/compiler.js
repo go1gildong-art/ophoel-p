@@ -13,10 +13,18 @@ const code =
 `
 choose(1) {
 say!!("one");
+/.
 } or(2) {
 say!!("two");
+/.
 } or(3) {
-say!!("three");
+choose(1) {
+say!!("three-one");
+/.
+} or(1) {
+say!!("three-two");
+/.
+}
 }
 `;
 

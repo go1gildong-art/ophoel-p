@@ -45,7 +45,6 @@ function findCommands(node, targetIr) {
 
 function lowerChoose(node, targetIr) {
 
-
   const rngMax = node.weights
     .map(weight => weight.value)
     .reduce((acc, val) => acc + val, 0);
@@ -54,12 +53,12 @@ function lowerChoose(node, targetIr) {
   const cleanups = [];
 
   // redundant parts inside commands
-  const near1 = "type=minecraft:marker, sort=nearest, limit=1"
+  const near1 = "type=minecraft:marker, sort=nearest, limit=1";
   const chooseVar = `Oph_ChooseVar_d${node.depth}`;
   const chooseRes = `Oph_ChooseRes_d${node.depth}`;
   const chooseMar = `Oph_ChooseMarker_d${node.depth}`;
-  const summonMarker = `summon minecraft:marker ~ ~ ~`
-  const sbPlayer = `scoreboard players`
+  const summonMarker = `summon minecraft:marker ~ ~ ~`;
+  const sbPlayer = `scoreboard players`;
 
   // setup commands
   setups.push(`scoreboard objectives add ${chooseVar} dummy`);
@@ -95,17 +94,37 @@ function lowerChoose(node, targetIr) {
   // emit bodies BETWEEN setup and cleanup
   let bodyIdx = 0;
   let acc = 0;
+
+  // mini recursive transformer to resolve choose statement templates
+  const resolveChoose = (node, transform, data) => {
+
+    if (["McCommand", "ChooseStatement"].includes(node.type)) {
+      node.prefixes.forEach((prefix, idx) => {
+        if (prefix === `CHOOSE_d${data.id}`) {
+          console.log("found " + prefix);
+          node.prefixes[idx] = `if score @e[tag=Oph_ChooseRes_d${data.id}, ${near1}] Oph_ChooseVar_d${data.id} matches ${data.idx}`;
+        }
+      });
+    }
+
+    if (["IfStatement", "RepeatStatement", "McExecStatement"].includes(node.type)) {
+      transform(node.body, transform, data);
+    }
+
+    if (node.type === "ChooseStatement") {
+      node.bodies.forEach(node => transform(node, transform, data));
+    }
+
+    if (node.type === "Block") {
+      node.body.forEach(node => transform(node, transform, data));
+    }
+  };
+
+
   for (let i = 0; i < rngMax; i++) {
     const body = structuredClone(node.bodies[bodyIdx]);
-    body.body.forEach((stmt) => {
-      if (stmt.type === "McCommand") {
-        stmt.prefixes.forEach((prefix, idx) => {
-          if (prefix === `CHOOSE_d${node.depth}`) {
-            stmt.prefixes[idx] = `if score @e[tag=Oph_ChooseRes_d${node.depth}, sort=nearest, limit=1] Oph_ChooseVar_d${node.depth} matches ${i}`;
-          }
-        })
-      } 
-    })
+    const depth = node.depth;
+    body.body.forEach((node) => resolveChoose(node, resolveChoose, { id: depth, idx: i }));
 
     findCommands(body, targetIr);
 
@@ -114,7 +133,6 @@ function lowerChoose(node, targetIr) {
       bodyIdx++;
       acc = 0;
     } else {
-
     }
 
   }

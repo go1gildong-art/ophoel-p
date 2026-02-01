@@ -111,8 +111,29 @@ function lowerChoose(node, targetIr) {
     // emit bodies BETWEEN setup and cleanup
     let bodyIdx = 0;
     let acc = 0;
+    // mini recursive transformer to resolve choose statement templates
+    const resolveChoose = (node, transform, data) => {
+        if (["McCommand", "ChooseStatement"].includes(node.type)) {
+            node.prefixes.forEach((prefix, idx) => {
+                if (prefix === `CHOOSE_d${data.id}`) {
+                    node.prefixes[idx] = `if score @e[tag=Oph_ChooseRes_d${data.id}, ${near1}] Oph_ChooseVar_d${data.id} matches ${data.idx}`;
+                }
+            });
+        }
+        if (["IfStatement", "RepeatStatement", "McExecStatement"].includes(node.type)) {
+            transform(node.body, transform, data);
+        }
+        if (node.type === "ChooseStatement") {
+            node.bodies.forEach(node => transform(node, transform, data));
+        }
+        if (node.type === "Block") {
+            node.body.forEach(node => transform(node, transform, data));
+        }
+    };
     for (let i = 0; i < rngMax; i++) {
         const body = structuredClone(node.bodies[bodyIdx]);
+        const depth = node.depth;
+        body.body.forEach((node) => resolveChoose(node, resolveChoose, { id: depth, idx: i }));
         findCommands(body, targetIr);
         acc++;
         if (acc >= node.weights[bodyIdx].value) {

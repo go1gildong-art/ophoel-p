@@ -21,7 +21,7 @@ class Code {
     }
     closeBlock() {
         this.addCode(")", 0);
-        this.depth -= 2;
+        this.depth -= 1;
     }
     getCode() { return this.lines.join(""); }
 }

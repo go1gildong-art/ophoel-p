@@ -54,7 +54,7 @@ export function compile(sourceCode, config, fileName) {
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
 // console.log(JSON.stringify(transform(parse(tokenize(code, config, "source.oph")), config)) + "\n");
 // console.log(JSON.stringify(makeIr(transform(parse(tokenize(code, config, "source.oph")), config))) + "\n");
-console.log(compile(code, config, "source.oph") + "\n\n");
+// console.log(compile(code, config, "source.oph") + "\n\n");
 
 // console.log(lispify(parse(tokenize(code, config, "source.oph"))) + "\n");
 

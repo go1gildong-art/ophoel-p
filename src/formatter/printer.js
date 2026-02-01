@@ -114,7 +114,7 @@ function stringifyNode(node, resultCode) {
     if (node.type === "BinaryExpression") {
         stringifyNode(node.left, resultCode);
         stringifyNode(node.right, resultCode);
-        node.stringified = `${node.left.stringified} ${node.operator} ${node.right.stringified}`;
+        node.stringified = `${node.hasParenthesis ? "(" : ""}${node.left.stringified} ${node.operator} ${node.right.stringified}${node.hasParenthesis ? ")" : ""}`;
     }
 
     if (node.type === "RepeatStatement") {

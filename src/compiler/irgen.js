@@ -101,7 +101,6 @@ function lowerChoose(node, targetIr) {
     if (["McCommand", "ChooseStatement"].includes(node.type)) {
       node.prefixes.forEach((prefix, idx) => {
         if (prefix === `CHOOSE_d${data.id}`) {
-          console.log("found " + prefix);
           node.prefixes[idx] = `if score @e[tag=Oph_ChooseRes_d${data.id}, ${near1}] Oph_ChooseVar_d${data.id} matches ${data.idx}`;
         }
       });

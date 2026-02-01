@@ -65,7 +65,7 @@ class ExpressionParser {
     }
     parseAdditive() {
         var _a;
-        let left = this.parseMultiplicative();
+        let left = this.parsePrimary();
         while (((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === 'OPERATOR' && ['+', '-'].includes(this.peek().value)) {
             const operator = this.eat().value;
             const right = this.parse();
@@ -77,7 +77,7 @@ class ExpressionParser {
     }
     parseMultiplicative() {
         var _a;
-        let left = this.parsePrimary();
+        let left = this.parseAdditive();
         while (((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === 'OPERATOR' && ['*', '/', "%"].includes(this.peek().value)) {
             const operator = this.eat().value;
             const right = this.parse();

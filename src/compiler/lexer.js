@@ -30,7 +30,8 @@ const reservedKeywords = {
         "while",
         "repeat",
         "choose",
-        "or"
+        "or",
+        "return"
     ],
     "KW_BUILTIN": [
         "mc_exec"
@@ -38,7 +39,8 @@ const reservedKeywords = {
     "KW_DECL": [
         "let",
         "fn",
-        "macro"
+        "macro",
+        "struct"
     ],
     "KW_TYPE": [
         "int_c",

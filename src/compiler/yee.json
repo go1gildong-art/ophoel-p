@@ -1,28 +1,232 @@
 {
-    "instructions": [
-        {
-            "kind": "TextEmit",
-            "content": "execute as foo run say bar"
+    "type": "Program",
+    "location": {
+        "fileName": "source.oph",
+        "line": 2,
+        "tokenIdx": 0
+    },
+    "body": {
+        "type": "Block",
+        "location": {
+            "fileName": "source.oph",
+            "line": 2,
+            "tokenIdx": 0
         },
-        {
-            "kind": "TextEmit",
-            "content": "execute as foo run say baz"
-        },
-        {
-            "kind": "TextEmit",
-            "content": "execute as foo run say baz"
-        },
-        {
-            "kind": "TextEmit",
-            "content": "execute as foo run say baz"
-        },
-        {
-            "kind": "TextEmit",
-            "content": "execute as foo run say baz"
-        },
-        {
-            "kind": "TextEmit",
-            "content": "execute as foo run say baz"
-        }
-    ]
+        "body": [
+            {
+                "type": "VariableDecl",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 2,
+                    "tokenIdx": 0
+                },
+                "varType": "deduct",
+                "varName": "x",
+                "mutability": true,
+                "varValue": {
+                    "type": "ArrayLiteral",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 2,
+                        "tokenIdx": 4
+                    },
+                    "elements": [
+                        {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 2,
+                                "tokenIdx": 5
+                            },
+                            "valueType": {
+                                "type": "ValueType",
+                                "kind": "int_c",
+                                "options": {}
+                            },
+                            "raw": "1",
+                            "value": null
+                        },
+                        {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 2,
+                                "tokenIdx": 7
+                            },
+                            "valueType": {
+                                "type": "ValueType",
+                                "kind": "int_c",
+                                "options": {}
+                            },
+                            "raw": "2",
+                            "value": null
+                        },
+                        {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 2,
+                                "tokenIdx": 9
+                            },
+                            "valueType": {
+                                "type": "ValueType",
+                                "kind": "int_c",
+                                "options": {}
+                            },
+                            "raw": "3",
+                            "value": null
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "McCommand",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 3,
+                    "tokenIdx": 12
+                },
+                "command": "say",
+                "args": [
+                    {
+                        "type": "IndexAccess",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 3,
+                            "tokenIdx": 15
+                        },
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 3,
+                                "tokenIdx": 15
+                            },
+                            "name": "x",
+                            "value": null,
+                            "valueType": null
+                        },
+                        "index": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 3,
+                                "tokenIdx": 17
+                            },
+                            "valueType": {
+                                "type": "ValueType",
+                                "kind": "int_c",
+                                "options": {}
+                            },
+                            "raw": "0",
+                            "value": null
+                        }
+                    }
+                ]
+            },
+            {
+                "type": "VariableAssign",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 5,
+                    "tokenIdx": 21
+                },
+                "varName": "x",
+                "varAddress": {
+                    "type": "IndexAccess",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 5,
+                        "tokenIdx": 21
+                    },
+                    "left": {
+                        "type": "Identifier",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 5,
+                            "tokenIdx": 21
+                        },
+                        "name": "x",
+                        "value": null,
+                        "valueType": null
+                    },
+                    "index": {
+                        "type": "Literal",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 5,
+                            "tokenIdx": 23
+                        },
+                        "valueType": {
+                            "type": "ValueType",
+                            "kind": "int_c",
+                            "options": {}
+                        },
+                        "raw": "0",
+                        "value": null
+                    }
+                },
+                "varValue": {
+                    "type": "Literal",
+                    "location": {
+                        "fileName": "source.oph",
+                        "line": 5,
+                        "tokenIdx": 26
+                    },
+                    "valueType": {
+                        "type": "ValueType",
+                        "kind": "int_c",
+                        "options": {}
+                    },
+                    "raw": "10",
+                    "value": null
+                }
+            },
+            {
+                "type": "McCommand",
+                "location": {
+                    "fileName": "source.oph",
+                    "line": 6,
+                    "tokenIdx": 28
+                },
+                "command": "say",
+                "args": [
+                    {
+                        "type": "IndexAccess",
+                        "location": {
+                            "fileName": "source.oph",
+                            "line": 6,
+                            "tokenIdx": 31
+                        },
+                        "left": {
+                            "type": "Identifier",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 6,
+                                "tokenIdx": 31
+                            },
+                            "name": "x",
+                            "value": null,
+                            "valueType": null
+                        },
+                        "index": {
+                            "type": "Literal",
+                            "location": {
+                                "fileName": "source.oph",
+                                "line": 6,
+                                "tokenIdx": 33
+                            },
+                            "valueType": {
+                                "type": "ValueType",
+                                "kind": "int_c",
+                                "options": {}
+                            },
+                            "raw": "0",
+                            "value": null
+                        }
+                    }
+                ]
+            }
+        ]
+    }
 }

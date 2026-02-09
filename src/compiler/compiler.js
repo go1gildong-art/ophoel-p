@@ -7,25 +7,23 @@ import { generate } from "./generator.js";
 import { lispify } from "./lispifyast.js";
 // Load Configs
 // const config = JSON.parse(fs.readFileSync('./configs.json', 'utf8'));
-
-
 const code =
 `
-choose(1) {
-say!!("one");
+let mut x = [1, 2, 3];
+say!!(x[0]);
+say!!(x[1]);
+say!!(x[2]);
+
+repeat(3) {
 /.
-} or(2) {
-say!!("two");
-/.
-} or(3) {
-choose(1) {
-say!!("three-one");
-/.
-} or(1) {
-say!!("three-two");
-/.
+x[0] += x[1];
+x[1] = 3;
+say!!(x[0]);
+say!!(x[1]);
+say!!(x[2]);
 }
-}
+
+
 `;
 
 const config = { my_arr: [1, 2, 3], room_anchor_tag: "room_anchor", room_s: { radius: 7, tag: "room_s" } };
@@ -54,7 +52,7 @@ export function compile(sourceCode, config, fileName) {
 // console.log(JSON.stringify(parse(tokenize(code, config, "source.oph"))) + "\n");
 // console.log(JSON.stringify(transform(parse(tokenize(code, config, "source.oph")), config)) + "\n");
 // console.log(JSON.stringify(makeIr(transform(parse(tokenize(code, config, "source.oph")), config))) + "\n");
-// console.log(compile(code, config, "source.oph") + "\n\n");
+console.log(compile(code, config, "source.oph") + "\n\n");
 
 // console.log(lispify(parse(tokenize(code, config, "source.oph"))) + "\n");
 

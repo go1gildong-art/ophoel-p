@@ -60,8 +60,37 @@ function stringifyNode(node, resultCode) {
         node.stringified = `${node.access}`;
     }
 
+    if (node.type === "StructField") {
+        if (node.defaultValue) stringifyNode(node.defaultValue);
+        node.stringified = `(Field ${node.mutability ? "mut" : "immut"} ${node.name} ${node.varValue ? `${node.varValue.stringified}` : "null"})`;
+        resultCode.addLn(node.stringified);
+    }
+
+    if (node.type === "StructDeclaration") {
+        node.stringified = `(StructDecl ${node.name} `;
+        resultCode.openBlock(node.stringified);
+
+        node.fields.forEach((_node, idx) => {
+            stringifyNode(_node);
+            resultCode.addLn(_node.stringified);
+        });
+
+        resultCode.addCode(")", 0);
+    }
+
     if (node.type === "Literal") {
         node.stringified = (node.valueType === "string") ? `"${node.raw}"` : node.raw;
+    }
+
+    if (node.type === "ArrayLiteral") {
+        node.stringified = `(Array`;
+
+        node.elements.forEach((_node, idx) => {
+            stringifyNode(_node);
+            node.stringified += (" " + _node.stringified);
+        });
+
+        node.stringified += ")";
     }
 
     if (node.type === "TemplateStringLiteral") {
@@ -85,6 +114,7 @@ function stringifyNode(node, resultCode) {
     if (node.type === "VariableAssignShorten") {
         stringifyNode(node.varValue, resultCode);
 
+        console.log(node);
         node.stringified = `(CompoundAssign ${node.operator} ${node.varName} ${node.varValue.stringified})`;
         resultCode.addLn(node.stringified);
     }
@@ -97,6 +127,12 @@ function stringifyNode(node, resultCode) {
         stringifyNode(node.left, resultCode);
         stringifyNode(node.right, resultCode);
         node.stringified = `(${node.operator} ${node.left.stringified} ${node.right.stringified})`;
+    }
+
+    if (node.type === "IndexAccess") {
+        stringifyNode(node.left, resultCode);
+        stringifyNode(node.index, resultCode);
+        node.stringified = `(aref ${node.left.stringified} ${node.index.stringified})`;
     }
 
     if (node.type === "RepeatStatement") {

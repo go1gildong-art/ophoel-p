@@ -19,6 +19,44 @@ export class Block extends AST {
     }
 }
 
+
+export class StructField extends AST {
+    constructor(name, valueType, mutability, defaultValue, location) {
+        super("StructField", location);
+        this.name = name;
+        this.valueType = valueType;
+        this.mutability = mutability;
+        this.defaultValue = defaultValue;
+    }
+}
+
+export class StructDeclaration extends AST {
+    constructor(name, fields, location) {
+        super("StructDeclaration", location);
+        this.name = name;
+        this.fields = fields;
+    }
+}
+
+
+export class TypedParameter extends AST {
+    constructor(varType, varName, location) {
+        super("TypedParameter", location);
+        this.varType = varType;
+        this.varName = varName;
+    }
+}
+
+export class MacroDef extends AST {
+    constructor(name, args, valueType, body, location) {
+        super("MacroDef", location);
+        this.name = name;
+        this.args = args;
+        this.valueType = valueType;
+        this.body = body;
+    }
+}
+
 export class VariableDecl extends AST {
     constructor(varType, varName, mutability, varValue, location) {
         super("VariableDecl", location);
@@ -29,22 +67,28 @@ export class VariableDecl extends AST {
     }
 }
 
+
+
 export class VariableAssign extends AST {
-    constructor(varName, varValue, location) {
+    constructor(varName, varAddress, varValue, location) {
         super("VariableAssign", location);
         this.varName = varName;
+        this.varAddress = varAddress
         this.varValue = varValue;
     }
 }
 
 export class VariableAssignShorten extends AST {
-    constructor(varName, varValue, operator, location) {
+    constructor(varName, varAddress, varValue, operator, location) {
         super("VariableAssignShorten", location);
         this.varName = varName;
+        this.varAddress = varAddress;
         this.varValue = varValue;
         this.operator = operator;
     }
 }
+
+
 
 export class McCommand extends AST {
     constructor(command, args, location) {
@@ -54,6 +98,14 @@ export class McCommand extends AST {
     }
 }
 
+
+export class ValueType extends AST {
+    constructor(kind, options = {}, location) {
+        super("ValueType", location);
+        this.kind = kind;
+        this.options = options;
+    }
+}
 export class BinaryExpression extends AST {
     constructor(operator, left, right, hasParenthesis, location) {
         super("BinaryExpression", location);
@@ -65,10 +117,34 @@ export class BinaryExpression extends AST {
     }
 }
 
+export class MemberAccess extends AST {
+    constructor(left, key, location) {
+        super("MemberAccess", location);
+        this.left = left;
+        this.key = key;
+    }
+}
+
+
+export class IndexAccess extends AST {
+    constructor(left, index, location) {
+        super("IndexAccess", location);
+        this.left = left;
+        this.index = index;
+    }
+}
+
+export class ArrayLiteral extends AST {
+    constructor(elements, location) {
+        super("ArrayLiteral", location),
+            this.elements = elements;
+    }
+}
+
 export class Literal extends AST {
     constructor(valueType, raw, location) {
         super("Literal", location);
-        this.valueType = valueType;
+        this.valueType = BuildAST.ValueType(valueType);
         this.raw = raw;
         this.value = null;
     }
@@ -138,7 +214,7 @@ export class ChooseStatement extends AST {
         super("ChooseStatement", location);
         this.bodies = bodies.map(body => BuildAST.Block(body, location));
         this.weights = weights,
-        this.prefixes = null; // to manage choose setups and cleanups
+            this.prefixes = null; // to manage choose setups and cleanups
         this.depth = null; // to avoid clashes upon nested choose statements
     }
 }
@@ -172,19 +248,37 @@ export const BuildAST = {
     Block: (body, location) =>
         new Block(body, location),
 
+    TypedParameter: (varType, varName, location) =>
+        new TypedParameter(varType, varName, location),
+
+    StructDeclaration: (name, fields, location) =>
+        new StructDeclaration(name, fields, location),
+
+    ArrayLiteral: (elements, location) =>
+        new ArrayLiteral(elements, location),
+
+    MemberAccess: (left, key, location) =>
+        new MemberAccess(left, key, location),
+
+    IndexAccess: (left, index, location) =>
+        new IndexAccess(left, index, location),
+
     VariableDecl: (varType, varName, mutability, varValue, location) =>
         new VariableDecl(varType, varName, mutability, varValue, location),
 
-    VariableAssign: (varName, varValue, location) =>
-        new VariableAssign(varName, varValue, location),
+    VariableAssign: (varName, varAddress, varValue, location) =>
+        new VariableAssign(varName, varAddress, varValue, location),
 
-    VariableAssignShorten: (varName, varValue, operator, location) =>
-        new VariableAssignShorten(varName, varValue, operator, location),
+    VariableAssignShorten: (varName, varAddress, varValue, operator, location) =>
+        new VariableAssignShorten(varName, varAddress, varValue, operator, location),
 
     McCommand: (command, args, location) =>
         new McCommand(command, args, location),
 
     // 2. Expressions
+    ValueType: (kind, options, location) => 
+        new ValueType(kind, options, location),
+
     BinaryExpression: (operator, left, right, hasParenthesis, location) =>
         new BinaryExpression(operator, left, right, hasParenthesis, location),
 

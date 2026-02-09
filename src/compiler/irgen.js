@@ -10,6 +10,7 @@ function findCommands(node, targetIr) {
   if (node.type === "McCommand") {
     const prefix = node.prefixes.join(" run execute ");
     const instr = new Ir.TextEmit([(prefix !== "" ? "execute " + prefix + " run" : ""), node.command, node.args[0].value].join(" "));
+    console.log(node.args[0]);
     targetIr.emitInstr(instr);
   }
 

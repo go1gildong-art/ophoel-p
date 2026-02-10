@@ -1,5 +1,5 @@
-import { tokenize } from '../compiler/lexer.js';
-import { parse } from '../compiler/parser.js';
+import { tokenize } from '../compiler-old/lexer.js';
+import { parse } from '../compiler-old/parser.js';
 import { rePrint } from "./printer.js"
 import { OphoelParseError } from "../errors.js";
 

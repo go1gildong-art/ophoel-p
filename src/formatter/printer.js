@@ -1,6 +1,6 @@
-import { tokenize } from "../compiler/lexer.js";
-import { parse } from "../compiler/parser.js";
-import { AST } from "../compiler/ast.js";
+import { tokenize } from "../compiler-old/lexer.js";
+import { parse } from "../compiler-old/parser.js";
+import { AST } from "../compiler-old/ast.js";
 
 class Code {
     constructor(braceStyle, indentSpaces) {

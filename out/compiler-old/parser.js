@@ -16,6 +16,7 @@ class ExpressionParser {
     eat() { return this.tokens[this.pos++]; }
     // Helper to check next token
     next() { return this.tokens[this.pos + 1]; }
+    check(type, value) { var _a; return ((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === type && this.peek().value === value; }
     // Helper to catch syntax errors
     expect(type, value = null) {
         const token = this.eat();
@@ -32,14 +33,14 @@ class ExpressionParser {
         let endPos = this.pos;
         while (depth > 0) {
             endPos++;
+            if (endPos >= this.tokens.length)
+                throw new errors_js_1.OphoelParseError(`The ${value1}${value2} structure is not closed`, this.tokens[startPos]);
             if (this.tokens[endPos].type === type && this.tokens[endPos].value === value1) {
                 depth++;
             }
             else if (this.tokens[endPos].value === value2) {
                 depth--;
             }
-            if (endPos > this.tokens.length)
-                throw new errors_js_1.OphoelParseError(`The ${value1}${value2} structure is not closed`, this.tokens[startPos]);
         }
         // Capture the inside
         const block = this.tokens.slice(startPos, endPos);
@@ -47,8 +48,38 @@ class ExpressionParser {
         this.pos = endPos;
         return block;
     }
+    getTokensUntilMulti(tokenType, tokenValues) {
+        let startPos = this.pos;
+        let endPos = (this.tokens
+            .slice(startPos)
+            .findIndex(token => token.type === tokenType && tokenValues.includes(token.value))) + startPos;
+        // Capture the inside
+        const expr = this.tokens.slice(startPos);
+        // Move the main parser's position AT the "until" token
+        this.pos = endPos;
+        return expr;
+    }
     parse() {
+        let left = this.parseIndexAccess();
+        return left;
+    }
+    parseIndexAccess() {
+        let left = this.parseMemberAccess();
+        while (this.check("SYMBOL", "[")) {
+            this.eat();
+            const idx = this.getTokensBetween("SYMBOL", "[", "]");
+            left = ast_js_1.BuildAST.IndexAccess(left, new ExpressionParser(idx).parse(), this.getExprLocation());
+            this.eat();
+        }
+        return left;
+    }
+    parseMemberAccess() {
         let left = this.parseComparison();
+        while (this.check("SYMBOL", ".")) {
+            this.eat();
+            const field = this.expect("IDENTIFIER");
+            left = ast_js_1.BuildAST.MemberAccess(left, field, this.getExprLocation());
+        }
         return left;
     }
     parseComparison() {
@@ -97,7 +128,7 @@ class ExpressionParser {
             this.eat();
             return ast_js_1.BuildAST.ConfigRef(token.value, this.getExprLocation());
         }
-        if (token.type === 'SYMBOL' && token.value === "`") {
+        if (this.check("SYMBOL", "`")) {
             this.eat(); // remove opening `
             const quasis = [];
             const exprs = [];
@@ -126,13 +157,23 @@ class ExpressionParser {
         if (token.type === 'IDENTIFIER') {
             return ast_js_1.BuildAST.Identifier(this.eat().value, this.getExprLocation());
         }
-        if (token.value === '(') {
+        if (this.check("SYMBOL", '(')) {
             this.eat(); // eat (
             const exprTokens = this.getTokensBetween("SYMBOL", "(", ")");
             const expr = new ExpressionParser(exprTokens).parse();
             expr.hasParenthesis = true;
             this.eat(); // eat )
             return expr;
+        }
+        if (this.check("SYMBOL", '[')) {
+            const elements = [];
+            while (!this.check("SYMBOL", "]")) {
+                this.eat();
+                const value = new ExpressionParser(this.getTokensUntilMulti("SYMBOL", [",", "]"])).parse();
+                elements.push(value);
+            }
+            this.eat();
+            return ast_js_1.BuildAST.ArrayLiteral(elements, this.getExprLocation());
         }
         throw new errors_js_1.OphoelParseError(`Unexpected token in expression: ${token.value}`, token);
     }
@@ -150,6 +191,8 @@ class OphoelParser {
     eat() { return this.tokens[this.pos++]; }
     // Helper to check next token
     next() { return this.tokens[this.pos + 1]; }
+    // Help to check current token
+    check(type, value) { var _a; return ((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === type && this.peek().value === value; }
     // Helper to remove top level Program node
     unprogram(program) { return program.body.body; }
     // Helper to catch syntax errors
@@ -202,6 +245,17 @@ class OphoelParser {
         this.pos = endPos;
         return expr;
     }
+    getTokensUntilMulti(tokenType, tokenValues) {
+        let startPos = this.pos;
+        let endPos = (this.tokens
+            .slice(startPos)
+            .findIndex(token => token.type === tokenType && tokenValues.includes(token.value))) + startPos;
+        // Capture the inside
+        const expr = this.tokens.slice(startPos, endPos);
+        // Move the main parser's position AT the "until" token
+        this.pos = endPos;
+        return expr;
+    }
     handleComment() {
         const c = this.eat();
         this.emit(ast_js_1.BuildAST.Comment(c.value, c.location));
@@ -215,18 +269,18 @@ class OphoelParser {
         this.emit(ast_js_1.BuildAST.PreservedNewline(pn.value.slice(0, 2), pn.location)); // change /.\n to /.
     }
     handleDeclaration() {
-        var _a, _b, _c, _d;
+        var _a, _b;
         const declTypeMap = {
             let: "variable",
             fn: "function",
-            macro: "macro"
+            macro: "macro",
+            struct: "struct"
         };
         const decl = this.eat();
         const declType = declTypeMap[decl.value];
         if (declType === "variable") {
             let mutability;
-            if (((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === "KW_SPECIFIER"
-                && ((_b = this.peek()) === null || _b === void 0 ? void 0 : _b.value) === "mut") {
+            if (this.check("KW_SPECIFIER", "mut")) {
                 this.eat();
                 mutability = true;
             }
@@ -234,6 +288,44 @@ class OphoelParser {
                 mutability = false;
             }
             const name = this.expect("IDENTIFIER");
+            let type;
+            if (this.check("SYMBOL", ":")) {
+                this.eat();
+                type = this.expect("KW_TYPE");
+            }
+            else {
+                type = { value: "deduct" };
+            }
+            // if declaration contains assignment
+            if (this.check("OPERATOR", "=")) {
+                this.eat();
+                const expr = this.getTokensUntil("SYMBOL", ";");
+                this.expect("SYMBOL", ";");
+                this.emit(ast_js_1.BuildAST.VariableDecl(type.value, name.value, mutability, new ExpressionParser(expr).parse(), decl.location));
+            }
+            else {
+                this.expect("SYMBOL", ";");
+                this.emit(ast_js_1.BuildAST.VariableDecl(type.value, name.value, mutability, null, decl.location));
+            }
+        }
+        else if (declType === "struct") {
+            let mutability;
+            if (this.check("KW_SPECIFIER", "mut")) {
+                this.eat();
+                mutability = true;
+            }
+            else {
+                mutability = false;
+            }
+            const name = this.expect("IDENTIFIER");
+        }
+        else if (declType === "macro") {
+            const name = this.expect("IDENTIFIER");
+            this.expect("SYMBOL", "(");
+            const args = [];
+            while (!(this.peek().type === "SYMBOL" && this.peek().value === ")")) {
+                this.expect("IDENTIFIER");
+            }
             let type;
             if (this.peek().type === "SYMBOL" && this.peek().value == ":") {
                 this.expect("SYMBOL", ":");
@@ -243,7 +335,7 @@ class OphoelParser {
                 type = { value: "deduct" };
             }
             // if declaration contains assignment
-            if (((_c = this.peek()) === null || _c === void 0 ? void 0 : _c.type) === "OPERATOR" && ((_d = this.peek()) === null || _d === void 0 ? void 0 : _d.value) === "=") {
+            if (((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === "OPERATOR" && ((_b = this.peek()) === null || _b === void 0 ? void 0 : _b.value) === "=") {
                 this.expect("OPERATOR", "=");
                 const expr = this.getTokensUntil("SYMBOL", ";");
                 this.expect("SYMBOL", ";");
@@ -257,21 +349,28 @@ class OphoelParser {
     }
     handleAssignment() {
         var _a, _b;
-        const name = this.expect("IDENTIFIER");
+        const left = [];
+        const name = this.peek();
+        while (!((this.peek().type === "OPERATOR" && ["+", "-", "*", "/", "%"].includes(this.peek().value)
+            && this.next().type === "OPERATOR" && this.next().value === "=")
+            || this.check("OPERATOR", "="))) {
+            left.push(this.eat());
+        }
+        const target = new ExpressionParser(left).parse();
         if (((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === "OPERATOR" && ["+", "-", "*", "/", "%"].includes((_b = this.peek()) === null || _b === void 0 ? void 0 : _b.value)) {
             // if operand is += style shorthand
             const oper = this.expect("OPERATOR");
             this.expect("OPERATOR", "=");
             const expr = this.getTokensUntil("SYMBOL", ";");
             this.expect("SYMBOL", ";");
-            this.emit(ast_js_1.BuildAST.VariableAssignShorten(name.value, new ExpressionParser(expr).parse(), oper.value, name.location));
+            this.emit(ast_js_1.BuildAST.VariableAssignShorten(name.value, target, new ExpressionParser(expr).parse(), oper.value, name.location));
         }
         else {
             // classic x = expr style operand
             this.expect("OPERATOR", "=");
             const expr = this.getTokensUntil("SYMBOL", ";");
             this.expect("SYMBOL", ";");
-            this.emit(ast_js_1.BuildAST.VariableAssign(name.value, new ExpressionParser(expr).parse(), name.location));
+            this.emit(ast_js_1.BuildAST.VariableAssign(name.value, target, new ExpressionParser(expr).parse(), name.location));
         }
         // save the variable inside storage
         // this.symbols[name.value] = value.value;
@@ -309,7 +408,7 @@ class OphoelParser {
         this.emit(ast_js_1.BuildAST.IfStatement([new ExpressionParser(condition).parse()], [...this.unprogram(new OphoelParser(block).parse())], keyword.location));
     }
     handleChoose() {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b;
         const weights = [];
         const keyword = this.expect("KW_CONTROL", "choose");
         if (((_a = this.peek()) === null || _a === void 0 ? void 0 : _a.type) === "SYMBOL" && ((_b = this.peek()) === null || _b === void 0 ? void 0 : _b.value) === "(") {
@@ -329,9 +428,9 @@ class OphoelParser {
         const bodies = [];
         bodies.push(this.getTokensBetween("SYMBOL", "{", "}"));
         this.expect("SYMBOL", "}");
-        while (((_c = this.peek()) === null || _c === void 0 ? void 0 : _c.type) === "KW_CONTROL" && ((_d = this.peek()) === null || _d === void 0 ? void 0 : _d.value) === "or") {
-            this.expect("KW_CONTROL", "or");
-            if (((_e = this.peek()) === null || _e === void 0 ? void 0 : _e.type) === "SYMBOL" && ((_f = this.peek()) === null || _f === void 0 ? void 0 : _f.value) === "(") {
+        while (this.check("KW_CONTROL", "or")) {
+            this.eat();
+            if (this.check("SYMBOL", "(")) {
                 this.expect("SYMBOL", "(");
                 const weight = (this.getTokensBetween("SYMBOL", "(", ")"));
                 weights.push(weight);
@@ -387,6 +486,11 @@ class OphoelParser {
             // 3. Handle Declarations (let x: string)
             if (token.type === 'KW_DECL') {
                 this.handleDeclaration();
+                continue;
+            }
+            // 4. handle return 
+            if (token.type === "KW_CONTROL" && token.value === 'return') {
+                this.handleReturn();
                 continue;
             }
             // 4. Handle variable assignments (x = "y")

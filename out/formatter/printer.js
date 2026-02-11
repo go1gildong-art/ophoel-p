@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rePrint = rePrint;
-const lexer_js_1 = require("../compiler/lexer.js");
-const parser_js_1 = require("../compiler/parser.js");
-const ast_js_1 = require("../compiler/ast.js");
+const lexer_js_1 = require("../compiler-old/lexer.js");
+const parser_js_1 = require("../compiler-old/parser.js");
+const ast_js_1 = require("../compiler-old/ast.js");
 class Code {
     constructor(braceStyle, indentSpaces) {
         this.lines = [];

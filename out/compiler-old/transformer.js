@@ -7,6 +7,25 @@ function print(x) {
     // console.log(x);
     return x;
 }
+function deepEqual(a, b) {
+    if (a === b)
+        return true; // same reference or primitive
+    if (typeof a !== "object" || a === null)
+        return false;
+    if (typeof b !== "object" || b === null)
+        return false;
+    const keysA = Object.keys(a);
+    const keysB = Object.keys(b);
+    if (keysA.length !== keysB.length)
+        return false;
+    for (let key of keysA) {
+        if (!keysB.includes(key))
+            return false;
+        if (!deepEqual(a[key], b[key]))
+            return false;
+    }
+    return true;
+}
 function transform(_ast, config) {
     const ast = { ..._ast };
     transformNode(ast, config);
@@ -32,7 +51,7 @@ class Context {
         if (this.peek().variables[node.varName])
             throw new errors_js_1.OphoelSemanticError(`Variable ${node.varName} already exists`, node);
         this.peek().variables[node.varName] = {
-            type: node.varType,
+            valueType: ast_js_1.BuildAST.ValueType(node.varType),
             value: null,
             mutability: node.mutability
         };
@@ -44,20 +63,48 @@ class Context {
         // reverse to check leaf scope first
         for (const scope of this.scopes.toReversed()) {
             const vars = scope.variables;
-            if (vars[node.varName]) {
-                const variable = vars[node.varName];
-                if (!variable.mutability && variable.value != null) {
+            if (vars[node.varName] != null) {
+                let baseVariable = structuredClone(vars[node.varName]);
+                let variable = vars[node.varName];
+                if (node.type === "VariableDecl") {
+                }
+                else if (["VariableAssign", "VariableAssignShorten"].includes(node.type)) {
+                    let varAccess = node.varAddress;
+                    while (true) {
+                        if (varAccess.type === "Identifier") {
+                            if (node.varAddress.name === node.varName) {
+                                break;
+                            }
+                        }
+                        else if (varAccess.type === "IndexAccess") {
+                            if (variable.value[varAccess.index.value] != null) {
+                                variable = variable.value[varAccess.index.value];
+                                varAccess = varAccess.index;
+                            }
+                            else {
+                                throw new errors_js_1.OphoelSemanticError(`invalid index ${node.varAddress.index.value} for array/struct ${node.varName}`, node);
+                            }
+                        }
+                        else if (varAccess.type === "Literal") {
+                            break;
+                        }
+                    }
+                }
+                else {
+                }
+                if (!baseVariable.mutability && variable.value != null) {
                     throw new errors_js_1.OphoelSemanticError(`Variable ${node.varName} is immutable, but tried to mutate`, node);
                 }
-                deductType(node);
-                if (variable.type !== node.varValue.valueType && variable.type !== "deduct") {
-                    throw new errors_js_1.OphoelSemanticError(`Type mismatch: Tried to assign ${node.varValue.value}(${node.varValue.valueType}) to ${node.varName}(${variable.type})`, node);
+                deductType(node.varValue);
+                if (variable.valueType.kind !== node.varValue.valueType.kind && variable.valueType.kind !== "deduct") {
+                    throw new errors_js_1.OphoelSemanticError(`Type mismatch: Tried to assign ${node.varValue.value}(${node.varValue.valueType.kind}) to ${node.varName}(${variable.valueType.kind})`, node);
                 }
                 if (variable.type === "deduct") {
                     variable.type = node.varValue.valueType;
                 }
                 print(`assigned ${node.varName} = ${node.varValue.value}!`);
-                vars[node.varName].value = node.varValue.value;
+                variable.value = node.varValue.value;
+                variable.valueType = node.varValue.valueType;
                 return;
             }
         }
@@ -108,18 +155,26 @@ function transformNode(node, config) {
                 node.valueType === "bool" ? Boolean(node.raw) :
                     node.valueType === "string" ? String(node.raw) : node.raw);
     }
-    if (node.type === "TemplateStringLiteral") {
-        if (node.type === "TemplateStringLiteral") {
-            const components = [];
-            node.templateExpressions.forEach(node => transformNode(node, config));
-            for (let i = 0; i < node.templateQuasis.length - 1; i++) {
-                components.push(node.templateQuasis[i]);
-                components.push(node.templateExpressions[i].value);
+    if (node.type === "ArrayLiteral") {
+        node.elements.forEach(el => transformNode(el, config));
+        for (let i = 0; i < node.elements.length, i++;) {
+            if (!deepEqual(node.elements[0].valueType, node.elements[i].valueType)) {
+                throw new errors_js_1.OphoelSemanticError(`Heterogenous array detected`, node);
             }
-            // pull out the last TEMPLATE_TAIL of the quasis
-            components.push(node.templateQuasis[node.templateQuasis.length - 1]);
-            node.value = components.join("");
         }
+        node.value = node.elements.map(el => el.value);
+        node.valueType = ast_js_1.BuildAST.ValueType("array", { elementType: node.elements[0].valueType });
+    }
+    if (node.type === "TemplateStringLiteral") {
+        const components = [];
+        node.templateExpressions.forEach(node => transformNode(node, config));
+        for (let i = 0; i < node.templateQuasis.length - 1; i++) {
+            components.push(node.templateQuasis[i]);
+            components.push(node.templateExpressions[i].value);
+        }
+        // pull out the last TEMPLATE_TAIL of the quasis
+        components.push(node.templateQuasis[node.templateQuasis.length - 1]);
+        node.value = components.join("");
     }
     if (node.type === "VariableDecl") {
         if (node.varValue != null)
@@ -128,6 +183,7 @@ function transformNode(node, config) {
     }
     if (node.type === "VariableAssign") {
         transformNode(node.varValue, config);
+        transformNode(node.varAddress, config);
         ctx.assignVariable(node);
     }
     if (node.type === "VariableAssignShorten") {
@@ -140,20 +196,20 @@ function transformNode(node, config) {
         deductType(node);
         const variable = ctx.getVariable(node);
         node.value = variable.value;
-        node.valueType = variable.type;
+        node.valueType = variable.valueType;
     }
     if (node.type === "BinaryExpression") {
         transformNode(node.left, config);
         transformNode(node.right, config);
         if (node.operator === "==") {
-            node.valueType = "bool";
+            node.valueType.kind = "bool";
         }
         else {
-            if (node.left.valueType === node.right.valueType) {
+            if (node.left.valueType.kind === node.right.valueType.kind) {
                 node.valueType = node.left.valueType;
             }
             else {
-                throw new errors_js_1.OphoelSemanticError(`Type mismatch: tried to perform ${node.operator} operation between ${node.left.value}(${node.left.valueType}) and ${node.right.value}(${node.right.valueType})`, node);
+                throw new errors_js_1.OphoelSemanticError(`Type mismatch: tried to perform ${node.operator} operation between ${node.left.value}(${node.left.valueType.kind}) and ${node.right.value}(${node.right.valueType.kind})`, node);
             }
         }
         let result;
@@ -189,6 +245,22 @@ function transformNode(node, config) {
                 throw new errors_js_1.OphoelSemanticError(`Undefined operator ${node.operator}`, node);
         }
         node.value = (typeof result === "number") ? Math.round(result) : result;
+    }
+    if (node.type === "IndexAccess") {
+        transformNode(node.left, config);
+        transformNode(node.index, config);
+        if (node.left.valueType.kind === "array") {
+            if (node.index.value >= node.left.value.length) {
+                throw new errors_js_1.OphoelSemanticError(`Array out of bound! tried to access ${node.index.value}th for an array of length ${node.left.value.length}`, node);
+            }
+            node.value = node.left.value[node.index.value].value;
+            node.valueType = node.left.value[node.index.value].valueType;
+            console.log("node.value: " + node.value);
+            console.log("node.valueType: " + node.valueType);
+        }
+        else {
+            throw new errors_js_1.OphoelSemanticError(`Cannot access property ${node.index.value} of value ${node.left.value}`, node);
+        }
     }
     if (node.type === "RepeatStatement") {
         const proliferate = (obj, count) => {
@@ -293,20 +365,23 @@ function resolveConfigs(node, config) {
     node.value = configElement;
 }
 function deductType(node) {
+    var _a;
     // if type is predefined
-    if (["int_c", "bool", "string"].includes(node.valueType)) {
+    if (["int_c", "bool", "string"].includes((_a = node.valueType) === null || _a === void 0 ? void 0 : _a.kind)) {
         return;
     }
     switch (typeof node.value) {
         case "string":
-            node.valueType = "string";
+            node.valueType.kind = "string";
             break;
         case "number":
-            node.valueType = "int_c";
+            node.valueType.kind = "int_c";
             break;
         case "boolean":
-            node.valueType = "bool";
+            node.valueType.kind = "bool";
             break;
     }
+    if (Array.isArray(node.value))
+        node.valueType.kind = "array";
 }
 //# sourceMappingURL=transformer.js.map

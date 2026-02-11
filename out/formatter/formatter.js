@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.format = format;
-const lexer_js_1 = require("../compiler/lexer.js");
-const parser_js_1 = require("../compiler/parser.js");
+const lexer_js_1 = require("../compiler-old/lexer.js");
+const parser_js_1 = require("../compiler-old/parser.js");
 const printer_js_1 = require("./printer.js");
 const errors_js_1 = require("../errors.js");
 const code = `

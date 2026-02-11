@@ -14,7 +14,7 @@
       "node",
       "vscode"
     ],
-    "allowJs": true
+    "allowJs": true,
   },
   "include": [
     "src"

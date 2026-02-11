@@ -1,0 +1,1 @@
+{"version":3,"file":"token.cjs","sourceRoot":"","sources":["../../../src/compiler/tokens/token.cts"],"names":[],"mappings":";;AAAA,MAAM,QAAQ,GAAG,OAAO,CAAC,iBAAiB,CAAC,CAAC;AAG5C,MAAM,KAAK;IAKP,YAAY,IAAY,EAAE,KAAa,EAAE,QAAoB;QACzD,IAAI,CAAC,IAAI,GAAG,IAAI,CAAC;QACjB,IAAI,CAAC,KAAK,GAAG,KAAK,CAAC;QACnB,IAAI,CAAC,QAAQ,GAAG,QAAQ,CAAC;IAC7B,CAAC;CACJ"}

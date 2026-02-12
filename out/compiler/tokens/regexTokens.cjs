@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.regexTokens = void 0;
+const Whitespace = {
+    WHITESPACE: /\s+/
+};
 const Comments = {
     SLINECOMMENT: /^\/\/.*/, // // comment
     MLINECOMMENT: /^\/\*[\s\S]*?\*\//, // /* comment */
@@ -73,6 +76,7 @@ const IdentifierToken = {
     IDENTIFIER: /^[A-Za-z_][A-Za-z0-9-]*/
 };
 exports.regexTokens = {
+    ...Whitespace,
     ...Comments,
     ...CompoundAssigns,
     ...Comparisons,

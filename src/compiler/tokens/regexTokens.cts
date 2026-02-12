@@ -1,3 +1,7 @@
+const Whitespace = {
+  WHITESPACE: /\s+/
+}
+
 
 const Comments = {
   SLINECOMMENT: /^\/\/.*/, // // comment
@@ -80,6 +84,7 @@ const IdentifierToken = {
 }
 
 export const regexTokens = {
+  ...Whitespace,
   ...Comments,
   ...CompoundAssigns,
   ...Comparisons,

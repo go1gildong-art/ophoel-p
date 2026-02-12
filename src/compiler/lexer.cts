@@ -7,8 +7,8 @@ type Token_t = Token;
 import { Location } from "./metadata.cjs"
 
 class Lexer {
-  source
-  pos = 0;
+  source: string;
+  pos: number = 0;
   tokens: Array<Token_t> = [];
 
   constructor(source: string) {
@@ -20,7 +20,10 @@ class Lexer {
   }
 
   tokenize(): Array<Token_t> {
-    this.tokens.push(this.getToken());
+    while (this.pos < this.source.length) {
+      this.tokens.push(this.getToken());
+    }
+    
     return this.tokens;
   }
 
@@ -30,12 +33,16 @@ class Lexer {
       const regex: RegExp = regexTokens[key];
       const optMatch = this.getCurrentSource().match(regex);
       console.log("aaa",optMatch);
-      if (optMatch === null) {
-      } else {
-        let token: string;
-        token = optMatch[0];
+
+      if (optMatch !== null) {
+        const token = optMatch[0];
+        this.pos += token.length;
+
+        if (key === "WHITESPACE") continue;
+
         return new Token(key, token, new Location("test.oph", 1, 1, 1));
       }
+
     }
     // when none matched
     throw new Error(`failed lexing! invalid token ${this.getCurrentSource()} found`);

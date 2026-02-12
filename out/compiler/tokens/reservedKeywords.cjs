@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.reservedKeywords = void 0;
 const KW_DECL = [
     "struct",
     "fn",
@@ -34,7 +35,7 @@ const KW_MCCOMMAND = [
     "place",
     "summon"
 ];
-const reservedKeywords = {
+exports.reservedKeywords = {
     KW_DECL,
     KW_CONTROL,
     KW_MCCOMMAND,

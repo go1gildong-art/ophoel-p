@@ -1,10 +1,10 @@
 // test change for github
 
-import regexTokens from "./tokens/regexTokens"
-import reservedKeywords from "./tokens/reservedKeywords"
-import Token from "./tokens/token"
+import { regexTokens } from "./tokens/regexTokens.cjs"
+// import { reservedKeywords } from "./tokens/reservedKeywords.cjs"
+import { Token } from "./tokens/token.cjs"
 type Token_t = Token;
-import Location from "./tokens/regexTokens"
+import { Location } from "./metadata.cjs"
 
 class Lexer {
   source
@@ -29,18 +29,16 @@ class Lexer {
     for (const key of Object.keys(regexTokens) as RegexTokenKeys[]) {
       const regex: RegExp = regexTokens[key];
       const optMatch = this.getCurrentSource().match(regex);
-      let token: string;
-
+      console.log("aaa",optMatch);
       if (optMatch === null) {
-        throw new Error("failed lexing");
       } else {
+        let token: string;
         token = optMatch[0];
+        return new Token(key, token, new Location("test.oph", 1, 1, 1));
       }
-
-      return new Token(key, token, new Location("test.oph", 1, 1, 1));
     }
-    // after done
-    return new Token("DONE", "done!", new Location("test.oph", 1, 1, 1));
+    // when none matched
+    throw new Error(`failed lexing! invalid token ${this.getCurrentSource()} found`);
   }
 }
 

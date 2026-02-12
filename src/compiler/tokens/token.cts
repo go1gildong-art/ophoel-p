@@ -1,7 +1,8 @@
-const Location = require("../metadata.cjs");
+// const Location = require("../metadata.cjs");
+import { Location } from "../metadata.cjs"
 type Location_t = InstanceType<typeof Location>;
 
-class Token {
+export class Token {
     kind: string;
     value: string;
     location: Location_t;

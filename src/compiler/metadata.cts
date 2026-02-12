@@ -1,4 +1,4 @@
-class Location {
+export class Location {
     fileName: string;
     line: number;
     column: number;

@@ -1,4 +1,4 @@
-import { tokenize } from './lexer.js';
+import { tokenize } from './lexer.cjs';
 import { parse } from './parser.js';
 import { transform } from "./transformer.js";
 import { makeIr } from "./irgen.js";

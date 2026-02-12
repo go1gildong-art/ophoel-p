@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const Location = require("../metadata.cjs");
+exports.Token = void 0;
 class Token {
     constructor(kind, value, location) {
         this.kind = kind;
@@ -8,4 +8,5 @@ class Token {
         this.location = location;
     }
 }
+exports.Token = Token;
 //# sourceMappingURL=token.cjs.map

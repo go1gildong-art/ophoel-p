@@ -79,7 +79,7 @@ const IdentifierToken = {
   IDENTIFIER: /^[A-Za-z_][A-Za-z0-9-]*/
 }
 
-const regexTokens = {
+export const regexTokens = {
   ...Comments,
   ...CompoundAssigns,
   ...Comparisons,

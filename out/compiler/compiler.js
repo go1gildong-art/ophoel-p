@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.compile = compile;
-const lexer_js_1 = require("./lexer.js");
+const lexer_cjs_1 = require("./lexer.cjs");
 const parser_js_1 = require("./parser.js");
 const transformer_js_1 = require("./transformer.js");
 const irgen_js_1 = require("./irgen.js");
@@ -29,7 +29,7 @@ say!!(x[2]);
 const config = { my_arr: [1, 2, 3], room_anchor_tag: "room_anchor", room_s: { radius: 7, tag: "room_s" } };
 function compile(sourceCode, config, fileName) {
     // 1. Raw text to Tokens
-    let tokens = (0, lexer_js_1.tokenize)(sourceCode, config, fileName);
+    let tokens = (0, lexer_cjs_1.tokenize)(sourceCode, config, fileName);
     // 2. parse tokens to get string mcfunction output
     let ast = (0, parser_js_1.parse)(tokens);
     // 3. flatten and solve all compile time computations

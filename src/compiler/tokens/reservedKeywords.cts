@@ -37,7 +37,7 @@ const KW_MCCOMMAND: Array<string> = [
     "summon"
 ]
 
-const reservedKeywords = {
+export const reservedKeywords = {
     KW_DECL,
     KW_CONTROL,
     KW_MCCOMMAND,

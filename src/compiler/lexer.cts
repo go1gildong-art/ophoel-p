@@ -5,7 +5,7 @@ import { reservedKeywords } from "./tokens/reservedKeywords.cjs"
 import { Token } from "./tokens/token.cjs"
 import { Location } from "./metadata.cjs"
 
-class Lexer {
+abstract class Lexer {
   source: string;
   pos: number = 0;
   tokens: Array<Token> = [];
@@ -14,11 +14,18 @@ class Lexer {
     this.source = source;
   }
 
-  getCurrentSource() {
+  getCurrentSource(): string {
     return this.source.slice(this.pos);
   }
 
-  tokenize(): Array<Token> {
+  tokenize(): Array<Token>;
+  appendToken(token: Token): void { this.tokens.push(token); }
+  appendTokens(tokens: Array<Token>): void { this.tokens.push(...tokens)}
+}
+
+class CodeLexer extends Lexer {
+
+  tokenize() {
     while (this.pos < this.source.length) {
       this.tokens.push(this.getToken());
     }
@@ -55,5 +62,5 @@ class Lexer {
 }
 
 const src = "AAA eee ii OO u";
-const lexlex = new Lexer(src);
+const lexlex = new CodeLexer(src);
 console.log(lexlex.tokenize());

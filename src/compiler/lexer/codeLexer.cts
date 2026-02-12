@@ -1,29 +1,11 @@
-// test change for github
 
-import { regexTokens } from "./tokens/regexTokens.cjs"
-import { reservedKeywords } from "./tokens/reservedKeywords.cjs"
-import { Token } from "./tokens/token.cjs"
-import { Location } from "./metadata.cjs"
+import { regexTokens } from "../tokens/regexTokens.cjs"
+import { reservedKeywords } from "../tokens/reservedKeywords.cjs"
+import { Token } from "../tokens/token.cjs"
+import { Location } from "../metadata.cjs"
+import { Lexer } from "./lexer.cjs"
 
-abstract class Lexer {
-  source: string;
-  pos: number = 0;
-  tokens: Array<Token> = [];
-
-  constructor(source: string) {
-    this.source = source;
-  }
-
-  getCurrentSource(): string {
-    return this.source.slice(this.pos);
-  }
-
-  tokenize(): Array<Token>;
-  appendToken(token: Token): void { this.tokens.push(token); }
-  appendTokens(tokens: Array<Token>): void { this.tokens.push(...tokens)}
-}
-
-class CodeLexer extends Lexer {
+export class CodeLexer extends Lexer {
 
   tokenize() {
     while (this.pos < this.source.length) {
@@ -60,7 +42,3 @@ class CodeLexer extends Lexer {
     return "IDENTIFIER";
   }
 }
-
-const src = "AAA eee ii OO u";
-const lexlex = new CodeLexer(src);
-console.log(lexlex.tokenize());

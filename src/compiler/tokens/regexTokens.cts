@@ -50,6 +50,10 @@ const OphoelSpecial = {
   // CONFIGREF: /^config(\.[A-Za-z_][A-Za-z_0-9]*|\[.+\])/ // config.foo.bar[2][baz]...
 }
 
+const TemplateString = {
+  OPENEXPR: /^\$\{/
+}
+
 const Symbols = {
   BANG: /^!/,
   CARET: /^\^/,
@@ -89,6 +93,7 @@ export const regexTokens = {
   ...CompoundAssigns,
   ...Comparisons,
   ...OphoelSpecial,
+  ...TemplateString,
   ...Operations,
   ...Literals,
   ...Brackets,

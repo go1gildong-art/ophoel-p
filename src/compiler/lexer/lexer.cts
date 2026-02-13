@@ -5,17 +5,34 @@ import { reservedKeywords } from "./tokens/reservedKeywords.cjs"
 import { Token } from "./tokens/token.cjs"
 import { Location } from "./metadata.cjs"
 
+type LexerState = "code" 
+| "templateStrng";
+
 export abstract class Lexer {
   source: string;
-  pos: number = 0;
+  pos: number;
   tokens: Array<Token> = [];
+  stateStack: Array<LexerState> = ["code"];
 
-  constructor(source: string) {
+  constructor(source: string, startPos: number = 0) {
     this.source = source;
+    this.pos = startPos;
   }
 
   getCurrentSource(): string {
     return this.source.slice(this.pos);
+  }
+
+  matchCurrentSource(regex: RegExp) {
+    return this.getCurrentSource().match(regex);
+  }
+
+  getCurrentState(): LexerState {
+    return this.stateStack[this.stateStack.length - 1];
+  }
+
+  popCurrentState(): void {
+    this.stateStack.pop();
   }
 
   tokenize(): Array<Token>;

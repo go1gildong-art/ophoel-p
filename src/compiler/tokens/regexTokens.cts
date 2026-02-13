@@ -50,6 +50,10 @@ const OphoelSpecial = {
   // CONFIGREF: /^config(\.[A-Za-z_][A-Za-z_0-9]*|\[.+\])/ // config.foo.bar[2][baz]...
 }
 
+const TemplateString = {
+  OPENEXPR: /^\$\{/
+}
+
 const Symbols = {
   BANG: /^!/,
   CARET: /^\^/,
@@ -79,8 +83,8 @@ const Literals = {
   NULL: /^null/ // null
 }
 
-const IdentifierToken = {
-  IDENTIFIER: /^[A-Za-z_][A-Za-z0-9-]*/
+const KeywordToken = {
+  KEYWORD: /^[A-Za-z_][A-Za-z0-9-]*/
 }
 
 export const regexTokens = {
@@ -89,9 +93,10 @@ export const regexTokens = {
   ...CompoundAssigns,
   ...Comparisons,
   ...OphoelSpecial,
+  ...TemplateString,
   ...Operations,
   ...Literals,
   ...Brackets,
   ...Symbols,
-  ...IdentifierToken
+  ...KeywordToken
 }

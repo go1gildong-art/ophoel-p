@@ -21,8 +21,6 @@ export abstract class Lexer {
   }
 
   abstract tokenize(): Array<Token>
-  appendToken(token: Token): void { this.tokens.push(token); }
-  appendTokens(tokens: Array<Token>): void { this.tokens.push(...tokens)}
 
   getCurrentLocation(): Location {
     const processedString = this.source.slice(this.pos);

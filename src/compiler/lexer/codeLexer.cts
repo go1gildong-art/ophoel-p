@@ -27,11 +27,11 @@ export class CodeLexer extends Lexer {
         this.pos += value.length;
 
         if (kind === "WHITESPACE") continue;
-        
+
         return new Token(
-            this.checkReserved(kind, value), 
-            value, 
-            this.getCurrentLocation()
+          this.checkReserved(kind, value),
+          value,
+          this.getCurrentLocation()
         );
       }
     }
@@ -51,18 +51,17 @@ export class CodeLexer extends Lexer {
 
   getTemplatePart() {
     const chars: Array<string> = [];
-    let templateType: string;
     while (this.pos < this.source.length) {
       const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;
       const matchesBacktick = this.matchCurrentSource(regexTokens.BACKTICK) !== null;
-        if (matchesOpenExpr || matchesBacktick) {
-          break;
-        } else {
+      if (matchesOpenExpr || matchesBacktick) {
+        break;
+      } else {
         chars.push(this.source[this.pos]);
         this.pos++;
-        }
+      }
     }
-    return new Token (
+    return new Token(
       "TEMPLATE_PART",
       chars.join(""),
       this.getCurrentLocation()

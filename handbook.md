@@ -6,3 +6,16 @@ Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\...\ophoel
 3. all .ts -> .cts
 4. use import, no require() in .cts files
 5. if need to execute, always execute .cjs one (node .\out\compiler\lexer.cjs)
+
+
+
+# Import / Export rules
+.oph (OPHoel) files 
+-> compile into one .mcfunction for each file
+-> cannot export anything
+-> can import one or multiple .ophl files
+
+.ophl (OPHoel Library) files
+-> DOES NOT compile into a .mcfunction
+-> can export struct, macro, and/or function
+-> cannot import anything

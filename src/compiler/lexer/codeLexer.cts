@@ -31,7 +31,7 @@ export class CodeLexer extends Lexer {
         return new Token(
             this.checkReserved(kind, value), 
             value, 
-            new Location("test.oph", 1, 1, 1)
+            this.getCurrentLocation()
         );
       }
     }
@@ -62,10 +62,10 @@ export class CodeLexer extends Lexer {
         this.pos++;
         }
     }
-    return new Token(
+    return new Token (
       "TEMPLATE_PART",
       chars.join(""),
-      new Location("test.oph", 1, 1, 1)
+      this.getCurrentLocation()
     );
   }
 }

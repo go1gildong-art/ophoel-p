@@ -10,13 +10,14 @@ type LexerState = "code"
 
 export abstract class Lexer {
   source: string;
-  pos: number;
+  pos: number = 0;
   tokens: Array<Token> = [];
   stateStack: Array<LexerState> = ["code"];
+  fileName: string;
 
-  constructor(source: string, startPos: number = 0) {
+  constructor(source: string, fileName: string) {
     this.source = source;
-    this.pos = startPos;
+    this.fileName = fileName;
   }
 
   getCurrentSource(): string {
@@ -38,4 +39,14 @@ export abstract class Lexer {
   abstract tokenize(): Array<Token>
   appendToken(token: Token): void { this.tokens.push(token); }
   appendTokens(tokens: Array<Token>): void { this.tokens.push(...tokens)}
+
+  getCurrentLocation(): Location {
+    const processedString = this.source.slice(this.pos);
+    const splitString = processedString.split("\n");
+
+    const ln = splitString.length;
+    const col = splitString[splitString.length - 1].length;
+
+    return new Location(this.fileName, ln, col, this.tokens.length);
+  }
 }

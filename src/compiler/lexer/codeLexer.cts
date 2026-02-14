@@ -29,7 +29,7 @@ export class CodeLexer extends Lexer {
         if (kind === "WHITESPACE") continue;
         
         return new Token(
-            this.checkReserved(kind), 
+            this.checkReserved(kind, value), 
             value, 
             new Location("test.oph", 1, 1, 1)
         );
@@ -58,8 +58,8 @@ export class CodeLexer extends Lexer {
         if (matchesOpenExpr || matchesBacktick) {
           break;
         } else {
-        chars.push(this.source[pos]);
-        pos++;
+        chars.push(this.source[this.pos]);
+        this.pos++;
         }
     }
     return new Token(

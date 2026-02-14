@@ -1,3 +1,4 @@
+/*
 import { Location } from "../metadata.cjs";
 
 export interface ASTNode {
@@ -7,3 +8,4 @@ export interface ASTNode {
     parse(v: Visitor): ASTNode
     transform(v: Visitor): ASTNode
 }
+*/

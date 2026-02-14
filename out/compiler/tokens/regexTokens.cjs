@@ -45,6 +45,9 @@ const OphoelSpecial = {
     DOUBLEBANG: /^!!/
     // CONFIGREF: /^config(\.[A-Za-z_][A-Za-z_0-9]*|\[.+\])/ // config.foo.bar[2][baz]...
 };
+const TemplateString = {
+    OPENEXPR: /^\$\{/
+};
 const Symbols = {
     BANG: /^!/,
     CARET: /^\^/,
@@ -72,8 +75,8 @@ const Literals = {
     NUMBER: /^-?\d+(\.\d+)?/, // 1, -2, 3.5
     NULL: /^null/ // null
 };
-const IdentifierToken = {
-    IDENTIFIER: /^[A-Za-z_][A-Za-z0-9-]*/
+const KeywordToken = {
+    KEYWORD: /^[A-Za-z_][A-Za-z0-9-]*/
 };
 exports.regexTokens = {
     ...Whitespace,
@@ -81,10 +84,11 @@ exports.regexTokens = {
     ...CompoundAssigns,
     ...Comparisons,
     ...OphoelSpecial,
+    ...TemplateString,
     ...Operations,
     ...Literals,
     ...Brackets,
     ...Symbols,
-    ...IdentifierToken
+    ...KeywordToken
 };
 //# sourceMappingURL=regexTokens.cjs.map

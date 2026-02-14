@@ -12,4 +12,10 @@ export class Token {
         this.value = value;
         this.location = location;
     }
+
+    // 1. enable by-value comparison between strings
+    // 2. reform object to make it more concise and readable
+    toString(): string {
+        return `${this.kind} ${this.value} ${this.location.toString()}`;
+    }
 }

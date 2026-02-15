@@ -57,7 +57,7 @@ export class CodeLexer extends Lexer {
       if (matchesOpenExpr || matchesBacktick) {
         break;
       } else {
-        chars.push(this.source[this.pos]);
+        chars.push(this.source[this.pos] ?? "");
         this.pos++;
       }
     }

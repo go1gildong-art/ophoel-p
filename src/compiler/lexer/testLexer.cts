@@ -13,7 +13,7 @@ enum TestState {
 }
 
 class TestResult {
-    state: TestState;
+    readonly state: TestState;
     message: string;
     children: TestResult[];
 
@@ -39,11 +39,28 @@ class TestResult {
     static hasNoFailure(results: TestResult[]) {
         return !results.some(r => r.state === TestState.Failure);
     }
+
+    static buildFromChildren(results: TestResult[], successMessage?: string, failureMessage?: string) {
+        if (TestResult.hasNoFailure(results)) {
+            return TestResult.success(successMessage + " " + TestResult.getCoverageMark(results), results);
+        } else {
+            return TestResult.failure(failureMessage + " " + TestResult.getCoverageMark(results), results);
+        }
+    }
+
+    static getCoverageMark(results: TestResult[]) {
+        const allResults = results
+            .filter(result => [TestState.Success, TestState.Failure].includes(result.state));
+
+        const succeedResults = results
+            .filter(result => [TestState.Success].includes(result.state));
+
+        return `( ${allResults.length} / ${succeedResults.length} )`
+    }
 }
 
-class TokenGoldenTest {
+class LexerGoldenTest {
 
-    private testResult: TestResult = TestResult.uninitialized() // to store the test itself's result
     private tokenResults: Array<TestResult> = []; // to store the comparison of individual lines
 
     private expectations: Array<Token>;
@@ -113,12 +130,11 @@ class TokenGoldenTest {
 
     private gatherResult() {
         const success = TestResult.hasNoFailure(this.tokenResults);
-        if (success) {
-            this.testResult = TestResult.success("Lexer golden test succeed!", this.tokenResults);
-        } else {
-            this.testResult = TestResult.failure("Lexer golden test failed.", this.tokenResults);
-        }
-        return this.testResult;
+        return TestResult.buildFromChildren(
+            this.tokenResults,
+            "Lexer golden test succeed!",
+            "Lexer golden test failed."
+        )
     }
 }
 
@@ -149,9 +165,23 @@ const expectations = [
     ]
 ];
 
-const index = 0;
-const src = sources[index]!;
-const exp = expectations[index]!;
+function testLexer() {
+    const length = expectations.length;
+    const cases: TestResult[] = [];
+    for (let index = 0; index < length; index++) {
+        const src = sources[index]!;
+        const exp = expectations[index]!;
 
-const testtt = new TokenGoldenTest(exp, src).test();
-console.log(testtt);
+        const unitTest = new LexerGoldenTest(exp, src).test();
+        cases.push(unitTest);
+    }
+
+    const fullResult = TestResult.buildFromChildren(
+        cases,
+        "Full lexer test succeed!",
+        "Full lexer test failed."
+    );
+    return fullResult;
+}
+
+console.log(testLexer());

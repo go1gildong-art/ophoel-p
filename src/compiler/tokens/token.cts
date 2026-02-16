@@ -34,7 +34,6 @@ export class Token {
             + ` (${TokenRegexes.fileName.source}):(${TokenRegexes.line.source}):(${TokenRegexes.column.source})`
             + ` \\((${TokenRegexes.tokenIndex.source})\\)$`
         );
-        console.log(fullRegex);
         const opt_matchArr = fullRegex.exec(stringToken);
         if (opt_matchArr == null) {
             throw new Error(`Token string does not follow the format! ${stringToken}`);
@@ -58,10 +57,3 @@ export class Token {
     }
 }
 
-const originalStr = `STRING "then he said, "where is it?"" source.oph:1:1 (1)`;
-const token = Token.fromString(originalStr);
-const rebuiltStr = token.toString();
-
-console.log(originalStr);
-console.log(token);
-console.log(rebuiltStr);

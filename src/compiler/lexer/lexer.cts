@@ -23,9 +23,9 @@ export abstract class Lexer {
   abstract tokenize(): Array<Token>
 
   getCurrentLocation(): Location {
-    const processedString = this.source.slice(this.pos);
+    const processedString = this.source.slice(0, this.pos);
     const splitString = processedString.split("\n");
-
+    console.log("SPLITSTRING! + " + splitString + "_")
     const ln = splitString.length;
     const col = splitString[splitString.length - 1]?.length ?? 1;
 

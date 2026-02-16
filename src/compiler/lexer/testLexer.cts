@@ -1,14 +1,15 @@
+import { tests } from "vscode";
 import { Token } from "../tokens/token.cjs";
 import { CodeLexer } from "./codeLexer.cjs";
 
 // type tokenizeTestResult
 
-type TestStatee = "Success" | "Failure" | "Uninitialized";
+
 
 enum TestState {
-    Success,
-    Failure,
-    Uninitialized
+    Success = "SUCCESS",
+    Failure = "FAILURE",
+    Uninitialized = "UNINITIALIZED"
 }
 
 class TestResult {
@@ -48,13 +49,14 @@ class TokenGoldenTest {
     private expectations: Array<Token>;
     private testResults: Array<Token>;
 
-    constructor(expectations: Array<Token>, source: string) {
-        this.expectations = expectations;
+    constructor(expectations: Array<string>, source: string) {
+        this.expectations = expectations.map(stringToken => Token.fromString(stringToken));
         this.testResults = new CodeLexer(source, "test.oph").tokenize();
     }
 
     test() {
-
+        this.loopOnTokens();
+        return this.gatherResult();
     }
 
     private emitResult(result: TestResult) {
@@ -104,13 +106,19 @@ class TokenGoldenTest {
             const msg = `Unmatching ${unmatchingPortions.join(", ")} found between "${exp.toString()}" and "${res.toString()}`;
             this.emitResult(TestResult.failure(msg));
         } else {
-            const msg = `${index}th Token match succeed.`
+            const msg = `${index}th Token match succeed. "${exp.toString()}"`
             this.emitResult(TestResult.success(msg));
         }
     }
 
     private gatherResult() {
-        TestResult.hasNoFailure(this.tokenResults)
+        const success = TestResult.hasNoFailure(this.tokenResults);
+        if (success) {
+            this.testResult = TestResult.success("Lexer golden test succeed!", this.tokenResults);
+        } else {
+            this.testResult = TestResult.failure("Lexer golden test failed.", this.tokenResults);
+        }
+        return this.testResult;
     }
 }
 
@@ -118,12 +126,19 @@ const sources = [
     "let x = 0;"
 ];
 
-const results = [
+const expectations = [
     [
-        "KW_DECL let source.oph:1:1 (1)",
-        "IDENTIFIER x source.oph:1:5 (2)",
-        "EQUAL = source.oph:1:7 (3)",
-        "NUMBER 0 source.oph:1:9 (4)",
-        "SEMICOLON ; source.oph:1:10 (5)"
+        `KW_DECL "let" test.oph:1:1 (0)`,
+        `IDENTIFIER "x" test.oph:1:5 (1)`,
+        `EQUAL "=" test.oph:1:7 (2)`,
+        `NUMBER "0" test.oph:1:9 (3)`,
+        `SEMICOLON ";" test.oph:1:10 (4)`
     ]
 ]
+
+const index = 0;
+const src = sources[index]!;
+const exp = expectations[index]!;
+
+const testtt = new TokenGoldenTest(exp, src).test();
+console.log(testtt);

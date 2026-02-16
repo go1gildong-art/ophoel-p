@@ -3,7 +3,13 @@ import { CodeLexer } from "./codeLexer.cjs";
 
 // type tokenizeTestResult
 
-type TestState = "Success" | "Failure" | "Uninitialized";
+type TestStatee = "Success" | "Failure" | "Uninitialized";
+
+enum TestState {
+    Success,
+    Failure,
+    Uninitialized
+}
 
 class TestResult {
     state: TestState;
@@ -17,40 +23,45 @@ class TestResult {
     }
 
     static success(message?: string, children?: TestResult[]) {
-        return new TestResult("Success" as TestState, message, children);
+        return new TestResult(TestState.Success, message, children);
     }
 
     static failure(message?: string, children?: TestResult[]) {
-        return new TestResult("Failure" as TestState, message, children);
+        return new TestResult(TestState.Failure, message, children);
     }
 
     static uninitialized() {
-        return new TestResult("Uninitialized" as TestState);
+        return new TestResult(TestState.Uninitialized
+        );
     }
 
     static hasNoFailure(results: TestResult[]) {
-        return !results.some(r => r.state === "Failure");
+        return !results.some(r => r.state === TestState.Failure);
     }
 }
 
 class TokenGoldenTest {
 
-    testResult: TestResult = TestResult.uninitialized() // to store the test itself's result
-    tokenResults: Array<TestResult> = []; // to store the comparison of individual lines
+    private testResult: TestResult = TestResult.uninitialized() // to store the test itself's result
+    private tokenResults: Array<TestResult> = []; // to store the comparison of individual lines
 
-    expectations: Array<Token>;
-    testResults: Array<Token>;
+    private expectations: Array<Token>;
+    private testResults: Array<Token>;
 
-    constructor(expectations: Array<Token>, testResults: Array<Token>) {
+    constructor(expectations: Array<Token>, source: string) {
         this.expectations = expectations;
-        this.testResults = testResults;
-    }
-
-    emitResult(result: TestResult) {
-        this.tokenResults.push(result);
+        this.testResults = new CodeLexer(source, "test.oph").tokenize();
     }
 
     test() {
+
+    }
+
+    private emitResult(result: TestResult) {
+        this.tokenResults.push(result);
+    }
+
+    private loopOnTokens() {
         for (let i = 0; i < this.expectations.length; i++) {
             const opt_exp = this.expectations[i];
             const opt_res = this.testResults[i];
@@ -78,6 +89,7 @@ class TokenGoldenTest {
         }
     }
 
+
     private compareTokens(exp: Token, res: Token, index: number) {
         let unmatchingPortions: Array<string> = [];
 
@@ -96,6 +108,10 @@ class TokenGoldenTest {
             this.emitResult(TestResult.success(msg));
         }
     }
+
+    private gatherResult() {
+        TestResult.hasNoFailure(this.tokenResults)
+    }
 }
 
 const sources = [
@@ -110,13 +126,4 @@ const results = [
         "NUMBER 0 source.oph:1:9 (4)",
         "SEMICOLON ; source.oph:1:10 (5)"
     ]
-
-
 ]
-
-function testCase(src) {
-
-}
-
-const testLexer = new CodeLexer(sources[0], "test.oph");
-console.log(testLexer.tokenize());

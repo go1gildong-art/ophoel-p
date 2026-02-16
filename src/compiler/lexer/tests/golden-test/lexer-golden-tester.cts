@@ -1,9 +1,9 @@
 import { Token } from "../../../tokens/token.cjs";
-import { CodeLexer } from "../../codeLexer.cjs";
-import { TestResult } from "../../../testResources/testResult.cjs";
-import { Tester } from "../../../testResources/tester.cjs";
+import { CodeLexer } from "../../code-lexer.cjs";
+import { TestResult } from "../../../test-resources/test-result.cjs";
+import { Tester } from "../../../test-resources/tester.cjs";
 
-import { LexerGoldenUnitTester } from "./LexerGoldenUnitTester.cjs";
+import { LexerGoldenUnitTester } from "./lexer-golden-unit-tester.cjs";
 
 import { sources } from "./sources.cjs";
 import { expectations } from "./expectations.cjs";

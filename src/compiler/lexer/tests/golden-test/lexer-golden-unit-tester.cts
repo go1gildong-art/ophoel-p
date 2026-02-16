@@ -1,7 +1,7 @@
 import { Tester } from "../../../testResources/tester.cjs";
 import { TestResult } from "../../../testResources/testResult.cjs";
 import { Token } from "../../../tokens/token.cjs";
-import { CodeLexer } from "../../codeLexer.cjs";
+import { CodeLexer } from "../../code-lexer.cjs";
 
 export class LexerGoldenUnitTester implements Tester {
 

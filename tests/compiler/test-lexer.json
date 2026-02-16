@@ -1,14 +1,14 @@
 {
-  "state": "SUCCESS",
-  "message": "Full lexer test succeed! ( 1 / 1 )",
+  "state": "FAILURE",
+  "message": "Full lexer test failed. ( 0 / 1 )",
   "children": [
     {
-      "state": "SUCCESS",
-      "message": "Lexer golden test succeed! ( 4 / 4 )",
+      "state": "FAILURE",
+      "message": "Lexer golden test failed. ( 3 / 4 )",
       "children": [
         {
           "state": "SUCCESS",
-          "message": "Lexer golden test succeed! ( 5 / 5 )",
+          "message": "Lexer golden unit test succeed! ( 5 / 5 )",
           "children": [
             {
               "state": "SUCCESS",
@@ -39,7 +39,7 @@
         },
         {
           "state": "SUCCESS",
-          "message": "Lexer golden test succeed! ( 5 / 5 )",
+          "message": "Lexer golden unit test succeed! ( 5 / 5 )",
           "children": [
             {
               "state": "SUCCESS",
@@ -70,7 +70,7 @@
         },
         {
           "state": "SUCCESS",
-          "message": "Lexer golden test succeed! ( 2 / 2 )",
+          "message": "Lexer golden unit test succeed! ( 2 / 2 )",
           "children": [
             {
               "state": "SUCCESS",
@@ -85,8 +85,8 @@
           ]
         },
         {
-          "state": "SUCCESS",
-          "message": "Lexer golden test succeed! ( 10 / 10 )",
+          "state": "FAILURE",
+          "message": "Lexer golden unit test failed. ( 9 / 10 )",
           "children": [
             {
               "state": "SUCCESS",
@@ -134,8 +134,8 @@
               "children": []
             },
             {
-              "state": "SUCCESS",
-              "message": "9th Token match succeed. \"SEMICOLON \";\" test.oph:2:11 (9)\"",
+              "state": "FAILURE",
+              "message": "Unmatching token index found between |SEMICOLON \";\" test.oph:2:11 (19)| (expected) and |SEMICOLON \";\" test.oph:2:11 (9)| (test result)",
               "children": []
             }
           ]

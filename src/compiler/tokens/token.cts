@@ -34,6 +34,7 @@ export class Token {
             + ` (${TokenRegexes.fileName.source}):(${TokenRegexes.line.source}):(${TokenRegexes.column.source})`
             + ` \\((${TokenRegexes.tokenIndex.source})\\)$`
         );
+
         const opt_matchArr = fullRegex.exec(stringToken);
         if (opt_matchArr == null) {
             throw new Error(`Token string does not follow the format! ${stringToken}`);

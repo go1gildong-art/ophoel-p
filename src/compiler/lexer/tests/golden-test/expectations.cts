@@ -28,6 +28,6 @@ export const expectations = [
         `IDENTIFIER "y" test.oph:2:5 (6)`,
         `EQUAL "=" test.oph:2:7 (7)`,
         `NUMBER "20" test.oph:2:9 (8)`,
-        `SEMICOLON ";" test.oph:2:11 (9)`
+        `SEMICOLON ";" test.oph:2:11 (19)`
     ],
 ];

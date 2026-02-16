@@ -64,7 +64,11 @@ export class LexerGoldenUnitTester implements Tester {
         if (exp.location.tokenIndex !== res.location.tokenIndex) unmatchingPortions.push("token index");
 
         if (unmatchingPortions.length > 0) {
-            const msg = `Unmatching ${unmatchingPortions.join(", ")} found between "${exp.toString()}" and "${res.toString()}`;
+            const msg =
+                `Unmatching ${unmatchingPortions.join(", ")} found between `
+                + `|${exp.toString()}| (expected) and `
+                + `|${res.toString()}| (test result)`;
+
             this.emitResult(TestResult.failure(msg));
         } else {
             const msg = `${index}th Token match succeed. "${exp.toString()}"`

@@ -1,5 +1,5 @@
 const Whitespace = {
-  WHITESPACE: /\s+/
+  WHITESPACE: /^\s+/
 }
 
 

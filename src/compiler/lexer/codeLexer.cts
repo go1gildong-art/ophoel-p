@@ -22,6 +22,7 @@ export class CodeLexer extends Lexer {
     for (const kind of Object.keys(regexTokens) as RegexTokenKeys[]) {
       const regex: RegExp = regexTokens[kind];
       const opt_Match = this.matchCurrentSource(regex);
+      
       if (opt_Match !== null) {
         const value = opt_Match[0];
         this.pos += value.length;
@@ -31,7 +32,7 @@ export class CodeLexer extends Lexer {
         return new Token(
           this.checkReserved(kind, value),
           value,
-          this.getCurrentLocation()
+          this.getCurrentLocation(value)
         );
       }
     }
@@ -64,7 +65,7 @@ export class CodeLexer extends Lexer {
     return new Token(
       "TEMPLATE_PART",
       chars.join(""),
-      this.getCurrentLocation()
+      this.getCurrentLocation(chars.join(""))
     );
   }
 }

@@ -22,12 +22,11 @@ export abstract class Lexer {
 
   abstract tokenize(): Array<Token>
 
-  getCurrentLocation(): Location {
+  getCurrentLocation(tokenValue: string): Location {
     const processedString = this.source.slice(0, this.pos);
     const splitString = processedString.split("\n");
-    console.log("SPLITSTRING! + " + splitString + "_")
     const ln = splitString.length;
-    const col = splitString[splitString.length - 1]?.length ?? 1;
+    const col = (splitString[splitString.length - 1]?.length ?? 0) - tokenValue.length + 1
 
     return new Location(this.fileName, ln, col, this.tokens.length);
   }

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.regexTokens = void 0;
 const Whitespace = {
-    WHITESPACE: /\s+/
+    WHITESPACE: /^\s+/
 };
 const Comments = {
     SLINECOMMENT: /^\/\/.*/, // // comment

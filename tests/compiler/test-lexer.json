@@ -1,0 +1,146 @@
+{
+  "state": "SUCCESS",
+  "message": "Full lexer test succeed! ( 1 / 1 )",
+  "children": [
+    {
+      "state": "SUCCESS",
+      "message": "Lexer golden test succeed! ( 4 / 4 )",
+      "children": [
+        {
+          "state": "SUCCESS",
+          "message": "Lexer golden test succeed! ( 5 / 5 )",
+          "children": [
+            {
+              "state": "SUCCESS",
+              "message": "0th Token match succeed. \"KW_DECL \"let\" test.oph:1:1 (0)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "1th Token match succeed. \"IDENTIFIER \"x\" test.oph:1:5 (1)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "2th Token match succeed. \"EQUAL \"=\" test.oph:1:7 (2)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "3th Token match succeed. \"NUMBER \"0\" test.oph:1:9 (3)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "4th Token match succeed. \"SEMICOLON \";\" test.oph:1:10 (4)\"",
+              "children": []
+            }
+          ]
+        },
+        {
+          "state": "SUCCESS",
+          "message": "Lexer golden test succeed! ( 5 / 5 )",
+          "children": [
+            {
+              "state": "SUCCESS",
+              "message": "0th Token match succeed. \"KW_DECL \"let\" test.oph:1:1 (0)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "1th Token match succeed. \"IDENTIFIER \"variable\" test.oph:1:5 (1)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "2th Token match succeed. \"EQUAL \"=\" test.oph:1:14 (2)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "3th Token match succeed. \"NUMBER \"0\" test.oph:1:16 (3)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "4th Token match succeed. \"SEMICOLON \";\" test.oph:1:17 (4)\"",
+              "children": []
+            }
+          ]
+        },
+        {
+          "state": "SUCCESS",
+          "message": "Lexer golden test succeed! ( 2 / 2 )",
+          "children": [
+            {
+              "state": "SUCCESS",
+              "message": "0th Token match succeed. \"KW_DECL \"struct\" test.oph:1:1 (0)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "1th Token match succeed. \"IDENTIFIER \"foo\" test.oph:1:8 (1)\"",
+              "children": []
+            }
+          ]
+        },
+        {
+          "state": "SUCCESS",
+          "message": "Lexer golden test succeed! ( 10 / 10 )",
+          "children": [
+            {
+              "state": "SUCCESS",
+              "message": "0th Token match succeed. \"KW_DECL \"let\" test.oph:1:1 (0)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "1th Token match succeed. \"IDENTIFIER \"x\" test.oph:1:5 (1)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "2th Token match succeed. \"EQUAL \"=\" test.oph:1:7 (2)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "3th Token match succeed. \"NUMBER \"10\" test.oph:1:9 (3)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "4th Token match succeed. \"SEMICOLON \";\" test.oph:1:11 (4)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "5th Token match succeed. \"KW_DECL \"let\" test.oph:2:1 (5)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "6th Token match succeed. \"IDENTIFIER \"y\" test.oph:2:5 (6)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "7th Token match succeed. \"EQUAL \"=\" test.oph:2:7 (7)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "8th Token match succeed. \"NUMBER \"20\" test.oph:2:9 (8)\"",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "9th Token match succeed. \"SEMICOLON \";\" test.oph:2:11 (9)\"",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

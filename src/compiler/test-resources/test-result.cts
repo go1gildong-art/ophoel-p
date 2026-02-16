@@ -48,6 +48,6 @@ export class TestResult {
         const succeedResults = results
             .filter(result => [TestState.Success].includes(result.state));
 
-        return `( ${allResults.length} / ${succeedResults.length} )`
+        return `( ${succeedResults.length} / ${allResults.length} )`
     }
 }

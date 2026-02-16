@@ -16,7 +16,7 @@ export class Token {
     // 1. enable by-value comparison between strings
     // 2. reform object to make it more concise and readable
     toString(): string {
-        return `${this.kind} "${this.value}" ${this.location.toString()}`;
+        return `${this.kind} < ${this.value} > ${this.location.toString()}`;
     }
 
     static fromString(stringToken: string): Token {
@@ -30,7 +30,7 @@ export class Token {
         }
 
         const fullRegex = new RegExp(
-            `^(${TokenRegexes.kind.source}) "(${TokenRegexes.value.source})"`
+            `^(${TokenRegexes.kind.source}) < (${TokenRegexes.value.source}) >`
             + ` (${TokenRegexes.fileName.source}):(${TokenRegexes.line.source}):(${TokenRegexes.column.source})`
             + ` \\((${TokenRegexes.tokenIndex.source})\\)$`
         );

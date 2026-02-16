@@ -71,7 +71,7 @@ export class LexerGoldenUnitTester implements Tester {
 
             this.emitResult(TestResult.failure(msg));
         } else {
-            const msg = `${index}th Token match succeed. "${exp.toString()}"`
+            const msg = `${index}th Token match succeed. |${exp.toString()}|`
             this.emitResult(TestResult.success(msg));
         }
     }

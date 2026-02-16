@@ -12,7 +12,7 @@ class Token {
     // 1. enable by-value comparison between strings
     // 2. reform object to make it more concise and readable
     toString() {
-        return `${this.kind} "${this.value}" ${this.location.toString()}`;
+        return `${this.kind} < ${this.value} > ${this.location.toString()}`;
     }
     static fromString(stringToken) {
         const TokenRegexes = {
@@ -23,7 +23,7 @@ class Token {
             column: /\d+/,
             tokenIndex: /\d+/,
         };
-        const fullRegex = new RegExp(`^(${TokenRegexes.kind.source}) "(${TokenRegexes.value.source})"`
+        const fullRegex = new RegExp(`^(${TokenRegexes.kind.source}) < (${TokenRegexes.value.source}) >`
             + ` (${TokenRegexes.fileName.source}):(${TokenRegexes.line.source}):(${TokenRegexes.column.source})`
             + ` \\((${TokenRegexes.tokenIndex.source})\\)$`);
         const opt_matchArr = fullRegex.exec(stringToken);

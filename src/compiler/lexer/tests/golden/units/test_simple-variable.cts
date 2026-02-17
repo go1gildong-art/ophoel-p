@@ -6,10 +6,10 @@ export const unit = new UnitCase(
     "let x = 0;",
 
     [
-        `KW_DECL < let > test.oph:1:1 (0)`,
-        `IDENTIFIER < x > test.oph:1:5 (1)`,
-        `EQUAL < = > test.oph:1:7 (2)`,
-        `NUMBER < 0 > test.oph:1:9 (3)`,
-        `SEMICOLON < ; > test.oph:1:10 (4)`
+        `KW_DECL < let > simple-variable.oph:1:1 (0)`,
+        `IDENTIFIER < x > simple-variable.oph:1:5 (1)`,
+        `EQUAL < = > simple-variable.oph:1:7 (2)`,
+        `NUMBER < 0 > simple-variable.oph:1:9 (3)`,
+        `SEMICOLON < ; > simple-variable.oph:1:10 (4)`
     ],
 )

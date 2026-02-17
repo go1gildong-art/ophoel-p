@@ -3,7 +3,7 @@ import { CodeLexer } from "../../code-lexer.cjs";
 import { TestResult } from "../../../test-resources/test-result.cjs";
 import { Tester } from "../../../test-resources/tester.cjs";
 
-import { LexerGoldenUnitTester } from "./lexer-golden-unit-tester.cjs";
+import { LexerGoldenUnitTester } from "./unit-tester.cjs";
 
 import { sources } from "./sources.cjs";
 import { expectations } from "./expectations.cjs";

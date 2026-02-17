@@ -1,0 +1,4 @@
+interface GoldenTest {
+    source;
+    expectation;
+}

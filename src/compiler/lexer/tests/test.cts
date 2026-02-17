@@ -1,5 +1,5 @@
 import * as fs from 'node:fs';
-import { LexerTester } from './lexer-tester.cjs';
+import { LexerTester } from './tester.cjs';
 
 const result = new LexerTester().test();
 fs.writeFileSync("./tests/compiler/test-lexer.json", JSON.stringify(result, null, 2), "utf-8");

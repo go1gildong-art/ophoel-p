@@ -69,3 +69,7 @@ export class CodeLexer extends Lexer {
     );
   }
 }
+
+const src = "let foo: string = `john has ${apples} apples.`;"
+const tokens = new CodeLexer(src, "test.oph").tokenize();
+console.log(tokens.map(token => token.toString()));

@@ -1,6 +1,6 @@
 import { TestResult } from "../../test-resources/test-result.cjs";
 import { Tester } from "../../test-resources/tester.cjs";
-import { LexerGoldenTester } from "./golden-test/lexer-golden-tester.cjs";
+import { LexerGoldenTester } from "./golden/tester.cjs";
 
 export class LexerTester implements Tester {
     test(): TestResult {

@@ -1,18 +1,22 @@
 import { Tester } from "../../../test-resources/tester.cjs";
 import { TestResult } from "../../../test-resources/test-result.cjs";
 import { Token } from "../../../tokens/token.cjs";
+import { UnitCase } from "./units/unit-case.cjs";
 import { CodeLexer } from "../../code-lexer.cjs";
 
-export class LexerGoldenUnitTester implements Tester {
+export class UnitTester implements Tester {
 
     private tokenResults: Array<TestResult> = []; // to store the comparison of individual lines
 
     private expectations: Array<Token>;
     private testResults: Array<Token>;
 
-    constructor(expectations: Array<string>, source: string) {
-        this.expectations = expectations.map(stringToken => Token.fromString(stringToken));
-        this.testResults = new CodeLexer(source, "test.oph").tokenize();
+    private title: string;
+
+    constructor(unit: UnitCase) {
+        this.expectations = unit.expectation;
+        this.testResults = new CodeLexer(unit.source, unit.title + ".oph").tokenize();
+        this.title = unit.title;
     }
 
     test() {
@@ -80,8 +84,8 @@ export class LexerGoldenUnitTester implements Tester {
         const success = TestResult.hasNoFailure(this.tokenResults);
         return TestResult.buildFromChildren(
             this.tokenResults,
-            "Lexer golden unit test succeed!",
-            "Lexer golden unit test failed."
+            `Lexer golden unit test for ${this.title} succeed!`,
+            `Lexer golden unit test for ${this.title} failed.`
         )
     }
 }

@@ -19,7 +19,7 @@ export class UnitTester implements Tester {
         this.title = unit.title;
     }
 
-    test() {
+    async test() {
         this.loopOnTokens();
         return this.gatherResult();
     }

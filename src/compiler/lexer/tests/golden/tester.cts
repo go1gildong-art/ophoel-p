@@ -3,26 +3,28 @@ import { CodeLexer } from "../../code-lexer.cjs";
 import { TestResult } from "../../../test-resources/test-result.cjs";
 import { Tester } from "../../../test-resources/tester.cjs";
 
-import { LexerGoldenUnitTester } from "./unit-tester.cjs";
+import { UnitTester } from "./unit-tester.cjs";
+import { UnitCase } from "./units/unit-case.cjs";
 
 import { sources } from "./sources.cjs";
 import { expectations } from "./expectations.cjs";
 
+import { loadTests } from "../../../test-resources/test_loader.cjs";
+
+
 export class LexerGoldenTester implements Tester {
 
-    test() {
-        const length = expectations.length;
-        const cases: TestResult[] = [];
-        for (let index = 0; index < length; index++) {
-            const src = sources[index]!;
-            const exp = expectations[index]!;
+    async test() {
+        const cases = await loadTests<UnitCase>("units");
+        const results = [];
 
-            const unitTest = new LexerGoldenUnitTester(exp, src).test();
-            cases.push(unitTest);
+        for (const unitCase of cases) {
+            const unitTest = await new UnitTester(unitCase).test();
+            results.push(unitTest);
         }
 
         const fullResult = TestResult.buildFromChildren(
-            cases,
+            results,
             "Lexer golden test succeed!",
             "Lexer golden test failed."
         );

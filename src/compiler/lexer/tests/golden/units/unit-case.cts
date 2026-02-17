@@ -1,6 +1,6 @@
 import { Token } from "../../../../tokens/token.cjs"
-
-export class UnitCase {
+import { GoldenUnit } from "../../../../test-resources/golden-test.cjs";
+export class UnitCase implements GoldenUnit<string, Token[]>{
     title: string;
     description: string;
     source: string;

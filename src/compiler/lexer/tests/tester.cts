@@ -3,8 +3,8 @@ import { Tester } from "../../test-resources/tester.cjs";
 import { LexerGoldenTester } from "./golden/tester.cjs";
 
 export class LexerTester implements Tester {
-    test(): TestResult {
-        const goldenResult = new LexerGoldenTester().test();
+    async test() {
+        const goldenResult = await new LexerGoldenTester().test();
 
         return TestResult.buildFromChildren(
             [goldenResult],

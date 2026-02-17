@@ -23,7 +23,7 @@ export class Token {
         const TokenRegexes = {
             kind: /\w+/,
             value: /[\s\S]+/,
-            fileName: /[\w\.]+/,
+            fileName: /[\w\-\.]+/,
             line: /\d+/,
             column: /\d+/,
             tokenIndex: /\d+/,

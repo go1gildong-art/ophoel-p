@@ -1,38 +1,38 @@
 {
-  "state": "FAILURE",
-  "message": "Full lexer test failed. ( 0 / 1 )",
+  "state": "SUCCESS",
+  "message": "Full lexer test succeed! ( 1 / 1 )",
   "children": [
     {
-      "state": "FAILURE",
-      "message": "Lexer golden test failed. ( 0 / 1 )",
+      "state": "SUCCESS",
+      "message": "Lexer golden test succeed! ( 1 / 1 )",
       "children": [
         {
-          "state": "FAILURE",
-          "message": "Lexer golden unit test for simple-variable failed. ( 0 / 5 )",
+          "state": "SUCCESS",
+          "message": "Lexer golden unit test for simple-variable succeed! ( 5 / 5 )",
           "children": [
             {
-              "state": "FAILURE",
-              "message": "Unmatching file name found between |KW_DECL < let > test.oph:1:1 (0)| (expected) and |KW_DECL < let > simple-variable.oph:1:1 (0)| (test result)",
+              "state": "SUCCESS",
+              "message": "0th Token match succeed. |KW_DECL < let > simple-variable.oph:1:1 (0)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching file name found between |IDENTIFIER < x > test.oph:1:5 (1)| (expected) and |IDENTIFIER < x > simple-variable.oph:1:5 (1)| (test result)",
+              "state": "SUCCESS",
+              "message": "1th Token match succeed. |IDENTIFIER < x > simple-variable.oph:1:5 (1)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching file name found between |EQUAL < = > test.oph:1:7 (2)| (expected) and |EQUAL < = > simple-variable.oph:1:7 (2)| (test result)",
+              "state": "SUCCESS",
+              "message": "2th Token match succeed. |EQUAL < = > simple-variable.oph:1:7 (2)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching file name found between |NUMBER < 0 > test.oph:1:9 (3)| (expected) and |NUMBER < 0 > simple-variable.oph:1:9 (3)| (test result)",
+              "state": "SUCCESS",
+              "message": "3th Token match succeed. |NUMBER < 0 > simple-variable.oph:1:9 (3)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching file name found between |SEMICOLON < ; > test.oph:1:10 (4)| (expected) and |SEMICOLON < ; > simple-variable.oph:1:10 (4)| (test result)",
+              "state": "SUCCESS",
+              "message": "4th Token match succeed. |SEMICOLON < ; > simple-variable.oph:1:10 (4)|",
               "children": []
             }
           ]

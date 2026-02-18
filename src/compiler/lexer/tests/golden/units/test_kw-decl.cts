@@ -7,16 +7,16 @@ export const unit = new UnitCase(
     + `\nletx c0nst struc function macro_rules`
 
     [
-        `KW_DECL < let > multiline.oph:1:1 (0)`,
-        `KW_DECL < const > multiline.oph:1:5 (1)`,
-        `KW_DECL < struct > multiline.oph:1:11 (2)`,
-        `KW_DECL < fn > multiline.oph:1:18 (3)`,
-        `KW_DECL < macro > multiline.oph:1:21 (4)`,
+        `KW_DECL < let > kw-decl.oph:1:1 (0)`,
+        `KW_DECL < const > kw-decl.oph:1:5 (1)`,
+        `KW_DECL < struct > kw-decl.oph:1:11 (2)`,
+        `KW_DECL < fn > kw-decl.oph:1:18 (3)`,
+        `KW_DECL < macro > kw-decl.oph:1:21 (4)`,
         
-        `IDENTIFIER < letx > multiline.oph:2:1 (5)`,
-        `IDENTIFIER < c0nst > multiline.oph:2:6 (6)`,
-        `IDENTIFIER < struc > multiline.oph:2:12 (7)`,
-        `IDENTIFIER < function > multiline.oph:2:18 (8)`,
-        `IDENTIFIER < macro_rules > multiline.oph:2:27 (9)`
+        `IDENTIFIER < letx > kw-decl.oph:2:1 (5)`,
+        `IDENTIFIER < c0nst > kw-decl.oph:2:6 (6)`,
+        `IDENTIFIER < struc > kw-decl.oph:2:12 (7)`,
+        `IDENTIFIER < function > kw-decl.oph:2:18 (8)`,
+        `IDENTIFIER < macro_rules > kw-decl.oph:2:27 (9)`
     ]
 )

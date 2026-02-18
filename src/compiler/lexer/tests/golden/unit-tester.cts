@@ -72,8 +72,8 @@ export class UnitTester implements Tester {
                 `Unmatching ${unmatchingPortions.join(", ")} found between `
                 + `|${exp.toString()}| (expected) and `
                 + `|${res.toString()}| (test result)`;
-
             this.emitResult(TestResult.failure(msg));
+            
         } else {
             const msg = `${index}th Token match succeed. |${exp.toString()}|`
             this.emitResult(TestResult.success(msg));

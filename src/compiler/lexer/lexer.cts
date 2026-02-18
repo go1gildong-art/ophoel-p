@@ -3,7 +3,7 @@ import { Location } from "../metadata.cjs"
 
 export abstract class Lexer {
   source: string;
-  pos: number = 0;
+  pos = 0;
   tokens: Array<Token> = [];
   fileName: string;
 
@@ -23,8 +23,10 @@ export abstract class Lexer {
   abstract tokenize(): Array<Token>
 
   getCurrentLocation(tokenValue: string): Location {
-    const processedString = this.source.slice(0, this.pos);
-    const splitString = processedString.split("\n");
+    const splitString = this.source
+      .slice(0, this.pos)
+      .split("\n");
+    
     const ln = splitString.length;
     const col = (splitString[splitString.length - 1]?.length ?? 0) - tokenValue.length + 1
 

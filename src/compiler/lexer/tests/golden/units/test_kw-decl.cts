@@ -4,7 +4,7 @@ export const unit = new UnitCase(
     "sequence of kw-decl specified keywords. none of them on line 1 should be an identifier",
     
     `let const struct fn macro`
-    + `\nletx c0nst struc function macro_rules`
+    + `\nletx c0nst struc function macro_rules`,
 
     [
         `KW_DECL < let > multiline.oph:1:1 (0)`,

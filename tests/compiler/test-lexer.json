@@ -1,11 +1,148 @@
 {
-  "state": "SUCCESS",
-  "message": "Full lexer test succeed! ( 1 / 1 )",
+  "state": "FAILURE",
+  "message": "Full lexer test failed. ( 0 / 1 )",
   "children": [
     {
-      "state": "SUCCESS",
-      "message": "Lexer golden test succeed! ( 1 / 1 )",
+      "state": "FAILURE",
+      "message": "Lexer golden test failed. ( 1 / 3 )",
       "children": [
+        {
+          "state": "FAILURE",
+          "message": "Lexer golden unit test for kw-decl failed. ( 0 / 10 )",
+          "children": [
+            {
+              "state": "FAILURE",
+              "message": "Unmatching file name found between |KW_DECL < let > multiline.oph:1:1 (0)| (expected) and |KW_DECL < let > kw-decl.oph:1:1 (0)| (test result)",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching file name found between |KW_DECL < const > multiline.oph:1:5 (1)| (expected) and |KW_DECL < const > kw-decl.oph:1:5 (1)| (test result)",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching file name found between |KW_DECL < struct > multiline.oph:1:11 (2)| (expected) and |KW_DECL < struct > kw-decl.oph:1:11 (2)| (test result)",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching file name found between |KW_DECL < fn > multiline.oph:1:18 (3)| (expected) and |KW_DECL < fn > kw-decl.oph:1:18 (3)| (test result)",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching file name found between |KW_DECL < macro > multiline.oph:1:21 (4)| (expected) and |KW_DECL < macro > kw-decl.oph:1:21 (4)| (test result)",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching file name found between |IDENTIFIER < letx > multiline.oph:2:1 (5)| (expected) and |IDENTIFIER < letx > kw-decl.oph:2:1 (5)| (test result)",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching file name found between |IDENTIFIER < c0nst > multiline.oph:2:6 (6)| (expected) and |IDENTIFIER < c0nst > kw-decl.oph:2:6 (6)| (test result)",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching file name found between |IDENTIFIER < struc > multiline.oph:2:12 (7)| (expected) and |IDENTIFIER < struc > kw-decl.oph:2:12 (7)| (test result)",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching kind, file name found between |IDENTIFIER < function > multiline.oph:2:18 (8)| (expected) and |KW_MCCOMMAND < function > kw-decl.oph:2:18 (8)| (test result)",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching kind, value, file name found between |IDENTIFIER < macro_rules > multiline.oph:2:27 (9)| (expected) and |KW_DECL < macro > kw-decl.oph:2:27 (9)| (test result)",
+              "children": []
+            }
+          ]
+        },
+        {
+          "state": "FAILURE",
+          "message": "Lexer golden unit test for multiline failed. ( 11 / 15 )",
+          "children": [
+            {
+              "state": "SUCCESS",
+              "message": "0th Token match succeed. |KW_DECL < let > multiline.oph:1:1 (0)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "1th Token match succeed. |IDENTIFIER < x > multiline.oph:1:5 (1)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "2th Token match succeed. |EQUAL < = > multiline.oph:1:7 (2)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "3th Token match succeed. |NUMBER < 0 > multiline.oph:1:9 (3)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "4th Token match succeed. |SEMICOLON < ; > multiline.oph:1:10 (4)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "5th Token match succeed. |KW_DECL < let > multiline.oph:2:1 (5)|",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching value found between |IDENTIFIER < x > multiline.oph:2:5 (6)| (expected) and |IDENTIFIER < y > multiline.oph:2:5 (6)| (test result)",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "7th Token match succeed. |EQUAL < = > multiline.oph:2:7 (7)|",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching value found between |NUMBER < 0 > multiline.oph:2:9 (8)| (expected) and |NUMBER < 1 > multiline.oph:2:9 (8)| (test result)",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "9th Token match succeed. |SEMICOLON < ; > multiline.oph:2:10 (9)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "10th Token match succeed. |KW_DECL < let > multiline.oph:3:1 (10)|",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching value found between |IDENTIFIER < x > multiline.oph:3:5 (11)| (expected) and |IDENTIFIER < z > multiline.oph:3:5 (11)| (test result)",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "12th Token match succeed. |EQUAL < = > multiline.oph:3:7 (12)|",
+              "children": []
+            },
+            {
+              "state": "FAILURE",
+              "message": "Unmatching value found between |NUMBER < 0 > multiline.oph:3:9 (13)| (expected) and |NUMBER < 2 > multiline.oph:3:9 (13)| (test result)",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "14th Token match succeed. |SEMICOLON < ; > multiline.oph:3:10 (14)|",
+              "children": []
+            }
+          ]
+        },
         {
           "state": "SUCCESS",
           "message": "Lexer golden unit test for simple-variable succeed! ( 5 / 5 )",

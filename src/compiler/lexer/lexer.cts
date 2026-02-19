@@ -9,10 +9,9 @@ export abstract class Lexer <state_T>{
   fileName: string;
   state: state_T[] = [];
 
-  constructor(source: string, fileName: string, state: state_T, startPos?: number) {
+  constructor(source: string, fileName: string, startPos?: number) {
     this.source = source;
     this.fileName = fileName;
-    this.state.push(state);
     if (startPos) this.pos = startPos;
   }
 
@@ -28,6 +27,10 @@ export abstract class Lexer <state_T>{
     return this.tokens.at(-1);
   }
 
+  peekState() {
+    return this.state.at(-1);
+  }
+
   abstract tokenize(): TokenStream
 
   getCurrentLocation(tokenValue: string): Location {
@@ -40,4 +43,6 @@ export abstract class Lexer <state_T>{
 
     return new Location(this.fileName, ln, col, this.tokens.length());
   }
+
+  
 }

@@ -13,8 +13,7 @@ enum LexerState {
   TEMPLATE_STRING,
   TEMPLATE_INNER_EXPRESSION
 }
-export class CodeLexer extends Lexer {
-  state: LexerState[] = [];
+export class CodeLexer extends Lexer<LexerState> {
 
   tokenize() {
     this.state.push(LexerState.PROGRAM_CODE);
@@ -27,8 +26,7 @@ export class CodeLexer extends Lexer {
   }
 
   getToken(): Token {
-
-    if (this.peekToken()?.is("BACKTICK")) {
+    if (this.peekState() === LexerState.TEMPLATE_STRING) {
       return this.getTemplatePart();
     }
 
@@ -36,18 +34,26 @@ export class CodeLexer extends Lexer {
     for (const kind of Object.keys(regexTokens) as RegexTokenKeys[]) {
       const regex: RegExp = regexTokens[kind];
       const opt_Match = this.matchCurrentSource(regex);
-      
+
       if (opt_Match == null) continue;
 
-        const value = opt_Match[0];
-        this.pos += value.length;
+      const value = opt_Match[0];
+      this.pos += value.length;
+      const token = new Token(
+        this.checkKeyword(kind, value),
+        value,
+        this.getCurrentLocation(value)
+      );
 
-        if (kind === "WHITESPACE") continue;
-        return new Token(
-          this.checkKeyword(kind, value),
-          value,
-          this.getCurrentLocation(value)
-        );
+      if (kind === "WHITESPACE") continue;
+      if (token.is("BACKTICK")) {
+        this.state.push(LexerState.TEMPLATE_STRING);
+      }
+      if (token.is("RBRACE") && this.peekState() === LexerState.TEMPLATE_INNER_EXPRESSION) {
+        this.state.pop();
+      }
+
+      return token;
     }
     throw new Error(`failed lexing! invalid token ${this.getCurrentSource()} found`);
   }
@@ -57,7 +63,7 @@ export class CodeLexer extends Lexer {
 
     type ReservedKeywordKeys = keyof typeof reservedKeywords;
     for (const keywordKind of Object.keys(reservedKeywords) as ReservedKeywordKeys[]) {
-      
+
       const keywordArray = reservedKeywords[keywordKind];
       if (keywordArray.includes(value)) return keywordKind;
     }
@@ -66,24 +72,51 @@ export class CodeLexer extends Lexer {
 
   getTemplateString(): TokenStream {
     const startPos = this.pos;
-        
-        // preset for consuming ` at the beginning
-        let depth = 1;
-        this.pos += 2;
 
-        while (this.pos < this.source.length) {
-            const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;
-            const matchesLBrace = this.matchCurrentSource(regexTokens.LBRACE) !== null;
-            const matchesRBrace = this.matchCurrentSource(regexTokens.RBRACE) !== null;
+    // preset for consuming ` at the beginning
+    let depth = 1;
+    this.pos += 2;
 
-            if (matchesOpenExpr || matchesLBrace) depth++;
-            if (matchesRBrace) depth--;
-            if (depth <= 0) break;
-        }
+    while (this.pos < this.source.length) {
+      const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;
+      const matchesLBrace = this.matchCurrentSource(regexTokens.LBRACE) !== null;
+      const matchesRBrace = this.matchCurrentSource(regexTokens.RBRACE) !== null;
 
-        // preset for consuming } at the end
+      if (matchesOpenExpr || matchesLBrace) depth++;
+      if (matchesRBrace) depth--;
+      if (depth <= 0) break;
+    }
+
+    // preset for consuming } at the end
+    this.pos++;
+
+    return new CodeLexer(this.source, this.fileName, startPos).tokenize();
+  }
+
+  getTemplatePart(): Token {
+    const chars: Array<string> = [];
+    while (this.pos < this.source.length) {
+      const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;
+      const matchesBacktick = this.matchCurrentSource(regexTokens.BACKTICK) !== null;
+
+      if (matchesOpenExpr) {
+        this.state.push(LexerState.TEMPLATE_INNER_EXPRESSION);
+        break;
+
+      } else if (matchesBacktick) {
+        this.state.pop();
+        break;
+      }
+
+      else {
+        chars.push(this.source[this.pos] ?? "");
         this.pos++;
-
-        return new CodeLexer(this.source, this.fileName, startPos).tokenize();
+      }
+    }
+    return new Token(
+      "TEMPLATE_PART",
+      chars.join(""),
+      this.getCurrentLocation(chars.join(""))
+    );
   }
 }

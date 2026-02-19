@@ -3,13 +3,14 @@ import { TestResult } from "../../../test-resources/test-result.cjs";
 import { Token } from "../../../tokens/token.cjs";
 import { UnitCase } from "./units/unit-case.cjs";
 import { CodeLexer } from "../../code-lexer.cjs";
+import { TokenStream } from "../../../tokens/token-stream.cjs";
 
 export class UnitTester implements Tester {
 
     private tokenResults: Array<TestResult> = []; // to store the comparison of individual lines
 
-    private expectations: Array<Token>;
-    private testResults: Array<Token>;
+    private expectations: TokenStream;
+    private testResults: TokenStream;
 
     private title: string;
 
@@ -30,8 +31,8 @@ export class UnitTester implements Tester {
     }
 
     private checkTokenCounts() {
-        const expecLength = this.expectations.length;
-        const resultLength = this.testResults.length;
+        const expecLength = this.expectations.tokens.length;
+        const resultLength = this.testResults.tokens.length;
 
         if (expecLength === resultLength) {
             const msg = "Expectations and Results have same length."
@@ -48,9 +49,9 @@ export class UnitTester implements Tester {
     }
 
     private loopOnTokens() {
-        for (let i = 0; i < this.expectations.length; i++) {
-            const opt_exp = this.expectations[i];
-            const opt_res = this.testResults[i];
+        for (let i = 0; i < this.expectations.tokens.length; i++) {
+            const opt_exp = this.expectations.tokens[i];
+            const opt_res = this.testResults.tokens[i];
 
             if (!opt_exp || !opt_res) continue;
             const exp = opt_exp;

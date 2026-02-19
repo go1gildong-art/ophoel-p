@@ -1,15 +1,16 @@
 import { Token } from "../../../../tokens/token.cjs"
 import { GoldenUnit } from "../../../../test-resources/golden-test.cjs";
-export class UnitCase implements GoldenUnit<string, Token[]>{
+import { TokenStream } from "../../../../tokens/token-stream.cjs";
+export class UnitCase implements GoldenUnit<string, TokenStream>{
     title: string;
     description: string;
     source: string;
-    expectation: Token[];
+    expectation: TokenStream;
     
     constructor(title: string, description: string, source: string, expectation: string[]) {
         this.title = title;
         this.description = description;
         this.source = source;
-        this.expectation = expectation.map(stringToken => Token.fromString(stringToken));
+        this.expectation = new TokenStream(expectation.map(stringToken => Token.fromString(stringToken)));
     }
 }

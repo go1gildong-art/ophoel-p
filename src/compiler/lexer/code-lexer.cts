@@ -4,6 +4,7 @@ import { reservedKeywords } from "../tokens/reserved-keywords.cjs"
 import { Token } from "../tokens/token.cjs"
 import { Location } from "../metadata.cjs"
 import { Lexer } from "./lexer.cjs"
+import { TokenStream } from "../tokens/token-stream.cjs"
 
 
 
@@ -14,7 +15,7 @@ export class CodeLexer extends Lexer {
       const token = this.getToken();
       this.tokens.push(token);
     }
-    return this.tokens;
+    return new TokenStream(this.tokens);
   }
 
   getToken(): Token {

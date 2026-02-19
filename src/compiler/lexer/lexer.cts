@@ -1,5 +1,6 @@
 import { Token } from "../tokens/token.cjs"
 import { Location } from "../metadata.cjs"
+import { TokenStream } from "../tokens/token-stream.cjs";
 
 export abstract class Lexer {
   source: string;
@@ -24,7 +25,7 @@ export abstract class Lexer {
     return this.tokens.at(-1);
   }
 
-  abstract tokenize(): Array<Token>
+  abstract tokenize(): TokenStream
 
   getCurrentLocation(tokenValue: string): Location {
     const splitString = this.source

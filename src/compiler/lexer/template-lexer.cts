@@ -5,7 +5,7 @@ import { Token } from "../tokens/token.cjs"
 import { Location } from "../metadata.cjs"
 import { Lexer } from "./lexer.cjs"
 import { CodeLexer } from "./code-lexer.cjs"
-
+import { TokenStream } from "../tokens/token-stream.cjs"
 
 export class TemplateLexer extends Lexer {
 
@@ -14,7 +14,7 @@ export class TemplateLexer extends Lexer {
             const token = this.getToken();
             this.tokens.push(token);
         }
-        return this.tokens;
+        return new TokenStream(this.tokens);
     }
 
     getToken(): Token {

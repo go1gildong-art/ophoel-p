@@ -18,8 +18,12 @@ export class CodeLexer extends Lexer {
   }
 
   getToken(): Token {
-    type RegexTokenKeys = keyof typeof regexTokens;
 
+    if (this.peekToken()?.is("BACKTICK")) {
+      return this.getTemplatePart();
+    }
+
+    type RegexTokenKeys = keyof typeof regexTokens;
     for (const kind of Object.keys(regexTokens) as RegexTokenKeys[]) {
       const regex: RegExp = regexTokens[kind];
       const opt_Match = this.matchCurrentSource(regex);
@@ -51,7 +55,7 @@ export class CodeLexer extends Lexer {
     return "IDENTIFIER";
   }
 
-  getTemplatePart() {
+  getTemplatePart(): Token {
     const chars: Array<string> = [];
     while (this.pos < this.source.length) {
       const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;

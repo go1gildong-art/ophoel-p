@@ -263,7 +263,7 @@
         },
         {
           "state": "FAILURE",
-          "message": "Lexer golden unit test for template-string failed. ( 4 / 18 )",
+          "message": "Lexer golden unit test for template-string failed. ( 8 / 18 )",
           "children": [
             {
               "state": "FAILURE",
@@ -291,68 +291,68 @@
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value found between |TEMPLATE_PART < John has  > template-string.oph:1:12 (4)| (expected) and |IDENTIFIER < John > template-string.oph:1:12 (4)| (test result)",
+              "state": "SUCCESS",
+              "message": "4th Token match succeed. |TEMPLATE_PART < John has  > template-string.oph:1:12 (4)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "5th Token match succeed. |OPENEXPR < ${ > template-string.oph:1:21 (5)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "6th Token match succeed. |IDENTIFIER < x > template-string.oph:1:23 (6)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "7th Token match succeed. |RBRACE < } > template-string.oph:1:24 (7)|",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |OPENEXPR < ${ > template-string.oph:1:21 (5)| (expected) and |IDENTIFIER < has > template-string.oph:1:17 (5)| (test result)",
+              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  apples and  > template-string.oph:1:25 (8)| (expected) and |IDENTIFIER < apples > template-string.oph:1:26 (8)| (test result)",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |IDENTIFIER < x > template-string.oph:1:23 (6)| (expected) and |OPENEXPR < ${ > template-string.oph:1:21 (6)| (test result)",
+              "message": "Unmatching kind, value, column found between |OPENEXPR < ${ > template-string.oph:1:37 (9)| (expected) and |IDENTIFIER < and > template-string.oph:1:33 (9)| (test result)",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |RBRACE < } > template-string.oph:1:24 (7)| (expected) and |IDENTIFIER < x > template-string.oph:1:23 (7)| (test result)",
+              "message": "Unmatching kind, value, column found between |IDENTIFIER < y > template-string.oph:1:39 (10)| (expected) and |OPENEXPR < ${ > template-string.oph:1:37 (10)| (test result)",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  apples and  > template-string.oph:1:25 (8)| (expected) and |RBRACE < } > template-string.oph:1:24 (8)| (test result)",
+              "message": "Unmatching kind, value, column found between |PLUS < + > template-string.oph:1:41 (11)| (expected) and |IDENTIFIER < y > template-string.oph:1:39 (11)| (test result)",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |OPENEXPR < ${ > template-string.oph:1:37 (9)| (expected) and |IDENTIFIER < apples > template-string.oph:1:26 (9)| (test result)",
+              "message": "Unmatching kind, value, column found between |NUMBER < 10 > template-string.oph:1:43 (12)| (expected) and |PLUS < + > template-string.oph:1:41 (12)| (test result)",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching value, column found between |IDENTIFIER < y > template-string.oph:1:39 (10)| (expected) and |IDENTIFIER < and > template-string.oph:1:33 (10)| (test result)",
+              "message": "Unmatching kind, value, column found between |RBRACE < } > template-string.oph:1:45 (13)| (expected) and |NUMBER < 10 > template-string.oph:1:43 (13)| (test result)",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |PLUS < + > template-string.oph:1:41 (11)| (expected) and |OPENEXPR < ${ > template-string.oph:1:37 (11)| (test result)",
+              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  bananas. > template-string.oph:1:46 (14)| (expected) and |RBRACE < } > template-string.oph:1:45 (14)| (test result)",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |NUMBER < 10 > template-string.oph:1:43 (12)| (expected) and |IDENTIFIER < y > template-string.oph:1:39 (12)| (test result)",
+              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-string.oph:1:55 (15)| (expected) and |IDENTIFIER < bananas > template-string.oph:1:47 (15)| (test result)",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |RBRACE < } > template-string.oph:1:45 (13)| (expected) and |PLUS < + > template-string.oph:1:41 (13)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  bananas. > template-string.oph:1:46 (14)| (expected) and |NUMBER < 10 > template-string.oph:1:43 (14)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-string.oph:1:55 (15)| (expected) and |RBRACE < } > template-string.oph:1:45 (15)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |SEMICOLON < ; > template-string.oph:1:56 (16)| (expected) and |IDENTIFIER < bananas > template-string.oph:1:47 (16)| (test result)",
+              "message": "Unmatching kind, value, column found between |SEMICOLON < ; > template-string.oph:1:56 (16)| (expected) and |PERIOD < . > template-string.oph:1:54 (16)| (test result)",
               "children": []
             }
           ]

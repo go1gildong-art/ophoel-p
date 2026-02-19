@@ -61,8 +61,12 @@ export class TemplateLexer extends Lexer {
             const matchesBacktick = this.matchCurrentSource(regexTokens.BACKTICK) !== null;
 
             if (matchesOpenExpr) {
-                const slice1 = chars.join("");
-                // const innerExpr = new CodeLexer(chars.join(""), this.fileName).tokenize();
+                const innerExpr =
+                    new CodeLexer(this.getCurrentSource(), this.fileName)
+                        .tokenize()
+                        .getTokensBetween("LBRACE", "RBRACE");
+
+                
             }
 
 

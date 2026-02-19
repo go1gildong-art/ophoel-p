@@ -8,6 +8,18 @@ export class TokenStream {
         this.tokens = tokens;
     }
 
+    at(index: number) {
+        return this.tokens.at(index);
+    }
+
+    slice(start?: number, end?: number) {
+        return this.tokens.slice(start, end);
+    }
+
+    push(...tokens: Token[]) {
+        this.tokens.push(...tokens);
+    }
+
     // stops at first targetKind/Value found
     getTokensUntil(targetKind: string, targetValue?: string) {
         const collectedTokens: Token[] = [];
@@ -15,8 +27,8 @@ export class TokenStream {
             if (currentToken.is(targetKind, targetValue)) break;
             collectedTokens.push(currentToken);
         }
-        
-        return collectedTokens;
+
+        return new TokenStream(collectedTokens);
     }
 
     // from: [, {, (... 
@@ -35,7 +47,7 @@ export class TokenStream {
             collectedTokens.push(currentToken);
         }
 
-        return collectedTokens;
+        return new TokenStream(collectedTokens);
     }
 }
 

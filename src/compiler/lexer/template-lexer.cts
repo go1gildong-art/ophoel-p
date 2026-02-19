@@ -18,7 +18,6 @@ export class TemplateLexer extends Lexer {
     }
 
     getToken(): Token {
-
         if (this.peekToken()?.is("BACKTICK")) {
             return this.getTemplatePart();
         }
@@ -63,7 +62,6 @@ export class TemplateLexer extends Lexer {
 
             if (matchesOpenExpr) {
                 const slice1 = chars.join("");
-                
                 // const innerExpr = new CodeLexer(chars.join(""), this.fileName).tokenize();
             }
 

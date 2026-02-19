@@ -26,33 +26,6 @@ class Token {
         const value = this.value === token.value;
         return kind && value;
     }
-    static getTokensUntil(tokens, targetKind, targetValue) {
-        const collectedTokens = [];
-        for (const currentToken of tokens) {
-            if (currentToken.is(targetKind, targetValue))
-                break;
-            collectedTokens.push(currentToken);
-        }
-        return collectedTokens;
-    }
-    // from: [, {, (... 
-    // to: ], }, )...
-    // DOES NOT include "from" token (should be excluded in tokens argument)
-    // DOES NOT include "to" token
-    static getTokensBetween(tokens, fromToken, toToken) {
-        let depth = 1; // initial depth for uncount starting from token
-        const collectedTokens = [];
-        for (const currentToken of tokens) {
-            if (currentToken.sameAs(fromToken))
-                depth++;
-            else if (currentToken.sameAs(toToken))
-                depth--;
-            if (depth <= 0)
-                break;
-            collectedTokens.push(currentToken);
-        }
-        return collectedTokens;
-    }
     static fromString(stringToken) {
         const TokenRegexes = {
             kind: /\w+/,

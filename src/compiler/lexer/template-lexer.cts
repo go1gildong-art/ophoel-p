@@ -14,7 +14,7 @@ export class TemplateLexer extends Lexer {
             const token = this.getToken();
             this.tokens.push(token);
         }
-        return new TokenStream(this.tokens);
+        return this.tokens;
     }
 
     getToken(): Token {
@@ -54,6 +54,33 @@ export class TemplateLexer extends Lexer {
         return "IDENTIFIER";
     }
 
+    getInnerExpression(): TokenStream {
+        const startPos = this.pos;
+        
+        // preset for consuming ${ at the beginning
+        let depth = 1;
+        const chars: string[] = ["$", "{"];
+        this.pos += 2;
+
+        while (this.pos < this.source.length) {
+            const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;
+            const matchesLBrace = this.matchCurrentSource(regexTokens.LBRACE) !== null;
+            const matchesRBrace = this.matchCurrentSource(regexTokens.RBRACE) !== null;
+
+            if (matchesOpenExpr || matchesLBrace) depth++;
+            if (matchesRBrace) depth--;
+
+            if (depth <= 0) break;
+            chars.push(this.source[this.pos] ?? "");
+        }
+
+        // preset for consuming } at the end
+        chars.push("}");
+        this.pos++;
+
+        return new CodeLexer(chars.join(""), this.fileName).tokenize();
+    }
+
     getTemplatePart(): Token {
         const chars: Array<string> = [];
         while (this.pos < this.source.length) {
@@ -61,12 +88,12 @@ export class TemplateLexer extends Lexer {
             const matchesBacktick = this.matchCurrentSource(regexTokens.BACKTICK) !== null;
 
             if (matchesOpenExpr) {
-                const innerExpr =
-                    new CodeLexer(this.getCurrentSource(), this.fileName)
-                        .tokenize()
-                        .getTokensBetween("LBRACE", "RBRACE");
+                this.tokens
 
-                
+
+
+
+
             }
 
 

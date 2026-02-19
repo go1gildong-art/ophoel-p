@@ -15,7 +15,7 @@ export class CodeLexer extends Lexer {
       const token = this.getToken();
       this.tokens.push(token);
     }
-    return new TokenStream(this.tokens);
+    return this.tokens;
   }
 
   getToken(): Token {

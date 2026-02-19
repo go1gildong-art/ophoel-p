@@ -5,12 +5,13 @@ import { TokenStream } from "../tokens/token-stream.cjs";
 export abstract class Lexer {
   source: string;
   pos = 0;
-  tokens: Array<Token> = [];
+  tokens: TokenStream = new TokenStream([]);
   fileName: string;
 
-  constructor(source: string, fileName: string) {
+  constructor(source: string, fileName: string, startPos?: number) {
     this.source = source;
     this.fileName = fileName;
+    if (startPos) this.pos = startPos;
   }
 
   getCurrentSource(): string {
@@ -35,6 +36,6 @@ export abstract class Lexer {
     const ln = splitString.length;
     const col = (splitString.at(-1)?.length ?? 0) + 1
 
-    return new Location(this.fileName, ln, col, this.tokens.length);
+    return new Location(this.fileName, ln, col, this.tokens.length());
   }
 }

@@ -8,6 +8,10 @@ export class TokenStream {
         this.tokens = tokens;
     }
 
+    length() {
+        return this.tokens.length;
+    }
+
     at(index: number) {
         return this.tokens.at(index);
     }

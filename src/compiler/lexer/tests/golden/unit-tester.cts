@@ -69,7 +69,13 @@ export class UnitTester implements Tester {
                 continue;
             }
 
-            if (!opt_exp || !opt_res) continue;
+            if (!opt_res) {
+                const msg = `Missing token at index ${i}, as"${opt_exp.toString()}"`;
+                this.emitResult(TestResult.failure(msg));
+                continue;
+            }
+
+            // if (!opt_exp || !opt_res) continue;
             const exp = opt_exp;
             const res = opt_res;
             this.compareTokens(exp, res, i);

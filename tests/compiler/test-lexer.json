@@ -4,7 +4,7 @@
   "children": [
     {
       "state": "SUCCESS",
-      "message": "Lexer golden test succeed! ( 4 / 4 )",
+      "message": "Lexer golden test succeed! ( 5 / 5 )",
       "children": [
         {
           "state": "SUCCESS",
@@ -63,6 +63,17 @@
             {
               "state": "SUCCESS",
               "message": "9th Token match succeed. |SEMICOLON < ; > comments.oph:11:10 (9)|",
+              "children": []
+            }
+          ]
+        },
+        {
+          "state": "SUCCESS",
+          "message": "Lexer golden unit test for empty-file succeed! ( 1 / 1 )",
+          "children": [
+            {
+              "state": "SUCCESS",
+              "message": "Expectations and Results have same length.",
               "children": []
             }
           ]

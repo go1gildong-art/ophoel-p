@@ -20,6 +20,7 @@ export class UnitTester implements Tester {
     }
 
     async test() {
+        this.checkTokenCounts();
         this.loopOnTokens();
         return this.gatherResult();
     }
@@ -28,7 +29,26 @@ export class UnitTester implements Tester {
         this.tokenResults.push(result);
     }
 
+    private checkTokenCounts() {
+        const expecLength = this.expectations.length;
+        const resultLength = this.testResults.length;
+
+        if (expecLength === resultLength) {
+            const msg = "Expectations and Results have same length."
+            this.emitResult(TestResult.success(msg));
+
+        } else if (expecLength > resultLength) {
+            const msg = "Expectation has more tokens than Result."
+            this.emitResult(TestResult.failure(msg));
+
+        } else if (expecLength < resultLength) {
+            const msg = "Result has more token than Expectation."
+            this.emitResult(TestResult.failure(msg));
+        }
+    }
+
     private loopOnTokens() {
+
         for (let i = 0; i < this.expectations.length; i++) {
             const opt_exp = this.expectations[i];
             const opt_res = this.testResults[i];
@@ -54,6 +74,12 @@ export class UnitTester implements Tester {
             const res = opt_res;
             this.compareTokens(exp, res, i);
         }
+        if (opt_exp == null && opt_res == null) {
+                const msg = `${i}th index has no token pair.`
+                this.emitResult(TestResult.success(msg));
+                continue;
+
+            }
     }
 
 
@@ -72,8 +98,8 @@ export class UnitTester implements Tester {
                 `Unmatching ${unmatchingPortions.join(", ")} found between `
                 + `|${exp.toString()}| (expected) and `
                 + `|${res.toString()}| (test result)`;
-
             this.emitResult(TestResult.failure(msg));
+            
         } else {
             const msg = `${index}th Token match succeed. |${exp.toString()}|`
             this.emitResult(TestResult.success(msg));

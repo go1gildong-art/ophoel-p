@@ -23,27 +23,26 @@ export class CodeLexer extends Lexer {
       const regex: RegExp = regexTokens[kind];
       const opt_Match = this.matchCurrentSource(regex);
       
-      if (opt_Match !== null) {
+      if (opt_Match == null) continue;
+
         const value = opt_Match[0];
         this.pos += value.length;
-
         if (kind === "WHITESPACE") continue;
-
         return new Token(
-          this.checkReserved(kind, value),
+          this.checkKeyword(kind, value),
           value,
           this.getCurrentLocation(value)
         );
-      }
     }
     throw new Error(`failed lexing! invalid token ${this.getCurrentSource()} found`);
   }
 
-  checkReserved(kind: string, value: string) {
+  checkKeyword(kind: string, value: string) {
     if (kind !== "KEYWORD") return kind;
 
     type ReservedKeywordKeys = keyof typeof reservedKeywords;
     for (const keywordKind of Object.keys(reservedKeywords) as ReservedKeywordKeys[]) {
+      
       const keywordArray = reservedKeywords[keywordKind];
       if (keywordArray.includes(value)) return keywordKind;
     }

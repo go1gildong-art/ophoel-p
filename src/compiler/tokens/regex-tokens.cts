@@ -84,7 +84,7 @@ const Literals = {
 }
 
 const KeywordToken = {
-  KEYWORD: /^[A-Za-z_][A-Za-z0-9-]*/
+  KEYWORD: /^[A-Za-z_][A-Za-z0-9-_]*/
 }
 
 export const regexTokens = {

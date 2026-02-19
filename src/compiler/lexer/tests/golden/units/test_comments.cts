@@ -8,7 +8,7 @@ export const unit = new UnitCase(
     + `\n-line comment */`
     + `\n/# this is a preserved comment`
     + `\n/.`
-    + `\n/* below are all inside one mutli line comment:`
+    + `\n/* below are all inside one multi line comment:`
     + `\n// single!`
     + `\n/# preserved!`
     + `\n/.`

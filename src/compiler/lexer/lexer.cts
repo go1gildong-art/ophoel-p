@@ -28,7 +28,7 @@ export abstract class Lexer {
       .split("\n");
 
     const ln = splitString.length;
-    const col = (splitString[splitString.length - 1]?.length ?? 0) + 1
+    const col = (splitString.at(-1)?.length ?? 0) + 1
 
     return new Location(this.fileName, ln, col, this.tokens.length);
   }

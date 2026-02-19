@@ -6,7 +6,7 @@ const Whitespace = {
 const Comments = {
   SLINECOMMENT: /^\/\/.*/, // // comment
   MLINECOMMENT: /^\/\*[\s\S]*?\*\//, // /* comment */
-  PRESERVEDCOMMENT: /^\/\/.*/, // /# comment
+  PRESERVEDCOMMENT: /^\/#.*/, // /# comment
   PRESERVEDNEWLINE: /^\/\.\n/ // /.
 };
 

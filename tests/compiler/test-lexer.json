@@ -1,18 +1,18 @@
 {
-  "state": "FAILURE",
-  "message": "Full lexer test failed. ( 0 / 1 )",
+  "state": "SUCCESS",
+  "message": "Full lexer test succeed! ( 1 / 1 )",
   "children": [
     {
-      "state": "FAILURE",
-      "message": "Lexer golden test failed. ( 3 / 4 )",
+      "state": "SUCCESS",
+      "message": "Lexer golden test succeed! ( 4 / 4 )",
       "children": [
         {
-          "state": "FAILURE",
-          "message": "Lexer golden unit test for comments failed. ( 2 / 11 )",
+          "state": "SUCCESS",
+          "message": "Lexer golden unit test for comments succeed! ( 11 / 11 )",
           "children": [
             {
-              "state": "FAILURE",
-              "message": "Result has more token than Expectation.",
+              "state": "SUCCESS",
+              "message": "Expectations and Results have same length.",
               "children": []
             },
             {
@@ -26,43 +26,43 @@
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value found between |PRESERVEDCOMMENT < /# this is a preserved comment > comments.oph:4:1 (2)| (expected) and |DIVIDE < / > comments.oph:4:1 (2)| (test result)",
+              "state": "SUCCESS",
+              "message": "2th Token match succeed. |PRESERVEDCOMMENT < /# this is a preserved comment > comments.oph:4:1 (2)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |PRESERVEDNEWLINE < /.\n > comments.oph:5:1 (3)| (expected) and |HASH < # > comments.oph:4:2 (3)| (test result)",
+              "state": "SUCCESS",
+              "message": "3th Token match succeed. |PRESERVEDNEWLINE < /.\n > comments.oph:5:1 (3)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |MLINECOMMENT < /* below are all inside one multi line comment:\n// single!\n/# preserved!\n/.\n...by here. */ > comments.oph:6:1 (4)| (expected) and |SLASH < / > comments.oph:4:4 (4)| (test result)",
+              "state": "SUCCESS",
+              "message": "4th Token match succeed. |MLINECOMMENT < /* below are all inside one multi line comment:\n// single!\n/# preserved!\n/.\n...by here. */ > comments.oph:6:1 (4)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |KW_DECL < let > comments.oph:11:1 (5)| (expected) and |SLASH < / > comments.oph:4:5 (5)| (test result)",
+              "state": "SUCCESS",
+              "message": "5th Token match succeed. |KW_DECL < let > comments.oph:11:1 (5)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |IDENTIFIER < x > comments.oph:11:5 (6)| (expected) and |SLASH < / > comments.oph:4:6 (6)| (test result)",
+              "state": "SUCCESS",
+              "message": "6th Token match succeed. |IDENTIFIER < x > comments.oph:11:5 (6)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line found between |EQUAL < = > comments.oph:11:7 (7)| (expected) and |SLASH < / > comments.oph:4:7 (7)| (test result)",
+              "state": "SUCCESS",
+              "message": "7th Token match succeed. |EQUAL < = > comments.oph:11:7 (7)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line found between |NUMBER < 0 > comments.oph:11:9 (8)| (expected) and |SLASH < / > comments.oph:4:9 (8)| (test result)",
+              "state": "SUCCESS",
+              "message": "8th Token match succeed. |NUMBER < 0 > comments.oph:11:9 (8)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line found between |SEMICOLON < ; > comments.oph:11:10 (9)| (expected) and |SLASH < / > comments.oph:4:10 (9)| (test result)",
+              "state": "SUCCESS",
+              "message": "9th Token match succeed. |SEMICOLON < ; > comments.oph:11:10 (9)|",
               "children": []
             }
           ]

@@ -14,14 +14,7 @@ export async function loadTests<T>(folder: string): Promise<T[]> {
 
   for (const file of testFiles) {
     const fullPath = path.resolve(join(folder, file));
-    
-    console.log(fullPath);
-    console.log(pathToFileURL(fullPath).href)
-
-    // dynamic import requires file URL
     const module = require(fullPath);
-    console.log(module);
-
     tests.push(module.unit);
   }
 

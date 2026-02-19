@@ -17,6 +17,14 @@ export class Token {
         return `${this.kind} < ${this.value} > ${this.location.toString()}`;
     }
 
+    is(kind: string, value?: string) {
+        if (value != null) {
+            return this.kind === kind && this.value === value;
+        } else if (value == null) {
+            return this.kind === kind;
+        }
+    }
+
     static fromString(stringToken: string): Token {
         const TokenRegexes = {
             kind: /\w+/,
@@ -39,7 +47,7 @@ export class Token {
         } else if (opt_matchArr.length !== 7) {
             throw new Error(`Token string does not have enough information! ${stringToken}`);
         }
-        
+
         const [, kind, value, fileName, ln, col, tokenIndex] = opt_matchArr;
 
         // using value! is justified, after performing the length check (opt_matchArr.length !== 7)

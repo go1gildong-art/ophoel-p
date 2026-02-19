@@ -13,6 +13,14 @@ class Token {
     toString() {
         return `${this.kind} < ${this.value} > ${this.location.toString()}`;
     }
+    is(kind, value) {
+        if (value != null) {
+            return this.kind === kind && this.value === value;
+        }
+        else if (value == null) {
+            return this.kind === kind;
+        }
+    }
     static fromString(stringToken) {
         const TokenRegexes = {
             kind: /\w+/,

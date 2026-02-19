@@ -8,7 +8,7 @@
       "children": [
         {
           "state": "FAILURE",
-          "message": "Lexer golden unit test for comments failed. ( 1 / 11 )",
+          "message": "Lexer golden unit test for comments failed. ( 2 / 11 )",
           "children": [
             {
               "state": "FAILURE",
@@ -21,8 +21,8 @@
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching line, column found between |MLINECOMMENT < /* this is a multi\n-line comment */ > comments.oph:2:1 (1)| (expected) and |MLINECOMMENT < /* this is a multi\n-line comment */ > comments.oph:3:-18 (1)| (test result)",
+              "state": "SUCCESS",
+              "message": "1th Token match succeed. |MLINECOMMENT < /* this is a multi\n-line comment */ > comments.oph:2:1 (1)|",
               "children": []
             },
             {

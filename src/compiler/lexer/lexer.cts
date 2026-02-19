@@ -24,11 +24,11 @@ export abstract class Lexer {
 
   getCurrentLocation(tokenValue: string): Location {
     const splitString = this.source
-      .slice(0, this.pos)
+      .slice(0, this.pos - tokenValue.length)
       .split("\n");
-    
+
     const ln = splitString.length;
-    const col = (splitString[splitString.length - 1]?.length ?? 0) - tokenValue.length + 1
+    const col = (splitString[splitString.length - 1]?.length ?? 0) + 1
 
     return new Location(this.fileName, ln, col, this.tokens.length);
   }

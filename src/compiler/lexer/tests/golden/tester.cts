@@ -6,9 +6,6 @@ import { Tester } from "../../../test-resources/tester.cjs";
 import { UnitTester } from "./unit-tester.cjs";
 import { UnitCase } from "./units/unit-case.cjs";
 
-import { sources } from "./sources.cjs";
-import { expectations } from "./expectations.cjs";
-
 import { loadTests } from "../../../test-resources/test_loader.cjs";
 
 

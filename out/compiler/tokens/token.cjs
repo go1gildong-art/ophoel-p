@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Token = void 0;
-// const Location = require("../metadata.cjs");
 const metadata_cjs_1 = require("../metadata.cjs");
 class Token {
     constructor(kind, value, location) {

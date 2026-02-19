@@ -21,6 +21,7 @@ const KW_OPHOEL: Array<string> = [
     "mc_exec"
 ]
 
+/*
 const KW_MCCOMMAND: Array<string> = [
     "attribute",
     "give",
@@ -36,10 +37,11 @@ const KW_MCCOMMAND: Array<string> = [
     "place",
     "summon"
 ]
+*/
 
 export const reservedKeywords = {
     KW_DECL,
     KW_CONTROL,
-    KW_MCCOMMAND,
+    // KW_MCCOMMAND,
     KW_OPHOEL
 }

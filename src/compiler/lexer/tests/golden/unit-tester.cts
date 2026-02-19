@@ -48,38 +48,15 @@ export class UnitTester implements Tester {
     }
 
     private loopOnTokens() {
-
         for (let i = 0; i < this.expectations.length; i++) {
             const opt_exp = this.expectations[i];
             const opt_res = this.testResults[i];
-
-            if (opt_exp == null && opt_res == null) {
-                const msg = `${i}th index has no token pair.`
-                this.emitResult(TestResult.success(msg));
-                continue;
-
-            } else if (opt_exp == null && opt_res != null) {
-                const msg = `Exceeding token found at token index ${i}, as "${opt_res.toString()}"`;
-                this.emitResult(TestResult.failure(msg));
-                continue;
-
-            } else if (opt_exp != null && opt_res == null) {
-                const msg = `Missing token at index ${i}, as"${opt_exp.toString()}"`;
-                this.emitResult(TestResult.failure(msg));
-                continue;
-            }
 
             if (!opt_exp || !opt_res) continue;
             const exp = opt_exp;
             const res = opt_res;
             this.compareTokens(exp, res, i);
         }
-        if (opt_exp == null && opt_res == null) {
-                const msg = `${i}th index has no token pair.`
-                this.emitResult(TestResult.success(msg));
-                continue;
-
-            }
     }
 
 

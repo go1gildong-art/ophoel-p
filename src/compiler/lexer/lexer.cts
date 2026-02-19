@@ -20,6 +20,10 @@ export abstract class Lexer {
     return this.getCurrentSource().match(regex);
   }
 
+  peekToken() {
+    return this.tokens.at(-1);
+  }
+
   abstract tokenize(): Array<Token>
 
   getCurrentLocation(tokenValue: string): Location {

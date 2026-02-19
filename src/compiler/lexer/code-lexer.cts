@@ -19,6 +19,7 @@ export class CodeLexer extends Lexer {
 
   getToken(): Token {
     type RegexTokenKeys = keyof typeof regexTokens;
+
     for (const kind of Object.keys(regexTokens) as RegexTokenKeys[]) {
       const regex: RegExp = regexTokens[kind];
       const opt_Match = this.matchCurrentSource(regex);
@@ -27,6 +28,7 @@ export class CodeLexer extends Lexer {
 
         const value = opt_Match[0];
         this.pos += value.length;
+
         if (kind === "WHITESPACE") continue;
         return new Token(
           this.checkKeyword(kind, value),

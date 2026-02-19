@@ -23,13 +23,13 @@ export class TokenStream {
     // to: ], }, )...
     // DOES NOT include "from" token (should be excluded in tokens argument)
     // DOES NOT include "to" token
-    getTokensBetween(fromToken: Token, toToken: Token) {
+    getTokensBetween(fromKind: string, toKind: string, fromValue?: string, toValue?: string) {
         let depth = 1; // initial depth for uncount starting from token
         const collectedTokens: Token[] = [];
 
         for (const currentToken of this.tokens) {
-            if (currentToken.sameAs(fromToken)) depth++;
-            else if (currentToken.sameAs(toToken)) depth--;
+            if (currentToken.is(fromKind, fromValue)) depth++;
+            else if (currentToken.is(toKind, toValue)) depth--;
 
             if (depth <= 0) break;
             collectedTokens.push(currentToken);

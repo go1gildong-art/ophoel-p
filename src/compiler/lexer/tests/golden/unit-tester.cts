@@ -22,7 +22,7 @@ export class UnitTester implements Tester {
 
     public async test() {
         this.checkTokenCounts();
-        this.loopOnTokens();
+        this.loopTokens();
         return this.gatherResult();
     }
 
@@ -48,7 +48,7 @@ export class UnitTester implements Tester {
         }
     }
 
-    private loopOnTokens() {
+    private loopTokens() {
         for (let i = 0; i < this.expectations.tokens.length; i++) {
             const opt_exp = this.expectations.tokens[i];
             const opt_res = this.testResults.tokens[i];

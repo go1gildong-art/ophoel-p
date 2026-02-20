@@ -30,7 +30,7 @@ export class CodeLexer extends Lexer<LexerState> {
 
     for (const kind of Object.keys(regexTokens) as keyof typeof regexTokens[]) {
       const regex: RegExp = regexTokens[kind];
-      const opt_Match = this.matchCurrentSource(regex);
+      const opt_Match = this.matchTail(regex);
 
       if (opt_Match == null) continue;
 
@@ -39,20 +39,20 @@ export class CodeLexer extends Lexer<LexerState> {
       const token = new Token(
         this.checkKeyword(kind, value),
         value,
-        this.getCurrentLocation(value)
+        this.getLocation(value)
       );
 
       if (token.is("WHITESPACE")) continue;
       else if (token.is("BACKTICK") && this.isState(LexerState.TEMPLATE_STRING)) {
         this.state.push(LexerState.TEMPLATE_STRING);
       }
-      else if (token.is("RBRACE") && this.peekState(LexerState.TEMPLATE_INNER_EXPRESSION)) {
+      else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPRESSION)) {
         this.state.pop();
       }
 
       return token;
     }
-    throw new Error(`failed lexing! invalid token ${this.getCurrentSource()} found`);
+    throw new Error(`failed lexing! invalid token ${this.getTail()} found`);
   }
 
   private checkKeyword(kind: string, value: string) {
@@ -75,9 +75,9 @@ export class CodeLexer extends Lexer<LexerState> {
     this.pos += 2;
 
     while (this.pos < this.source.length) {
-      const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;
-      const matchesLBrace = this.matchCurrentSource(regexTokens.LBRACE) !== null;
-      const matchesRBrace = this.matchCurrentSource(regexTokens.RBRACE) !== null;
+      const matchesOpenExpr = this.matchTail(regexTokens.OPENEXPR) !== null;
+      const matchesLBrace = this.matchTail(regexTokens.LBRACE) !== null;
+      const matchesRBrace = this.matchTail(regexTokens.RBRACE) !== null;
 
       if (matchesOpenExpr || matchesLBrace) depth++;
       if (matchesRBrace) depth--;
@@ -93,8 +93,8 @@ export class CodeLexer extends Lexer<LexerState> {
   private getTemplatePart(): Token {
     const chars: Array<string> = [];
     while (this.pos < this.source.length) {
-      const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;
-      const matchesBacktick = this.matchCurrentSource(regexTokens.BACKTICK) !== null;
+      const matchesOpenExpr = this.matchTail(regexTokens.OPENEXPR) !== null;
+      const matchesBacktick = this.matchTail(regexTokens.BACKTICK) !== null;
 
       if (matchesOpenExpr) {
         this.state.push(LexerState.TEMPLATE_INNER_EXPRESSION);
@@ -114,7 +114,7 @@ export class CodeLexer extends Lexer<LexerState> {
     return new Token(
       "TEMPLATE_PART",
       chars.join(""),
-      this.getCurrentLocation(chars.join(""))
+      this.getLocation(chars.join(""))
     );
   }
 }

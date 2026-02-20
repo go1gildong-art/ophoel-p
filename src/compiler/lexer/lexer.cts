@@ -14,12 +14,12 @@ export abstract class Lexer <state_T>{
     if (startPos) this.pos = startPos;
   }
 
-  protected getCurrentSource(): string {
+  protected getTail(): string {
     return this.source.slice(this.pos);
   }
 
-  protected matchCurrentSource(regex: readonly RegExp) {
-    return this.getCurrentSource().match(regex);
+  protected matchTail(regex: readonly RegExp) {
+    return this.getTail().match(regex);
   }
 
   protected peekToken() {
@@ -36,7 +36,7 @@ export abstract class Lexer <state_T>{
 
   public abstract tokenize(): TokenStream
 
-  protected getCurrentLocation(tokenValue: string): Location {
+  protected getLocation(tokenValue: string): Location {
     const splitString = this.source
       .slice(0, this.pos - tokenValue.length)
       .split("\n");

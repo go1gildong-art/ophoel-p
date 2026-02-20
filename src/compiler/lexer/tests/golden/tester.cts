@@ -11,7 +11,7 @@ import { loadTests } from "../../../test-resources/test_loader.cjs";
 
 export class LexerGoldenTester implements Tester {
 
-    async test() {
+    public async test() {
         const cases = await loadTests<UnitCase>("./out/compiler/lexer/tests/golden/units");
         const results = [];
 

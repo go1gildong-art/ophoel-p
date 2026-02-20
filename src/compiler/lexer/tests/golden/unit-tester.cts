@@ -9,10 +9,10 @@ export class UnitTester implements Tester {
 
     private tokenResults: Array<TestResult> = []; // to store the comparison of individual lines
 
-    private expectations: TokenStream;
-    private testResults: TokenStream;
+    private readonly expectations: TokenStream;
+    private readonly testResults: TokenStream;
 
-    private title: string;
+    private readonly title: string;
 
     constructor(unit: UnitCase) {
         this.expectations = unit.expectation;
@@ -20,13 +20,13 @@ export class UnitTester implements Tester {
         this.title = unit.title;
     }
 
-    async test() {
+    public async test() {
         this.checkTokenCounts();
         this.loopOnTokens();
         return this.gatherResult();
     }
 
-    private emitResult(result: TestResult) {
+    private emitResult(result: readonly TestResult) {
         this.tokenResults.push(result);
     }
 
@@ -67,7 +67,7 @@ export class UnitTester implements Tester {
     }
 
 
-    private compareTokens(exp: Token, res: Token, index: number) {
+    private compareTokens(exp: readonly Token, res: readonly Token, index: readonly number) {
         let unmatchingPortions: Array<string> = [];
 
         if (exp.kind !== res.kind) unmatchingPortions.push("kind");

@@ -52,11 +52,8 @@ export class UnitTester implements Tester {
     }
 
     private loopTokens() {
-        [1].map
         return this.expectations
-        .map<TestResult>((exp, index) => {
-            return this.compareTokens(exp, this.testResults[index])
-    });
+        .map((exp, index) => this.compareTokens(exp, this.testResults[index]));
     }
 
 

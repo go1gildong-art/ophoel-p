@@ -1,4 +1,3 @@
-import { Token } from "../tokens/token.cjs"
 import { Location } from "../metadata.cjs"
 import { TokenStream } from "../tokens/token-stream.cjs";
 

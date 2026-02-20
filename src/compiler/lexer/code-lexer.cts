@@ -2,7 +2,6 @@
 import { regexTokens } from "../tokens/regex-tokens.cjs"
 import { reservedKeywords } from "../tokens/reserved-keywords.cjs"
 import { Token } from "../tokens/token.cjs"
-import { Location } from "../metadata.cjs"
 import { Lexer } from "./lexer.cjs"
 import { TokenStream } from "../tokens/token-stream.cjs"
 

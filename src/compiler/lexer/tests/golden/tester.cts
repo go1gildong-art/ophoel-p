@@ -1,5 +1,3 @@
-import { Token } from "../../../tokens/token.cjs";
-import { CodeLexer } from "../../code-lexer.cjs";
 import { TestResult } from "../../../test-resources/test-result.cjs";
 import { Tester } from "../../../test-resources/tester.cjs";
 

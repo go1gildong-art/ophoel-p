@@ -1,6 +1,5 @@
 import { readdir } from "fs/promises";
 import { join } from "path";
-import { pathToFileURL } from "url";
 import path from "node:path";
 
 export async function loadTests<T>(readonly folder: string): Promise<T[]> {

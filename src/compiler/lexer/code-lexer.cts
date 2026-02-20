@@ -5,8 +5,6 @@ import { Token } from "../tokens/token.cjs"
 import { Location } from "../metadata.cjs"
 import { Lexer } from "./lexer.cjs"
 import { TokenStream } from "../tokens/token-stream.cjs"
-import { TemplateLexer } from "./template-lexer.cjs"
-
 
 enum LexerState {
   PROGRAM_CODE,
@@ -26,6 +24,7 @@ export class CodeLexer extends Lexer<LexerState> {
   }
 
   getToken(): Token {
+    console.log(this.tokens.length() + " " + this.fileName + " CURRENTSTATE: " + this.peekState())
     if (this.peekState() === LexerState.TEMPLATE_STRING) {
       return this.getTemplatePart();
     }
@@ -46,10 +45,10 @@ export class CodeLexer extends Lexer<LexerState> {
       );
 
       if (kind === "WHITESPACE") continue;
-      if (token.is("BACKTICK")) {
+      else if (token.is("BACKTICK") && this.peekState() !== LexerState.TEMPLATE_STRING) {
         this.state.push(LexerState.TEMPLATE_STRING);
       }
-      if (token.is("RBRACE") && this.peekState() === LexerState.TEMPLATE_INNER_EXPRESSION) {
+      else if (token.is("RBRACE") && this.peekState() === LexerState.TEMPLATE_INNER_EXPRESSION) {
         this.state.pop();
       }
 
@@ -113,6 +112,7 @@ export class CodeLexer extends Lexer<LexerState> {
         this.pos++;
       }
     }
+
     return new Token(
       "TEMPLATE_PART",
       chars.join(""),

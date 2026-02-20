@@ -21,13 +21,16 @@ export class UnitTester implements Tester {
     }
 
     public async test() {
-        this.checkTokenCounts();
-        this.loopTokens();
+        this.emitResult(this.checkTokenCounts());
+        this.emitResult(this.loopTokens());
         return this.gatherResult();
     }
 
-    private emitResult(result: readonly TestResult) {
-        this.tokenResults.push(result);
+    private emitResult(results: readonly TestResult)
+    private emitResult(results: readonly TestResult[])
+    private emitResult(results: TestResult | TestResult[]) {
+        if (Array.isArray(results)) this.tokenResults.push(...results);
+        else this.tokenResults.push(results);
     }
 
     private checkTokenCounts() {
@@ -36,62 +39,50 @@ export class UnitTester implements Tester {
 
         if (expecLength === resultLength) {
             const msg = "Expectations and Results have same length."
-            this.emitResult(TestResult.success(msg));
+            return TestResult.success(msg);
 
         } else if (expecLength > resultLength) {
             const msg = "Expectation has more tokens than Result."
-            this.emitResult(TestResult.failure(msg));
+            return TestResult.failure(msg);
 
         } else if (expecLength < resultLength) {
             const msg = "Result has more token than Expectation."
-            this.emitResult(TestResult.failure(msg));
+            return TestResult.failure(msg);
         }
     }
 
     private loopTokens() {
-        for (const entry of this.expectations.entries()) {
-            const exp = entry[1];
-            const opt_res = this.testResults.tokens[entry[0]];
-
-            if (!opt_res) {
-                const msg = `Missing token at index ${i}, as"${opt_exp.toString()}"`;
-                this.emitResult(TestResult.failure(msg));
-                continue;
-            }
-
-            this.compareTokens(exp, opt_res);
-        }
+        [1].map
+        return this.expectations
+        .map<TestResult>((exp, index) => {
+            return this.compareTokens(exp, this.testResults[index])
+    });
     }
 
 
-    private compareTokens(exp: readonly Token, res: readonly Token) {
-        let unmatchingPortions: Array<string> = [];
+    private compareTokens(exp: readonly Token, res: readonly Token): TestResult {
+        if (!res) {
+            const msg = `Missing token at index ${exp.location.tokenIndex}, for "${opt_exp.toString()}"`;
+            return TestResult.failure(msg);
+        }
 
-        const portions = ["kind", "value"]
-        const locationPortions = ["fileName", "line", "column", "tokenIndex"]
-
-        if (exp.kind !== res.kind) unmatchingPortions.push("kind");
-        if (exp.value !== res.value) unmatchingPortions.push("value");
-        if (exp.location.fileName !== res.location.fileName) unmatchingPortions.push("file name");
-        if (exp.location.line !== res.location.line) unmatchingPortions.push("line");
-        if (exp.location.column !== res.location.column) unmatchingPortions.push("column");
-        if (exp.location.tokenIndex !== res.location.tokenIndex) unmatchingPortions.push("token index");
+        const unmatchingPortions = Object.keys(exp.flatten())
+        .filter(key => exp.flatten()[key] !== res.flatten()[key]);
 
         if (unmatchingPortions.length > 0) {
             const msg =
                 `Unmatching ${unmatchingPortions.join(", ")} found between `
                 + `|${exp.toString()}| (expected) and `
                 + `|${res.toString()}| (test result)`;
-            this.emitResult(TestResult.failure(msg));
+            return TestResult.failure(msg);
             
         } else {
             const msg = `${exp.location.tokenIndex}th Token match succeed. |${exp.toString()}|`
-            this.emitResult(TestResult.success(msg));
+            return TestResult.success(msg);
         }
     }
 
     private gatherResult() {
-        const success = TestResult.hasNoFailure(this.tokenResults);
         return TestResult.buildFromChildren(
             this.tokenResults,
             `Lexer golden unit test for ${this.title} succeed!`,

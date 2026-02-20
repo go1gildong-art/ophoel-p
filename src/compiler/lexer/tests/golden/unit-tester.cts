@@ -49,9 +49,9 @@ export class UnitTester implements Tester {
     }
 
     private loopTokens() {
-        for (let i = 0; i < this.expectations.tokens.length; i++) {
-            const opt_exp = this.expectations.tokens[i];
-            const opt_res = this.testResults.tokens[i];
+        for (const entry of this.expectations.entries()) {
+            const exp = entry[1];
+            const opt_res = this.testResults.tokens[entry[0]];
 
             if (!opt_res) {
                 const msg = `Missing token at index ${i}, as"${opt_exp.toString()}"`;
@@ -59,16 +59,16 @@ export class UnitTester implements Tester {
                 continue;
             }
 
-            // if (!opt_exp || !opt_res) continue;
-            const exp = opt_exp;
-            const res = opt_res;
-            this.compareTokens(exp, res, i);
+            this.compareTokens(exp, opt_res);
         }
     }
 
 
-    private compareTokens(exp: readonly Token, res: readonly Token, index: readonly number) {
+    private compareTokens(exp: readonly Token, res: readonly Token) {
         let unmatchingPortions: Array<string> = [];
+
+        const portions = ["kind", "value"]
+        const locationPortions = ["fileName", "line", "column", "tokenIndex"]
 
         if (exp.kind !== res.kind) unmatchingPortions.push("kind");
         if (exp.value !== res.value) unmatchingPortions.push("value");
@@ -85,7 +85,7 @@ export class UnitTester implements Tester {
             this.emitResult(TestResult.failure(msg));
             
         } else {
-            const msg = `${index}th Token match succeed. |${exp.toString()}|`
+            const msg = `${exp.location.tokenIndex}th Token match succeed. |${exp.toString()}|`
             this.emitResult(TestResult.success(msg));
         }
     }

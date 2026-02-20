@@ -24,6 +24,10 @@ export class TokenStream {
         this.tokens.push(...tokens);
     }
 
+    entries() {
+        return this.tokens.entries();
+    }
+
     // stops at first targetKind/Value found
     getTokensUntil(targetKind: string, targetValue?: string) {
         const collectedTokens: Token[] = [];

@@ -31,6 +31,14 @@ export class Token {
         return kind && value;
     }
 
+    flatten() {
+        return {
+            kind: this.kind,
+            value: this.value,
+            ...this.location
+        }
+    }
+
     static fromString(stringToken: string): Token {
         const TokenRegexes = {
             kind: /\w+/,

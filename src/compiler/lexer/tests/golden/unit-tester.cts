@@ -50,7 +50,7 @@ export class UnitTester implements Tester {
 
     private loopOnTokens() {
         for (let i = 0; i < this.expectations.tokens.length; i++) {
-            const opt_exp = this.expectations.tokens[i];
+            const opt_exp = this.expectations.tokens[i]!; // used !, as for loop guarantees nonnull
             const opt_res = this.testResults.tokens[i];
 
             if (!opt_res) {

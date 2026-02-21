@@ -1,4 +1,4 @@
-
+/*
 import { Location } from "../metadata.cjs";
 
 export interface ASTNode {
@@ -14,3 +14,4 @@ export interface Expression {
     value: OphoelValue;
 
 }
+*/

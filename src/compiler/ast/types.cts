@@ -11,8 +11,8 @@ export const enum OphoelTypeKinds {
 }
 
 export type OphoelValue = 
-string | bool | number |
-OpoelValue[] | KVPair[];
+string | boolean | number |
+OphoelValue[] | KVPair[];
 
 type KVPair = {
     key: string,

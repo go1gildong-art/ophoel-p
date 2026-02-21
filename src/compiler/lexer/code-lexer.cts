@@ -24,7 +24,7 @@ export class CodeLexer extends Lexer<LexerState> {
   }
 
   getToken(): Token {
-    console.log(this.tokens.length() + " " + this.fileName + " CURRENTSTATE: " + this.peekState())
+    console.log(this.tokens.length()  + " " + this.tokens.at(-1)?.value + " " + this.fileName + " CURRENTSTATE: " + this.state)
     if (this.peekState() === LexerState.TEMPLATE_STRING) {
       return this.getTemplatePart();
     }

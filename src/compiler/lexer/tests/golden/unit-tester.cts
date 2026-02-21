@@ -9,10 +9,10 @@ export class UnitTester implements Tester {
 
     private tokenResults: Array<TestResult> = []; // to store the comparison of individual lines
 
-    private expectations: TokenStream;
-    private testResults: TokenStream;
+    private readonly expectations: TokenStream;
+    private readonly testResults: TokenStream;
 
-    private title: string;
+    private readonly title: string;
 
     constructor(unit: UnitCase) {
         this.expectations = unit.expectation;
@@ -20,14 +20,17 @@ export class UnitTester implements Tester {
         this.title = unit.title;
     }
 
-    async test() {
-        this.checkTokenCounts();
-        this.loopOnTokens();
+    public async test() {
+        this.emitResult(this.checkTokenCounts());
+        this.emitResult(this.loopTokens());
         return this.gatherResult();
     }
 
-    private emitResult(result: TestResult) {
-        this.tokenResults.push(result);
+    private emitResult(results: readonly TestResult)
+    private emitResult(results: readonly TestResult[])
+    private emitResult(results: TestResult | TestResult[]) {
+        if (Array.isArray(results)) this.tokenResults.push(...results);
+        else this.tokenResults.push(results);
     }
 
     private checkTokenCounts() {
@@ -36,62 +39,47 @@ export class UnitTester implements Tester {
 
         if (expecLength === resultLength) {
             const msg = "Expectations and Results have same length."
-            this.emitResult(TestResult.success(msg));
+            return TestResult.success(msg);
 
         } else if (expecLength > resultLength) {
             const msg = "Expectation has more tokens than Result."
-            this.emitResult(TestResult.failure(msg));
+            return TestResult.failure(msg);
 
         } else if (expecLength < resultLength) {
             const msg = "Result has more token than Expectation."
-            this.emitResult(TestResult.failure(msg));
+            return TestResult.failure(msg);
         }
     }
 
-    private loopOnTokens() {
-        for (let i = 0; i < this.expectations.tokens.length; i++) {
-            const opt_exp = this.expectations.tokens[i]!; // used !, as for loop guarantees nonnull
-            const opt_res = this.testResults.tokens[i];
-
-            if (!opt_res) {
-                const msg = `Missing token at index ${i}, as"${opt_exp.toString()}"`;
-                this.emitResult(TestResult.failure(msg));
-                continue;
-            }
-
-            // if (!opt_exp || !opt_res) continue;
-            const exp = opt_exp;
-            const res = opt_res;
-            this.compareTokens(exp, res, i);
-        }
+    private loopTokens() {
+        return this.expectations
+        .map((exp, index) => this.compareTokens(exp, this.testResults[index]));
     }
 
 
-    private compareTokens(exp: Token, res: Token, index: number) {
-        let unmatchingPortions: Array<string> = [];
+    private compareTokens(exp: readonly Token, res: readonly Token): TestResult {
+        if (!res) {
+            const msg = `Missing token at index ${exp.location.tokenIndex}, for "${opt_exp.toString()}"`;
+            return TestResult.failure(msg);
+        }
 
-        if (exp.kind !== res.kind) unmatchingPortions.push("kind");
-        if (exp.value !== res.value) unmatchingPortions.push("value");
-        if (exp.location.fileName !== res.location.fileName) unmatchingPortions.push("file name");
-        if (exp.location.line !== res.location.line) unmatchingPortions.push("line");
-        if (exp.location.column !== res.location.column) unmatchingPortions.push("column");
-        if (exp.location.tokenIndex !== res.location.tokenIndex) unmatchingPortions.push("token index");
+        const unmatchingPortions = Object.keys(exp.flatten())
+        .filter(key => exp.flatten()[key] !== res.flatten()[key]);
 
         if (unmatchingPortions.length > 0) {
             const msg =
                 `Unmatching ${unmatchingPortions.join(", ")} found between `
                 + `|${exp.toString()}| (expected) and `
                 + `|${res.toString()}| (test result)`;
-            this.emitResult(TestResult.failure(msg));
+            return TestResult.failure(msg);
             
         } else {
-            const msg = `${index}th Token match succeed. |${exp.toString()}|`
-            this.emitResult(TestResult.success(msg));
+            const msg = `${exp.location.tokenIndex}th Token match succeed. |${exp.toString()}|`
+            return TestResult.success(msg);
         }
     }
 
     private gatherResult() {
-        const success = TestResult.hasNoFailure(this.tokenResults);
         return TestResult.buildFromChildren(
             this.tokenResults,
             `Lexer golden unit test for ${this.title} succeed!`,

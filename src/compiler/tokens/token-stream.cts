@@ -24,6 +24,18 @@ export class TokenStream {
         this.tokens.push(...tokens);
     }
 
+    entries() {
+        return this.tokens.entries();
+    }
+
+    forEach(callback: (value: Token, index: number, array: Token[]) => any, thisArg?: any) {
+        this.tokens.forEach(callback);
+    }
+
+    map<U>(callback: (value: Token, index: number, array: Token[]) => U, thisArg?: any) {
+        return this.tokens.map<U>(callback)
+    }
+
     // stops at first targetKind/Value found
     getTokensUntil(targetKind: string, targetValue?: string) {
         const collectedTokens: Token[] = [];

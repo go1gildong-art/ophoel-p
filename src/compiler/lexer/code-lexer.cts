@@ -2,7 +2,6 @@
 import { regexTokens } from "../tokens/regex-tokens.cjs"
 import { reservedKeywords } from "../tokens/reserved-keywords.cjs"
 import { Token } from "../tokens/token.cjs"
-import { Location } from "../metadata.cjs"
 import { Lexer } from "./lexer.cjs"
 import { TokenStream } from "../tokens/token-stream.cjs"
 
@@ -13,7 +12,7 @@ enum LexerState {
 }
 export class CodeLexer extends Lexer<LexerState> {
 
-  tokenize() {
+  public tokenize() {
     this.state.push(LexerState.PROGRAM_CODE);
 
     while (this.pos < this.source.length) {
@@ -23,16 +22,16 @@ export class CodeLexer extends Lexer<LexerState> {
     return this.tokens;
   }
 
-  getToken(): Token {
-    console.log(this.tokens.length()  + " " + this.tokens.at(-1)?.value + " " + this.fileName + " CURRENTSTATE: " + this.state)
+  private getToken(): Token {
+    console.log(this.tokens.length() + " " + this.fileName + " CURRENTSTATE: " + this.peekState())
     if (this.peekState() === LexerState.TEMPLATE_STRING) {
       return this.getTemplatePart();
     }
 
-    type RegexTokenKeys = keyof typeof regexTokens;
+    type RegexTokenKeys = keyof typeof 
     for (const kind of Object.keys(regexTokens) as RegexTokenKeys[]) {
       const regex: RegExp = regexTokens[kind];
-      const opt_Match = this.matchCurrentSource(regex);
+      const opt_Match = this.matchTail(regex);
 
       if (opt_Match == null) continue;
 
@@ -41,23 +40,23 @@ export class CodeLexer extends Lexer<LexerState> {
       const token = new Token(
         this.checkKeyword(kind, value),
         value,
-        this.getCurrentLocation(value)
+        this.getLocation(value)
       );
 
-      if (kind === "WHITESPACE") continue;
-      else if (token.is("BACKTICK") && this.peekState() !== LexerState.TEMPLATE_STRING) {
+      if (token.is("WHITESPACE")) continue;
+      else if (token.is("BACKTICK") && this.isState(LexerState.TEMPLATE_STRING)) {
         this.state.push(LexerState.TEMPLATE_STRING);
       }
-      else if (token.is("RBRACE") && this.peekState() === LexerState.TEMPLATE_INNER_EXPRESSION) {
+      else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPRESSION)) {
         this.state.pop();
       }
 
       return token;
     }
-    throw new Error(`failed lexing! invalid token ${this.getCurrentSource()} found`);
+    throw new Error(`failed lexing! invalid token ${this.getTail()} found`);
   }
 
-  checkKeyword(kind: string, value: string) {
+  private checkKeyword(kind: string, value: string) {
     if (kind !== "KEYWORD") return kind;
 
     type ReservedKeywordKeys = keyof typeof reservedKeywords;
@@ -69,7 +68,7 @@ export class CodeLexer extends Lexer<LexerState> {
     return "IDENTIFIER";
   }
 
-  getTemplateString(): TokenStream {
+  private getTemplateString(): TokenStream {
     const startPos = this.pos;
 
     // preset for consuming ` at the beginning
@@ -77,9 +76,9 @@ export class CodeLexer extends Lexer<LexerState> {
     this.pos += 2;
 
     while (this.pos < this.source.length) {
-      const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;
-      const matchesLBrace = this.matchCurrentSource(regexTokens.LBRACE) !== null;
-      const matchesRBrace = this.matchCurrentSource(regexTokens.RBRACE) !== null;
+      const matchesOpenExpr = this.matchTail(regexTokens.OPENEXPR) !== null;
+      const matchesLBrace = this.matchTail(regexTokens.LBRACE) !== null;
+      const matchesRBrace = this.matchTail(regexTokens.RBRACE) !== null;
 
       if (matchesOpenExpr || matchesLBrace) depth++;
       if (matchesRBrace) depth--;
@@ -92,11 +91,11 @@ export class CodeLexer extends Lexer<LexerState> {
     return new CodeLexer(this.source, this.fileName, startPos).tokenize();
   }
 
-  getTemplatePart(): Token {
+  private getTemplatePart(): Token {
     const chars: Array<string> = [];
     while (this.pos < this.source.length) {
-      const matchesOpenExpr = this.matchCurrentSource(regexTokens.OPENEXPR) !== null;
-      const matchesBacktick = this.matchCurrentSource(regexTokens.BACKTICK) !== null;
+      const matchesOpenExpr = this.matchTail(regexTokens.OPENEXPR) !== null;
+      const matchesBacktick = this.matchTail(regexTokens.BACKTICK) !== null;
 
       if (matchesOpenExpr) {
         this.state.push(LexerState.TEMPLATE_INNER_EXPRESSION);
@@ -116,7 +115,7 @@ export class CodeLexer extends Lexer<LexerState> {
     return new Token(
       "TEMPLATE_PART",
       chars.join(""),
-      this.getCurrentLocation(chars.join(""))
+      this.getLocation(chars.join(""))
     );
   }
 }

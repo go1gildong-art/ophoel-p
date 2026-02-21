@@ -26,8 +26,8 @@ export class UnitTester implements Tester {
         return this.gatherResult();
     }
 
-    private emitResult (results: TestResult): void
-    private emitResult (results: TestResult[]): void
+    private emitResult(results: TestResult): void
+    private emitResult(results: TestResult[]): void
     private emitResult(results: TestResult | TestResult[]) {
         if (Array.isArray(results)) this.tokenResults.push(...results);
         else this.tokenResults.push(results);
@@ -37,34 +37,36 @@ export class UnitTester implements Tester {
         const expecLength = this.expectations.tokens.length;
         const resultLength = this.testResults.tokens.length;
 
-        if (expecLength === resultLength) {
-            const msg = "Expectations and Results have same length."
-            return TestResult.success(msg);
-
-        } else if (expecLength > resultLength) {
+        if (expecLength > resultLength) {
             const msg = "Expectation has more tokens than Result."
             return TestResult.failure(msg);
 
         } else if (expecLength < resultLength) {
             const msg = "Result has more token than Expectation."
             return TestResult.failure(msg);
+        } else {
+            const msg = "Expectations and Results have same length."
+            return TestResult.success(msg);
         }
     }
 
     private loopTokens() {
         return this.expectations
-        .map((exp, index) => this.compareTokens(exp, this.testResults.at(index)));
+            .map((exp, index) => this.compareTokens(exp, this.testResults.at(index)));
     }
 
 
-    private compareTokens(exp: readonly Token, res: readonly Token): TestResult {
+    private compareTokens(exp: Token, res: Token | undefined): TestResult {
         if (!res) {
-            const msg = `Missing token at index ${exp.location.tokenIndex}, for "${opt_exp.toString()}"`;
+            const msg = `Missing token at index ${exp.location.tokenIndex}, for "${exp.toString()}"`;
             return TestResult.failure(msg);
         }
 
-        const unmatchingPortions = Object.keys(exp.flatten())
-        .filter(key => exp.flatten()[key] !== res.flatten()[key]);
+        const expFlat = exp.flatten();
+        const resFlat = res.flatten();
+
+        const unmatchingPortions = (Object.keys(expFlat) as (keyof typeof expFlat)[])
+            .filter(key => expFlat[key] !== resFlat[key]);
 
         if (unmatchingPortions.length > 0) {
             const msg =
@@ -72,7 +74,7 @@ export class UnitTester implements Tester {
                 + `|${exp.toString()}| (expected) and `
                 + `|${res.toString()}| (test result)`;
             return TestResult.failure(msg);
-            
+
         } else {
             const msg = `${exp.location.tokenIndex}th Token match succeed. |${exp.toString()}|`
             return TestResult.success(msg);

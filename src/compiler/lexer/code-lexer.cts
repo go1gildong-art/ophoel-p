@@ -28,7 +28,7 @@ export class CodeLexer extends Lexer<LexerState> {
       return this.getTemplatePart();
     }
 
-    type RegexTokenKeys = keyof typeof 
+    type RegexTokenKeys = keyof typeof regexTokens;
     for (const kind of Object.keys(regexTokens) as RegexTokenKeys[]) {
       const regex: RegExp = regexTokens[kind];
       const opt_Match = this.matchTail(regex);
@@ -66,29 +66,6 @@ export class CodeLexer extends Lexer<LexerState> {
       if (keywordArray.includes(value)) return keywordKind;
     }
     return "IDENTIFIER";
-  }
-
-  private getTemplateString(): TokenStream {
-    const startPos = this.pos;
-
-    // preset for consuming ` at the beginning
-    let depth = 1;
-    this.pos += 2;
-
-    while (this.pos < this.source.length) {
-      const matchesOpenExpr = this.matchTail(regexTokens.OPENEXPR) !== null;
-      const matchesLBrace = this.matchTail(regexTokens.LBRACE) !== null;
-      const matchesRBrace = this.matchTail(regexTokens.RBRACE) !== null;
-
-      if (matchesOpenExpr || matchesLBrace) depth++;
-      if (matchesRBrace) depth--;
-      if (depth <= 0) break;
-    }
-
-    // preset for consuming } at the end
-    this.pos++;
-
-    return new CodeLexer(this.source, this.fileName, startPos).tokenize();
   }
 
   private getTemplatePart(): Token {

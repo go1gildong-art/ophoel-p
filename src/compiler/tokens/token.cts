@@ -1,5 +1,6 @@
 import { Location } from "../metadata.cjs"
 
+
 export class Token {
     kind: string;
     value: string;
@@ -33,9 +34,12 @@ export class Token {
 
     flatten() {
         return {
-            kind: this.kind,
-            value: this.value,
-            ...this.location
+            "kind": this.kind,
+            "value": this.value,
+            "fileName": this.location.fileName,
+            "line": this.location.line,
+            "column": this.location.column,
+            "tokenIndex": this.location.tokenIndex
         }
     }
 

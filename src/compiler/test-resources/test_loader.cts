@@ -2,7 +2,7 @@ import { readdir } from "fs/promises";
 import { join } from "path";
 import path from "node:path";
 
-export async function loadTests<T>(readonly folder: string): Promise<T[]> {
+export async function loadTests<T>(folder: string): Promise<T[]> {
   const entries = await readdir(folder);
 
   const testFiles = entries.filter(

@@ -26,6 +26,16 @@ class Token {
         const value = this.value === token.value;
         return kind && value;
     }
+    flatten() {
+        return {
+            "kind": this.kind,
+            "value": this.value,
+            "fileName": this.location.fileName,
+            "line": this.location.line,
+            "column": this.location.column,
+            "tokenIndex": this.location.tokenIndex
+        };
+    }
     static fromString(stringToken) {
         const TokenRegexes = {
             kind: /\w+/,

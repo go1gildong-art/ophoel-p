@@ -11,7 +11,8 @@ export class LexerGoldenTester implements Tester {
 
     public async test() {
         const cases = await loadTests<UnitCase>("./out/compiler/lexer/tests/golden/units");
-        const results = cases.map(unitCase => await new UnitTester(unitCase).test());
+
+        const results = await Promise.all(cases.map(async unitCase => new UnitTester(unitCase).test()));
 
         return TestResult.buildFromChildren(
             results,

@@ -11,7 +11,7 @@ export class UnitCase implements GoldenUnit<string, TokenStream>{
         title: string, 
         description: string, 
         source: string, 
-        readonly expectation: string[]) {
+        expectation: string[]) {
             
         this.title = title;
         this.description = description;

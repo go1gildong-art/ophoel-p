@@ -10,18 +10,18 @@ export class TestResult {
     readonly message: string;
     readonly children: TestResult[];
 
-    constructor(state: TestState, children?: TestResult[], message?: string) {
+    constructor(state: TestState, message?: string, children?: TestResult[]) {
         this.state = state;
         this.message = message ?? "";
         this.children = children ?? [];
     }
 
-    static success(children?: readonly TestResult[], message?: string, ) {
-        return new TestResult(TestState.Success, children, message);
+    static success(message?: string, children?: TestResult[]) {
+        return new TestResult(TestState.Success, message, children);
     }
 
-    static failure(children?: readonly TestResult[], message?: string, ) {
-        return new TestResult(TestState.Failure, children, message);
+    static failure(message?: string, children?: TestResult[]) {
+        return new TestResult(TestState.Failure, message, children);
     }
 
     static uninitialized() {
@@ -32,7 +32,7 @@ export class TestResult {
         return !children.some(c => c.state === TestState.Failure);
     }
 
-    static buildFromChildren(children: readonly TestResult[], successMessage?: string, failureMessage?: string) {
+    static buildFromChildren(children: TestResult[], successMessage?: string, failureMessage?: string) {
         if (TestResult.hasNoFailure(children)) {
             return TestResult.success(successMessage + " " + TestResult.getCoverageMark(children), children);
         } else {

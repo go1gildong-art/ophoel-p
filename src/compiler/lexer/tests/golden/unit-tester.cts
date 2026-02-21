@@ -26,8 +26,8 @@ export class UnitTester implements Tester {
         return this.gatherResult();
     }
 
-    private emitResult(results: readonly TestResult)
-    private emitResult(results: readonly TestResult[])
+    private emitResult (results: TestResult): void
+    private emitResult (results: TestResult[]): void
     private emitResult(results: TestResult | TestResult[]) {
         if (Array.isArray(results)) this.tokenResults.push(...results);
         else this.tokenResults.push(results);
@@ -53,7 +53,7 @@ export class UnitTester implements Tester {
 
     private loopTokens() {
         return this.expectations
-        .map((exp, index) => this.compareTokens(exp, this.testResults[index]));
+        .map((exp, index) => this.compareTokens(exp, this.testResults.at(index)));
     }
 
 

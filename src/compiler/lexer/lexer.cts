@@ -18,7 +18,7 @@ export abstract class Lexer <state_T>{
     return this.source.slice(this.pos);
   }
 
-  protected matchTail(regex: readonly RegExp) {
+  protected matchTail(regex: RegExp) {
     return this.getTail().match(regex);
   }
 
@@ -30,7 +30,7 @@ export abstract class Lexer <state_T>{
     return this.state.at(-1);
   }
 
-  protected isState(state: readonly state_T) {
+  protected isState(state: state_T) {
     return this.peekState() === state;
   }
 

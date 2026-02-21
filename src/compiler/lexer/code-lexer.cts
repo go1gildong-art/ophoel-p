@@ -91,6 +91,18 @@ export class CodeLexer extends Lexer<LexerState> {
   }
 
   private getTemplatePart(): Token {
+    const x = {
+      nextOpenExpr: this.getTail().indexOf("${"),
+      nextBacktick: this.getTail().indexOf("`")
+    }
+    Object.entries(x)
+    .reduce((acc, [nextToken, index]) => acc[1] > index ? [nextToken, index] : acc)
+    .j
+
+
+
+
+
     const chars: Array<string> = [];
     while (this.pos < this.source.length) {
       const matchesOpenExpr = this.matchTail(regexTokens.OPENEXPR) !== null;
@@ -103,14 +115,13 @@ export class CodeLexer extends Lexer<LexerState> {
       } else if (matchesBacktick) {
         this.state.pop();
         break;
-      }
-
-      else {
+        
+      } else {
         chars.push(this.source[this.pos] ?? "");
         this.pos++;
       }
     }
-
+    
     return new Token(
       "TEMPLATE_PART",
       chars.join(""),

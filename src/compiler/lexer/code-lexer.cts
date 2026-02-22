@@ -97,3 +97,7 @@ export class CodeLexer extends Lexer<LexerState> {
     )
   }
 }
+
+import { unit } from "./tests/golden/units/test_template-edges.cjs"
+const lexlex = new CodeLexer(unit.source, "template-edges.cts").tokenize().map(token => token.toString());
+console.log(lexlex);

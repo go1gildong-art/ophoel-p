@@ -18,13 +18,14 @@ export class CodeLexer extends Lexer<LexerState> {
     while (this.pos < this.source.length) {
       const token = this.getToken();
       this.tokens.push(token);
+      console.log(this.tokens.length() - 1+ " " + this.fileName + " CURRENTSTATE: " + this.peekState())
     }
     return this.tokens;
   }
 
   private getToken(): Token {
-    console.log(this.tokens.length() + " " + this.fileName + " CURRENTSTATE: " + this.peekState())
-    if (this.peekState() === LexerState.TEMPLATE_STRING) {
+    
+    if (this.isState(LexerState.TEMPLATE_STRING)) {
       return this.getTemplatePart();
     }
 
@@ -44,13 +45,16 @@ export class CodeLexer extends Lexer<LexerState> {
       );
 
       if (token.is("WHITESPACE")) continue;
-      else if (token.is("BACKTICK") && this.isState(LexerState.TEMPLATE_STRING)) {
+      else if (token.is("BACKTICK") && !this.isState(LexerState.TEMPLATE_STRING) && !this.tokens.at(-1)?.is("TEMPLATE_PART")) {
+        console.log("AH");
         this.state.push(LexerState.TEMPLATE_STRING);
-      }
-      else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPRESSION)) {
+      
+      } else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPRESSION)) {
         this.state.pop();
+      
       }
 
+      
       return token;
     }
     throw new Error(`failed lexing! invalid token ${this.getTail()} found`);
@@ -69,41 +73,27 @@ export class CodeLexer extends Lexer<LexerState> {
   }
 
   private getTemplatePart(): Token {
-    const x = {
+    const startPos = this.pos;
+    const [match, index] = Object.entries({
+      none: this.getTail().length,
       nextOpenExpr: this.getTail().indexOf("${"),
       nextBacktick: this.getTail().indexOf("`")
+    })
+      .reduce((acc, [nextToken, index]) => (acc[1] > index && index !== -1) ? [nextToken, index] : acc)
+
+
+    if (match === "nextOpenExpr") {
+      this.state.push(LexerState.TEMPLATE_INNER_EXPRESSION);
+    } else {
+      this.state.pop();
     }
-    Object.entries(x)
-    .reduce((acc, [nextToken, index]) => acc[1] > index ? [nextToken, index] : acc)
-    .j
 
+    this.pos += index;
 
-
-
-
-    const chars: Array<string> = [];
-    while (this.pos < this.source.length) {
-      const matchesOpenExpr = this.matchTail(regexTokens.OPENEXPR) !== null;
-      const matchesBacktick = this.matchTail(regexTokens.BACKTICK) !== null;
-
-      if (matchesOpenExpr) {
-        this.state.push(LexerState.TEMPLATE_INNER_EXPRESSION);
-        break;
-
-      } else if (matchesBacktick) {
-        this.state.pop();
-        break;
-        
-      } else {
-        chars.push(this.source[this.pos] ?? "");
-        this.pos++;
-      }
-    }
-    
     return new Token(
       "TEMPLATE_PART",
-      chars.join(""),
-      this.getLocation(chars.join(""))
-    );
+      this.source.slice(startPos, startPos + index),
+      this.getLocation(this.source.slice(startPos, startPos + index))
+    )
   }
 }

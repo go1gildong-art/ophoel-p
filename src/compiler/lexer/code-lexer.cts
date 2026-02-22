@@ -18,7 +18,6 @@ export class CodeLexer extends Lexer<LexerState> {
     while (this.pos < this.source.length) {
       const token = this.getToken();
       this.tokens.push(token);
-      console.log(this.tokens.length() - 1+ " " + this.fileName + " CURRENTSTATE: " + this.peekState())
     }
     return this.tokens;
   }
@@ -46,7 +45,6 @@ export class CodeLexer extends Lexer<LexerState> {
 
       if (token.is("WHITESPACE")) continue;
       else if (token.is("BACKTICK") && !this.isState(LexerState.TEMPLATE_STRING) && !this.tokens.at(-1)?.is("TEMPLATE_PART")) {
-        console.log("AH");
         this.state.push(LexerState.TEMPLATE_STRING);
       
       } else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPRESSION)) {
@@ -97,7 +95,3 @@ export class CodeLexer extends Lexer<LexerState> {
     )
   }
 }
-
-import { unit } from "./tests/golden/units/test_template-edges.cjs"
-const lexlex = new CodeLexer(unit.source, "template-edges.cts").tokenize().map(token => token.toString());
-console.log(lexlex);

@@ -12,9 +12,9 @@ export interface Expression extends ASTNode {
     value: OphoelValue;
 }
 
-export interface Statement extends ASTNode {
+export interface LValue extends Expression {}
 
-}
+export interface Statement extends ASTNode {}
 
 export interface Call extends ASTNode {
     args: Expression[];

@@ -1,17 +1,22 @@
-/*
+
 import { Location } from "../metadata.cjs";
+import { OphoelType, OphoelValue } from "./types.cjs";
 
 export interface ASTNode {
     kind: string;
     location: Location;
-
-    parse(v: Visitor): ASTNode
-    transform(v: Visitor): ASTNode
 }
 
-export interface Expression {
-    type: OphoelType
+export interface Expression extends ASTNode {
+    type: OphoelType;
     value: OphoelValue;
+}
+
+export interface Statement extends ASTNode {
 
 }
-*/
+
+export interface Call extends ASTNode {
+    args: Expression[];
+    callee: string;
+}

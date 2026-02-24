@@ -6,7 +6,8 @@ export const enum OphoelTypes {
     INT,
     FLOAT,
     VECTOR,
-    STRUCT
+    STRUCT,
+    NULL
 }
 
 export type OphoelValue = 

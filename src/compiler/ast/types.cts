@@ -3,10 +3,9 @@ export const enum OphoelTypes {
     BOOL,
     INT_C,
     INT_S,
+    INT,
     FLOAT,
-
     VECTOR,
-    
     STRUCT
 }
 

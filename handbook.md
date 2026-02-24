@@ -19,3 +19,8 @@ Error [ERR_REQUIRE_CYCLE_MODULE]: Cannot require() ES Module C:\Users\...\ophoel
 -> DOES NOT compile into a .mcfunction
 -> can export struct, macro, and/or function
 -> cannot import anything
+
+
+# AST Types
+1. Expression.value(from evaluation) is always javascript raw value
+2. Expression types are determined upon evaluation (not upon initialization!)

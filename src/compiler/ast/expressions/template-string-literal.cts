@@ -1,10 +1,8 @@
 import { Expression } from "../ast.cjs";
-import { OphoelTypes } from "../types.cjs";
 import { Location } from "../../metadata.cjs";
 
 export class TemplateStringLiteral extends Expression {
     kind = "TemplateStringLiteral";
-    type = { kind: OphoelTypes.STRING };
 
     quasis: string[];
     expressions: Expression[];

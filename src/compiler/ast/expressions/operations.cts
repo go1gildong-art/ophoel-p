@@ -1,4 +1,4 @@
-import { Expression } from "../ast.cjs";
+import { Expression, LValue } from "../ast.cjs";
 import { Location } from "../../metadata.cjs";
 
 export enum BinaryOperator {
@@ -44,7 +44,7 @@ export class UnaryOperation implements Expression {
         public location: Location) {}
 }
 
-export class IndexAccess implements Expression {
+export class IndexAccess implements LValue {
     kind = "IndexAccess";
 
     constructor(
@@ -53,7 +53,7 @@ export class IndexAccess implements Expression {
         public location: Location) {}
 }
 
-export class MemberAccess implements Expression {
+export class MemberAccess implements LValue {
     kind = "MemberAccess";
 
     constructor(

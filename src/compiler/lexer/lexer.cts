@@ -2,50 +2,32 @@ import { Location } from "../metadata.cjs"
 import { TokenStream } from "../tokens/token-stream.cjs";
 
 export abstract class Lexer <state_T>{
-  protected readonly source: string;
-  protected pos = 0;
   protected tokens: TokenStream = new TokenStream([]);
-  protected readonly fileName: string;
   protected state: state_T[] = [];
 
-  public constructor(source: string, fileName: string, startPos?: number) {
-    this.source = source;
-    this.fileName = fileName;
-    if (startPos) this.pos = startPos;
-  }
+  public constructor(
+      protected readonly source: string, 
+      protected readonly fileName: string, 
+      protected pos: number = 0) {}
 
-  protected getTail(): string {
-    return this.source.slice(this.pos);
-  }
+  protected getTail(): string { return this.source.slice(this.pos); }
 
-  protected matchTail(regex: RegExp) {
-    return this.getTail().match(regex);
-  }
+  protected matchTail(regex: RegExp) { return this.getTail().match(regex); }
 
-  protected peekToken() {
-    return this.tokens.at(-1);
-  }
+  protected peekToken() { return this.tokens.at(-1); }
 
-  protected peekState() {
-    return this.state.at(-1);
-  }
-
-  protected isState(state: state_T) {
-    return this.peekState() === state;
-  }
+  protected isState(state: state_T) { return this.peekState() === state; }
 
   public abstract tokenize(): TokenStream
 
-  protected getLocation(tokenValue: string): Location {
+  protected getLocation(): Location {
     const splitString = this.source
-      .slice(0, this.pos - tokenValue.length)
+      .slice(0, this.pos)
       .split("\n");
 
     const ln = splitString.length;
     const col = (splitString.at(-1)?.length ?? 0) + 1
 
     return new Location(this.fileName, ln, col, this.tokens.length());
-  }
-
-  
+  } 
 }

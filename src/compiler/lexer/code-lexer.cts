@@ -4,12 +4,14 @@ import { reservedKeywords } from "../tokens/reserved-keywords.cjs"
 import { Token } from "../tokens/token.cjs"
 import { Lexer } from "./lexer.cjs"
 import { TokenStream } from "../tokens/token-stream.cjs"
+import { PreservedComment } from "../../compiler-old/ast"
 
 enum LexerState {
   PROGRAM_CODE,
   TEMPLATE_STRING,
-  TEMPLATE_INNER_EXPRESSION
+  TEMPLATE_INNER_EXPR
 }
+
 export class CodeLexer extends Lexer<LexerState> {
 
   public tokenize() {
@@ -22,32 +24,31 @@ export class CodeLexer extends Lexer<LexerState> {
     return this.tokens;
   }
 
-  private getToken(): Token {
-    
-    if (this.isState(LexerState.TEMPLATE_STRING)) {
-      return this.getTemplatePart();
-    }
+  private getToken(): Token {  
+    if (this.isState(LexerState.TEMPLATE_STRING)) return this.getTemplatePart();
+    else return this.getRegularToken();
+  }
 
+  private getRegularToken(): Token {
     type RegexTokenKeys = keyof typeof regexTokens;
     for (const kind of Object.keys(regexTokens) as RegexTokenKeys[]) {
-      const regex: RegExp = regexTokens[kind];
+      const regex = regexTokens[kind];
       const opt_Match = this.matchTail(regex);
-
       if (opt_Match == null) continue;
 
-      const value = opt_Match[0];
-      this.pos += value.length;
       const token = new Token(
-        this.checkKeyword(kind, value),
-        value,
-        this.getLocation(value)
+        this.checkKeyword(kind, opt_Match[0]),
+        opt_Match[0],
+        this.getLocation()
       );
+      
+      this.pos += value.length;
 
       if (token.is("WHITESPACE")) continue;
       else if (token.is("BACKTICK") && !this.isState(LexerState.TEMPLATE_STRING) && !this.tokens.at(-1)?.is("TEMPLATE_PART")) {
         this.state.push(LexerState.TEMPLATE_STRING);
       
-      } else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPRESSION)) {
+      } else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPR)) {
         this.state.pop();
       
       }
@@ -56,6 +57,34 @@ export class CodeLexer extends Lexer<LexerState> {
       return token;
     }
     throw new Error(`failed lexing! invalid token ${this.getTail()} found`);
+  }
+
+
+  private updateState(token: Token) {
+    switch (token.kind) {
+      case "OPENEXPR":
+        this.state.push(LexerState.TEMPLATE_INNER_EXPR);
+        break;
+
+      case "RBRACE":
+        if (this.isState(LexerState.TEMPLATE_INNER_EXPR)) this.state.pop();
+        break;
+
+      case "BACKTICK":
+        
+    }
+
+    else if (token.is("BACKTICK") && !this.isState(LexerState.TEMPLATE_STRING) && !this.tokens.at(-1)?.is("TEMPLATE_PART")) {
+        this.state.push(LexerState.TEMPLATE_STRING);
+      
+      } else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPR)) {
+        this.state.pop();
+      
+      }
+
+
+    if (match === "openExpr") this.state.push(LexerState.TEMPLATE_INNER_EXPR);
+    else this.state.pop();
   }
 
   private checkKeyword(kind: string, value: string) {
@@ -71,27 +100,27 @@ export class CodeLexer extends Lexer<LexerState> {
   }
 
   private getTemplatePart(): Token {
-    const startPos = this.pos;
-    const [match, index] = Object.entries({
-      none: this.getTail().length,
-      nextOpenExpr: this.getTail().indexOf("${"),
-      nextBacktick: this.getTail().indexOf("`")
+
+    const tail = this.getTail();
+    const {match, index} = Object.entries({
+      openExpr: tail.indexOf("${"),
+      backtick: tail.indexOf("`")
     })
-      .reduce((acc, [nextToken, index]) => (acc[1] > index && index !== -1) ? [nextToken, index] : acc);
+      .map(entry => ({ match: entry[0], index: entry[1] }))
+      .filter(entry => entry.index !== -1)
+      .sort((a, b) => a.index - b.index)[0]
+      ?? { match: "none", index: tail.length };
 
+    if (match === "openExpr") this.state.push(LexerState.TEMPLATE_INNER_EXPR);
+    else this.state.pop();
 
-    if (match === "nextOpenExpr") {
-      this.state.push(LexerState.TEMPLATE_INNER_EXPRESSION);
-    } else {
-      this.state.pop();
-    }
+    const token = new Token(
+      "TEMPLATE_PART",
+      tail.slice(index),
+      this.getLocation()
+    );
 
     this.pos += index;
-
-    return new Token(
-      "TEMPLATE_PART",
-      this.source.slice(startPos, startPos + index),
-      this.getLocation(this.source.slice(startPos, startPos + index))
-    )
+    return token;
   }
 }

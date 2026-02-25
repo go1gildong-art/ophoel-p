@@ -6,8 +6,7 @@ export class BoolLiteral implements Expression {
 
     constructor(
         public raw: string,
-        public location: Location
-    ) {}
+        public location: Location) {}
 }
 
 export class CompoundLiteral implements Expression {
@@ -16,8 +15,7 @@ export class CompoundLiteral implements Expression {
     constructor(
         public keys: string[], 
         public values: Expression[], 
-        public location: Location
-    ) {}
+        public location: Location) {}
 }
 
 export class FloatLiteral implements Expression {
@@ -25,8 +23,7 @@ export class FloatLiteral implements Expression {
 
     constructor(
         public raw: string,
-        public location: Location
-    ) {}
+        public location: Location) {}
 }
 
 export class IntLiteral implements Expression {
@@ -34,8 +31,7 @@ export class IntLiteral implements Expression {
 
     constructor(
         public raw: string,
-        public location: Location
-    ) {}
+        public location: Location) {}
 }
 
 export class StringLiteral implements Expression {
@@ -43,8 +39,7 @@ export class StringLiteral implements Expression {
 
     constructor(
         public raw: string,
-        public location: Location
-    ) {}
+        public location: Location) {}
 }
 
 export class TemplateStringLiteral implements Expression {
@@ -53,8 +48,7 @@ export class TemplateStringLiteral implements Expression {
     constructor(
         public quasis: string[],
         public expressions: Expression[],
-        public location: Location
-    ) {}
+        public location: Location) {}
 }
 
 export class VectorLiteral implements Expression {
@@ -62,6 +56,5 @@ export class VectorLiteral implements Expression {
 
     constructor(
         public entries: ASTNode[],
-        public location: Location
-    ) {}
+        public location: Location) {}
 }

@@ -20,17 +20,12 @@ export enum BinaryOperator {
 };
 export class BinaryOperation implements Expression {
     kind = "BinaryOperation";
-    left: Expression;
-    right: Expression;
-    operator: BinaryOperator;
-    location: Location;
 
-
-    constructor(left: Expression, operator: BinaryOperator, right: Expression, location: Location) {
-        [this.left, this.right] = [left, right];
-        this.operator = operator;
-        this.location = location;
-    }
+    constructor(
+        public left: Expression, 
+        public operator: BinaryOperator, 
+        public right: Expression, 
+        public location: Location) {}
 }
 
 
@@ -40,41 +35,29 @@ export enum UnaryOperator {
 
     LOGIC_NOT
 };
-
 export class UnaryOperation implements Expression {
     kind = "UnaryOperation";
-    right: Expression;
-    operator: UnaryOperator;
-    location: Location;
 
-    constructor(operator: UnaryOperator, right: Expression, location: Location) {
-        this.right = right;
-        this.operator = operator;
-        this.location = location;
-    }
+    constructor(
+        public operator: UnaryOperator, 
+        public right: Expression, 
+        public location: Location) {}
 }
 
 export class IndexAccess implements Expression {
     kind = "IndexAccess";
-    left: Expression;
-    index: Expression;
-    location: Location;
 
-
-    constructor(left: Expression, index: Expression, location: Location) {
-        [this.left, this.index] = [left, index];
-        this.location = location;
-    }
+    constructor(
+        public left: Expression, 
+        public index: Expression, 
+        public location: Location) {}
 }
 
 export class MemberAccess implements Expression {
     kind = "MemberAccess";
-    left: Expression;
-    member: string;
-    location: Location;
 
-    constructor(left: Expression, member: string, location: Location) {
-        [this.left, this.member] = [left, member];
-        this.location = location;
-    }
+    constructor(
+        public left: Expression, 
+        public member: string, 
+        public location: Location) {}
 }

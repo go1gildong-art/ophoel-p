@@ -46,7 +46,7 @@ export class Token {
     static fromString(stringToken: string): Token {
         const TokenRegexes = {
             kind: /\w+/,
-            value: /[\s\S]+/,
+            value: /[\s\S]*/,
             fileName: /[\w\-\.]+/,
             line: /\d+/,
             column: /\d+/,

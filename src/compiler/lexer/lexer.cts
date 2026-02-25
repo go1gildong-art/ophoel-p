@@ -16,7 +16,7 @@ export abstract class Lexer <state_T>{
 
   protected peekToken() { return this.tokens.at(-1); }
 
-  protected isState(state: state_T) { return this.peekState() === state; }
+  protected isState(...state: state_T[]) { return state.includes(this.peekState()); }
 
   public abstract tokenize(): TokenStream
 

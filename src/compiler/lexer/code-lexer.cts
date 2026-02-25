@@ -9,6 +9,7 @@ import { PreservedComment } from "../../compiler-old/ast"
 enum LexerState {
   PROGRAM_CODE,
   TEMPLATE_STRING,
+  TEMPLATE_PENDING
   TEMPLATE_INNER_EXPR
 }
 
@@ -63,14 +64,22 @@ export class CodeLexer extends Lexer<LexerState> {
   private updateState(token: Token) {
     switch (token.kind) {
       case "OPENEXPR":
-        this.state.push(LexerState.TEMPLATE_INNER_EXPR);
+        if (this.isState(LexerState.TEMPLATE_PENDING)) {
+          this.state.pop();
+          this.state.push(LexerState.TEMPLATE_INNER_EXPR);
+        }
         break;
 
       case "RBRACE":
+
         if (this.isState(LexerState.TEMPLATE_INNER_EXPR)) this.state.pop();
         break;
 
       case "BACKTICK":
+        if (this.isState(LexerState.TEMPLATE_PENDING)) {
+          this.state.pop();
+          this.state.pop();
+        } else if
         
     }
 
@@ -120,6 +129,7 @@ export class CodeLexer extends Lexer<LexerState> {
       this.getLocation()
     );
 
+    this.state.push(LexerState.TEMPLATE_PENDING);
     this.pos += index;
     return token;
   }

@@ -2,28 +2,20 @@ import { Location } from "../metadata.cjs"
 
 
 export class Token {
-    kind: string;
-    value: string;
-    location: Location;
 
-    constructor(kind: string, value: string, location: Location) {
-        this.kind = kind;
-        this.value = value;
-        this.location = location;
-    }
+    constructor(
+        public kind: string, 
+        public value: string, 
+        public location: Location) {}
 
     // 1. enable by-value comparison between strings
     // 2. reform object to make it more concise and readable
-    toString(): string {
-        return `${this.kind} < ${this.value} > ${this.location.toString()}`;
-    }
+    toString(): string { return `${this.kind} < ${this.value} > ${this.location.toString()}`; }
 
     is(kind: string, value?: string) {
-        if (value != null) {
-            return this.kind === kind && this.value === value;
-        } else if (value == null) {
-            return this.kind === kind;
-        }
+        const isKind = this.kind === kind;
+        const isValue = [this.value, undefined].includes(value); 
+        return isKind && isValue;
     }
 
     sameAs(token: Token) {
@@ -44,19 +36,19 @@ export class Token {
     }
 
     static fromString(stringToken: string): Token {
-        const TokenRegexes = {
-            kind: /\w+/,
-            value: /[\s\S]*/,
-            fileName: /[\w\-\.]+/,
-            line: /\d+/,
-            column: /\d+/,
-            tokenIndex: /\d+/,
+        const rgx = {
+            kind: /\w+/.source,
+            value: /[\s\S]*/.source,
+            fileName: /[\w\-\.]+/.source,
+            line: /\d+/.source,
+            column: /\d+/.source,
+            tokenIndex: /\d+/.source,
         }
 
         const fullRegex = new RegExp(
-            `^(${TokenRegexes.kind.source}) < (${TokenRegexes.value.source}) >`
-            + ` (${TokenRegexes.fileName.source}):(${TokenRegexes.line.source}):(${TokenRegexes.column.source})`
-            + ` \\((${TokenRegexes.tokenIndex.source})\\)$`
+            `^(${rgx.kind}) < (${rgx.value}) >` +
+            ` (${rgx.fileName}):(${rgx.line}):(${rgx.column})` +
+            ` \\((${rgx.tokenIndex})\\)$`
         );
 
         const opt_matchArr = fullRegex.exec(stringToken);
@@ -68,7 +60,7 @@ export class Token {
 
         const [, kind, value, fileName, ln, col, tokenIndex] = opt_matchArr;
 
-        // using value! is justified, after performing the length check (opt_matchArr.length !== 7)
+        // using value!, after performing the length check (opt_matchArr.length !== 7)
         return new Token(
             kind!,
             value!,

@@ -2,7 +2,6 @@ const Whitespace = {
   WHITESPACE: /^\s+/
 }
 
-
 const Comments = {
   SLINECOMMENT: /^\/\/.*/, // // comment
   MLINECOMMENT: /^\/\*[\s\S]*?\*\//, // /* comment */

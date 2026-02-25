@@ -2,49 +2,36 @@ import { Location } from "../metadata.cjs"
 import { Token } from "./token.cjs";
 
 export class TokenStream {
-    tokens: Token[];
 
-    constructor(tokens: Token[]) {
-        this.tokens = tokens;
+    constructor(public tokens: Token[]) {}
+
+    length() { return this.tokens.length; }
+
+    at(index: number) { return this.tokens.at(index); }
+
+    slice(start?: number, end?: number) { return this.tokens.slice(start, end); }
+
+    findIndex(predicate: (v: Token, idx: number, obj: Token[]) => boolean, thisArg?: any) { 
+        return this.tokens.findIndex(predicate, thisArg);
     }
 
-    length() {
-        return this.tokens.length;
-    }
+    push(...tokens: Token[]) { this.tokens.push(...tokens); }
 
-    at(index: number) {
-        return this.tokens.at(index);
-    }
-
-    slice(start?: number, end?: number) {
-        return this.tokens.slice(start, end);
-    }
-
-    push(...tokens: Token[]) {
-        this.tokens.push(...tokens);
-    }
-
-    entries() {
-        return this.tokens.entries();
-    }
+    entries() { return this.tokens.entries(); }
 
     forEach(callback: (value: Token, index: number, array: Token[]) => any, thisArg?: any) {
-        this.tokens.forEach(callback);
+        this.tokens.forEach(callback, thisArg);
     }
 
     map<U>(callback: (value: Token, index: number, array: Token[]) => U, thisArg?: any) {
-        return this.tokens.map<U>(callback)
+        return this.tokens.map<U>(callback, thisArg);
     }
 
     // stops at first targetKind/Value found
     getTokensUntil(targetKind: string, targetValue?: string) {
-        const collectedTokens: Token[] = [];
-        for (const currentToken of this.tokens) {
-            if (currentToken.is(targetKind, targetValue)) break;
-            collectedTokens.push(currentToken);
-        }
-
-        return new TokenStream(collectedTokens);
+        return new TokenStream(
+            this.slice(0, this.findIndex(token => token.is(targetKind, targetValue)))
+        );
     }
 
     // from: [, {, (... 

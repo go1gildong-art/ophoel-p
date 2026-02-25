@@ -77,7 +77,7 @@ export class CodeLexer extends Lexer<LexerState> {
       nextOpenExpr: this.getTail().indexOf("${"),
       nextBacktick: this.getTail().indexOf("`")
     })
-      .reduce((acc, [nextToken, index]) => (acc[1] > index && index !== -1) ? [nextToken, index] : acc)
+      .reduce((acc, [nextToken, index]) => (acc[1] > index && index !== -1) ? [nextToken, index] : acc);
 
 
     if (match === "nextOpenExpr") {

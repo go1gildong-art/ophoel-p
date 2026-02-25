@@ -1,13 +1,14 @@
-export const enum OphoelTypeKinds {
+export const enum OphoelTypes {
     STRING,
     BOOL,
     INT_C,
     INT_S,
+    INT,
     FLOAT,
-
     VECTOR,
-    
-    STRUCT
+    STRUCT,
+    COMPOUND,
+    NULL
 }
 
 export type OphoelValue = 
@@ -20,13 +21,13 @@ type KVPair = {
 }
 
 export type OphoelType =
-{ kind: OphoelTypeKinds.STRING }
-| { kind: OphoelTypeKinds.BOOL }
-| { kind: OphoelTypeKinds.INT_C }
-| { kind: OphoelTypeKinds.INT_S }
-| { kind: OphoelTypeKinds.FLOAT }
-| { kind: OphoelTypeKinds.VECTOR, length: number, entryType: OphoelType }
-| { kind: OphoelTypeKinds.STRUCT, name: string, entriesTypes: { key: string, type: OphoelType }[] };
-
-
-
+{ kind: OphoelTypes.STRING }
+| { kind: OphoelTypes.BOOL }
+| { kind: OphoelTypes.INT_C }
+| { kind: OphoelTypes.INT_S }
+| { kind: OphoelTypes.INT }
+| { kind: OphoelTypes.FLOAT }
+| { kind: OphoelTypes.VECTOR, length: number, entryType: OphoelType }
+| { kind: OphoelTypes.STRUCT, name: string, entryTypes: { key: string, type: OphoelType }[] }
+| { kind: OphoelTypes.COMPOUND, entryTypes: { key: string, type: OphoelType }[] }
+| { kind: OphoelTypes.NULL };

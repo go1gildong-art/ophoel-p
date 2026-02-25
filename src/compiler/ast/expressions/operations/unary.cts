@@ -1,5 +1,5 @@
-import { Expression } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Expression } from "../../ast.cjs";
+import { Location } from "../../../metadata.cjs";
 
 export enum UnaryOperator {
     INCREMENT,
@@ -8,8 +8,11 @@ export enum UnaryOperator {
     LOGIC_NOT
 };
 
-export class UnaryOperation extends Expression {
+export class UnaryOperation implements Expression {
     kind = "UnaryOperation";
+    right: Expression;
+    operator: UnaryOperator;
+    location: Location;
 
     constructor(operator: UnaryOperator, right: Expression, location: Location) {
         this.right = right;

@@ -1,8 +1,11 @@
-import { Expression } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Expression } from "../../ast.cjs";
+import { Location } from "../../../metadata.cjs";
 
-export class MemberAccess extends Expression {
+export class MemberAccess implements Expression {
     kind = "MemberAccess";
+    left: Expression;
+    member: string;
+    location: Location;
 
     constructor(left: Expression, member: string, location: Location) {
         [this.left, this.member] = [left, member];

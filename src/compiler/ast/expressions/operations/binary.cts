@@ -1,5 +1,5 @@
-import { Expression } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Expression } from "../../ast.cjs";
+import { Location } from "../../../metadata.cjs";
 
 export enum BinaryOperator {
     ADD,
@@ -19,8 +19,13 @@ export enum BinaryOperator {
     CMPARE_SSMALLER
 };
 
-export class BinaryOperation extends Expression {
+export class BinaryOperation implements Expression {
     kind = "BinaryOperation";
+    left: Expression;
+    right: Expression;
+    operator: BinaryOperator;
+    location: Location;
+
 
     constructor(left: Expression, operator: BinaryOperator, right: Expression, location: Location) {
         [this.left, this.right] = [left, right];

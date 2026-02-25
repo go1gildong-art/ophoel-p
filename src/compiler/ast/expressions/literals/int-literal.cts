@@ -1,9 +1,10 @@
-import { Expression } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Expression } from "../../ast.cjs";
+import { Location } from "../../../metadata.cjs";
 
-export class IntLIteral extends Expression {
+export class IntLiteral implements Expression {
     kind = "IntLiteral";
     raw: string;
+    location: Location;
 
     constructor(source: string, location: Location) {
         this.raw = source;

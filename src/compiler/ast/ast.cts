@@ -8,8 +8,8 @@ export interface ASTNode {
 }
 
 export interface Expression extends ASTNode {
-    type: OphoelType;
-    value: OphoelValue;
+    type?: OphoelType;
+    value?: OphoelValue;
 }
 
 export interface LValue extends Expression {}

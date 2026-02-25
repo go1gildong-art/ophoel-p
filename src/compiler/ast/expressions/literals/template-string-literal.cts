@@ -1,8 +1,9 @@
-import { Expression } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Expression } from "../../ast.cjs";
+import { Location } from "../../../metadata.cjs";
 
-export class TemplateStringLiteral extends Expression {
+export class TemplateStringLiteral implements Expression {
     kind = "TemplateStringLiteral";
+    location: Location;
 
     quasis: string[];
     expressions: Expression[];

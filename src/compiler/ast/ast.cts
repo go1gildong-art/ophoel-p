@@ -7,6 +7,8 @@ export interface ASTNode {
     location: Location;
 }
 
+export interface Preprocess extends ASTNode {}
+
 export interface Expression extends ASTNode {
     type?: OphoelType;
     value?: OphoelValue;

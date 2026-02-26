@@ -3,20 +3,18 @@ import { regexTokens } from "../tokens/regex-tokens.cjs"
 import { reservedKeywords } from "../tokens/reserved-keywords.cjs"
 import { Token } from "../tokens/token.cjs"
 import { Lexer } from "./lexer.cjs"
-import { TokenStream } from "../tokens/token-stream.cjs"
-import { PreservedComment } from "../../compiler-old/ast"
 
 enum LexerState {
-  PROGRAM_CODE,
-  TEMPLATE_STRING,
-  TEMPLATE_PENDING
-  TEMPLATE_INNER_EXPR
+  PROGRAM,
+  TMPL_STRING,
+  TMPL_PENDING,
+  TMPL_IN_EXPR
 }
 
 export class CodeLexer extends Lexer<LexerState> {
 
   public tokenize() {
-    this.state.push(LexerState.PROGRAM_CODE);
+    this.state.push(LexerState.PROGRAM);
 
     while (this.pos < this.source.length) {
       const token = this.getToken();
@@ -25,12 +23,18 @@ export class CodeLexer extends Lexer<LexerState> {
     return this.tokens;
   }
 
-  private getToken(): Token {  
-    if (this.isState(LexerState.TEMPLATE_STRING)) return this.getTemplatePart();
-    else return this.getRegularToken();
+  private getToken(): Token {
+    const token = 
+      this.isState(LexerState.TMPL_STRING)
+      ? this.getTemplatePart()
+      : this.getRegularToken();
+
+    this.updateState(token);
+    return token;
   }
 
   private getRegularToken(): Token {
+
     type RegexTokenKeys = keyof typeof regexTokens;
     for (const kind of Object.keys(regexTokens) as RegexTokenKeys[]) {
       const regex = regexTokens[kind];
@@ -42,19 +46,9 @@ export class CodeLexer extends Lexer<LexerState> {
         opt_Match[0],
         this.getLocation()
       );
-      
+
       this.pos += value.length;
-
       if (token.is("WHITESPACE")) continue;
-      else if (token.is("BACKTICK") && !this.isState(LexerState.TEMPLATE_STRING) && !this.tokens.at(-1)?.is("TEMPLATE_PART")) {
-        this.state.push(LexerState.TEMPLATE_STRING);
-      
-      } else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPR)) {
-        this.state.pop();
-      
-      }
-
-      
       return token;
     }
     throw new Error(`failed lexing! invalid token ${this.getTail()} found`);
@@ -64,53 +58,47 @@ export class CodeLexer extends Lexer<LexerState> {
   private updateState(token: Token) {
     switch (token.kind) {
       case "OPENEXPR":
-        if (this.isState(LexerState.TEMPLATE_PENDING)) {
+        if (this.isState(LexerState.TMPL_PENDING)) {
           this.state.pop();
-          this.state.push(LexerState.TEMPLATE_INNER_EXPR);
+          this.state.push(LexerState.TMPL_IN_EXPR);
         }
         break;
 
       case "RBRACE":
-
-        if (this.isState(LexerState.TEMPLATE_INNER_EXPR)) this.state.pop();
+        if (this.isState(LexerState.TMPL_IN_EXPR)) this.state.pop();
         break;
 
       case "BACKTICK":
-        if (this.isState(LexerState.TEMPLATE_PENDING)) {
+        if (this.isState(LexerState.TMPL_PENDING)) {
           this.state.pop();
           this.state.pop();
-        } else if
+        } else if (this.isState(LexerState.PROGRAM, LexerState.TMPL_IN_EXPR)) {
+          this.state.pop();
+          this.state.push(LexerState.TMPL_IN_EXPR);
+        }
+        break;
         
+      case "TEMPLATE_PART":
+        this.state.push(LexerState.TMPL_PENDING);
     }
-
-    else if (token.is("BACKTICK") && !this.isState(LexerState.TEMPLATE_STRING) && !this.tokens.at(-1)?.is("TEMPLATE_PART")) {
-        this.state.push(LexerState.TEMPLATE_STRING);
-      
-      } else if (token.is("RBRACE") && this.isState(LexerState.TEMPLATE_INNER_EXPR)) {
-        this.state.pop();
-      
-      }
-
-
-    if (match === "openExpr") this.state.push(LexerState.TEMPLATE_INNER_EXPR);
-    else this.state.pop();
   }
 
   private checkKeyword(kind: string, value: string) {
     if (kind !== "KEYWORD") return kind;
 
-    type ReservedKeywordKeys = keyof typeof reservedKeywords;
-    for (const keywordKind of Object.keys(reservedKeywords) as ReservedKeywordKeys[]) {
+    const keyword = Object.entries(reservedKeywords)
+    .map(entry => ({ kind: entry[0], keywords: entry[1] }))
+    .filter(entry => entry.keywords.includes(value))
+    [0]?.kind
+    ?? "IDENTIFIER";
 
-      const keywordArray = reservedKeywords[keywordKind];
-      if (keywordArray.includes(value)) return keywordKind;
-    }
-    return "IDENTIFIER";
+    return keyword;
   }
 
   private getTemplatePart(): Token {
 
     const tail = this.getTail();
+
     const {match, index} = Object.entries({
       openExpr: tail.indexOf("${"),
       backtick: tail.indexOf("`")
@@ -120,16 +108,13 @@ export class CodeLexer extends Lexer<LexerState> {
       .sort((a, b) => a.index - b.index)[0]
       ?? { match: "none", index: tail.length };
 
-    if (match === "openExpr") this.state.push(LexerState.TEMPLATE_INNER_EXPR);
-    else this.state.pop();
-
     const token = new Token(
-      "TEMPLATE_PART",
+      "TMPL_PART",
       tail.slice(index),
       this.getLocation()
     );
 
-    this.state.push(LexerState.TEMPLATE_PENDING);
+    this.state.push(LexerState.TMPL_PENDING);
     this.pos += index;
     return token;
   }

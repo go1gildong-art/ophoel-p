@@ -55,6 +55,6 @@ export class VectorLiteral implements Expression {
     kind = "VectorLiteral";
 
     constructor(
-        public entries: ASTNode[],
+        public entries: Expression[],
         public location: Location) {}
 }

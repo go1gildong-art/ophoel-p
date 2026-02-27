@@ -28,7 +28,8 @@ import { Expression } from "./ast.cjs";
 import { Block } from "./block.cjs";
 
 const BuildAST = {
-    ...BuildLiterals
+    ...BuildLiterals,
+    ...BuildOperations
 }
 
 const BuildLiterals = {
@@ -61,8 +62,11 @@ const BuildOperations = {
     UnaryOperation: (operator: Operations.UnaryOperator, right: Expression, location: Location)
         => new Operations.UnaryOperation(operator, right, location),
 
-    IndexAccess: ()
-        => new Operations.IndexAccess()
+    IndexAccess: (left: Expression, index: Expression, location: Location)
+        => new Operations.IndexAccess(left, IndexAccess, location),
+
+    MemberAccess: (left: Expression, field: string, location: Location)
+        => new Operations.MemberAccess(left, field, location)
 }
 
 

@@ -8,6 +8,6 @@ export class StructDecl implements Statement {
 
     constructor(
         public name: string,
-        public fields: { name: string, type: OphoelType },
+        public fields: { name: string, type: OphoelType }[],
         public location: Location) {}
 }

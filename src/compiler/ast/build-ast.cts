@@ -26,6 +26,7 @@ import { Include } from "./preprocesses/include.cjs";
 import { Location } from "../metadata.cjs";
 import { Expression } from "./ast.cjs";
 import { Block } from "./block.cjs";
+import { OphoelType } from "./types.cjs";
 
 const BuildAST = {
     ...BuildLiterals,
@@ -69,6 +70,29 @@ const BuildOperations = {
         => new Operations.MemberAccess(left, field, location)
 }
 
+const BuildDeclarations = {
+    CompoundAssign: (address: Expression, operation: Operations.BinaryOperator, setValue: Expression, location: Location)
+        => new CompoundAssign(address, operation, setValue, location),
+
+    FunctionDecl: (name: string, parameters: { name: string, type: OphoelType }[], returnType: OphoelType, body: Block, location: Location)
+        => new FunctionDecl(name, parameters, returnType, body, location),
+
+    MacroDecl: (name: string, parameters: { name: string, type: OphoelType }[], returnType: OphoelType, body: Block, location: Location)
+        => new MacroDecl(name, parameters, returnType, body, location),
+
+    StructDecl: (name: string, fields: { name: string, type: OphoelType }[], location: Location)
+        => new StructDecl(name, fields, location),
+
+    VariableAssign: (address: Expression, setValue: Expression, locaiton: Location)
+        => new VariableAssign(address, setValue, location)
+}
+
+
+
+const BuildMiscalenous = {
+    Identifier: (name: string, location: Location) 
+        => new Identifier(name, location)
+}
 
 new ChooseStatement()
 

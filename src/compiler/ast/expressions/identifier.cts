@@ -1,8 +1,8 @@
-import { LValue } from "../ast.cjs";
+import { Expression } from "../ast.cjs";
 import { Location } from "../../metadata.cjs";
 
-export class BinaryOperation implements LValue {
-    kind = "BinaryOperation";
+export class Identifier implements Expression {
+    kind = "Identifier";
 
     constructor(
         public name: string, 

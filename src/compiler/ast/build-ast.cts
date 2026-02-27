@@ -54,6 +54,16 @@ const BuildLiterals = {
         => new Literals.VectorLiteral(entries, locaiton)
 }
 
+const BuildOperations = {
+    BinaryOperation: (left: Expression, operator: Operations.BinaryOperator, right: Expression, location: Location)
+        => new Operations.BinaryOperation(left, operator, right, location),
+
+    UnaryOperation: (operator: Operations.UnaryOperator, right: Expression, location: Location)
+        => new Operations.UnaryOperation(operator, right, location),
+
+    IndexAccess: ()
+        => new Operations.IndexAccess()
+}
 
 
 new ChooseStatement()

@@ -9,7 +9,7 @@ export class TokenStream {
 
     at(index: number) { return this.tokens.at(index); }
 
-    slice(start?: number, end?: number) { return this.tokens.slice(start, end); }
+    slice(start?: number, end?: number) { return new TokenStream(this.tokens.slice(start, end)); }
 
     findIndex(predicate: (v: Token, idx: number, obj: Token[]) => boolean, thisArg?: any) { 
         return this.tokens.findIndex(predicate, thisArg);
@@ -29,9 +29,7 @@ export class TokenStream {
 
     // stops at first targetKind/Value found
     getTokensUntil(targetKind: string, targetValue?: string) {
-        return new TokenStream(
-            this.slice(0, this.findIndex(token => token.is(targetKind, targetValue)))
-        );
+        return this.slice(0, this.findIndex(token => token.is(targetKind, targetValue)))
     }
 
     // from: [, {, (... 

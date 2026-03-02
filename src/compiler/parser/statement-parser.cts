@@ -1,32 +1,29 @@
-import { ASTNode } from "../ast/ast.cjs"
-import { TokenStream } from "../tokens/token-stream.cjs"
-import { Token } from "../tokens/token.cjs";
+import { Parser } from "./parser.cjs";
 
-abstract class Parser<config_T> {
-    pos = 0;
 
-    constructor(
-        protected tokens: TokenStream,
-        protected config: config_T) {}
+type ParserOption = {};
 
-    abstract parse(): ASTNode;
+export class StatementParser extends Parser<ParserOption> {
     
+    parse() {}
 
-    getTail(): TokenStream { return this.tokens.slice(this.pos); }
-
-    peek() { return this.tokens.at(this.pos); }
-
-    eat() { return this.tokens.at(this.pos++); }
-
-    check(kind: string, value?: string) { return this.peek()?.is(kind, value); }
-
-    getBetween(fromKind: string, toKind: string, fromValue?: string, toValue?: string) {
-        return this.getTail().getTokensBetween(fromKind, toKind, fromValue, toValue);
-    }
-
-    getUntil(kind: string, value: string) {
-        return this.getTail().getTokensUntil(kind, value);
-    }
-
+    fnDecl() {}
+    macroDecl() {}
+    structDecl() {}
+    variableDecl() {}
+    variableAssign() {}
     
+    choose() {}
+    if() {}
+    for() {}
+    mcCommand() {}
+    mcExec() {}
+    repeat() {}
+    while() {}
+
+    fnCall() {}
+    macroCall() {}
+
+    include() {}
+
 }

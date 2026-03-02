@@ -2,11 +2,11 @@ import { Expression, Statement } from "../ast.cjs";
 import { Location } from "../../metadata.cjs";
 
 
-export class FunctionCall implements Statement implements Expression {
+export class FunctionCall implements Statement, Expression {
     kind = "FunctionCall";
 
     constructor(
         public callee: string,
-        public arguments: Expression[],
+        public args: Expression[],
         public location: Location) {}
 }

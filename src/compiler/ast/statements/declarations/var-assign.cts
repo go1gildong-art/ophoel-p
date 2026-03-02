@@ -1,6 +1,6 @@
-import { Statement } from "../ast.cjs";
-import { Expression } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Statement } from "../../ast.cjs";
+import { Expression } from "../../ast.cjs";
+import { Location } from "../../../metadata.cjs";
 
 export class VariableAssign implements Statement {
     kind = "VariableAssign";

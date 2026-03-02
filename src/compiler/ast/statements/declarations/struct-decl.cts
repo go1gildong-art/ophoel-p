@@ -1,6 +1,5 @@
-import { Statement } from "../ast.cjs";
-import { Expression } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Statement } from "../../ast.cjs";
+import { Location } from "../../../metadata.cjs";
 import { OphoelType } from "../../types.cjs";
 
 export class StructDecl implements Statement {

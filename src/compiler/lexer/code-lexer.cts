@@ -47,7 +47,7 @@ export class CodeLexer extends Lexer<LexerState> {
         this.getLocation()
       );
 
-      this.pos += value.length;
+      this.pos += opt_Match[0].length;
       if (token.is("WHITESPACE")) continue;
       return token;
     }

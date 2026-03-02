@@ -115,11 +115,6 @@ export class CodeLexer extends Lexer<LexerState> {
       this.getLocation()
     );
 
-    console.log("a" + tail);
-    console.log("a" + tail.slice(0, index));
-    console.log("a" + index);
-    console.log();
-
     this.pos += index;
     return token;
   }

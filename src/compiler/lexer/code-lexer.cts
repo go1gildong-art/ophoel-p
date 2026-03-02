@@ -72,14 +72,14 @@ export class CodeLexer extends Lexer<LexerState> {
         if (this.isState(LexerState.TMPL_PENDING)) {
           this.state.pop();
           this.state.pop();
-        } else if (this.isState(LexerState.PROGRAM, LexerState.TMPL_IN_EXPR)) {
-          this.state.pop();
-          this.state.push(LexerState.TMPL_IN_EXPR);
+        } else if (this.isState(LexerState.TMPL_IN_EXPR, LexerState.PROGRAM)) {
+          this.state.push(LexerState.TMPL_STRING);
         }
         break;
         
-      case "TEMPLATE_PART":
+      case "TMPL_PART":
         this.state.push(LexerState.TMPL_PENDING);
+        break;
     }
   }
 
@@ -98,6 +98,7 @@ export class CodeLexer extends Lexer<LexerState> {
   private getTemplatePart(): Token {
 
     const tail = this.getTail();
+    
 
     const {match, index} = Object.entries({
       openExpr: tail.indexOf("${"),
@@ -105,16 +106,20 @@ export class CodeLexer extends Lexer<LexerState> {
     })
       .map(entry => ({ match: entry[0], index: entry[1] }))
       .filter(entry => entry.index !== -1)
-      .sort((a, b) => a.index - b.index)[0]
+      .sort((a, b) => a.index - b.index )[0]
       ?? { match: "none", index: tail.length };
 
     const token = new Token(
       "TMPL_PART",
-      tail.slice(index),
+      tail.slice(0, index),
       this.getLocation()
     );
 
-    this.state.push(LexerState.TMPL_PENDING);
+    console.log("a" + tail);
+    console.log("a" + tail.slice(0, index));
+    console.log("a" + index);
+    console.log();
+
     this.pos += index;
     return token;
   }

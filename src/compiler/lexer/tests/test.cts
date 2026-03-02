@@ -5,7 +5,7 @@ import { TestResult, TestState } from '../../test-resources/test-result.cjs';
     try {
         const result = await new LexerTester().test();
         fs.writeFileSync("./tests/compiler/test-lexer.json", JSON.stringify(result, null, 2), "utf-8");
-        console.log(`Test ${result.state === TestState.Success ? "succeed" : "failed"}.`);
+        console.log(`Test ${result.state === TestState.Success ? "succeed" : "failed"}. ${TestResult.getCoverageMark(result.children)}`);
         console.log("Tested compiler and reported the result in home/tests/compiler/test-lexer.json.");
 
     } catch (err) {

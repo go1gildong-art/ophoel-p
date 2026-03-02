@@ -4,7 +4,7 @@
   "children": [
     {
       "state": "FAILURE",
-      "message": "Lexer golden test failed. ( 5 / 8 )",
+      "message": "Lexer golden test failed. ( 7 / 8 )",
       "children": [
         {
           "state": "SUCCESS",
@@ -262,12 +262,12 @@
           ]
         },
         {
-          "state": "FAILURE",
-          "message": "Lexer golden unit test for template-edges failed. ( 4 / 45 )",
+          "state": "SUCCESS",
+          "message": "Lexer golden unit test for template-edges succeed! ( 45 / 45 )",
           "children": [
             {
-              "state": "FAILURE",
-              "message": "Expectation has more tokens than Result. ( 44 / 38 )",
+              "state": "SUCCESS",
+              "message": "Expectations and Results have same amount of tokens. ( 44 / 44 )",
               "children": []
             },
             {
@@ -291,214 +291,214 @@
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value found between |TEMPLATE_PART <  > template-edges.oph:1:13 (4)| (expected) and |BACKTICK < ` > template-edges.oph:1:13 (4)| (test result)",
+              "state": "SUCCESS",
+              "message": "4th Token match succeed. |TMPL_PART <  > template-edges.oph:1:13 (4)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-edges.oph:1:13 (5)| (expected) and |SEMICOLON < ; > template-edges.oph:1:14 (5)| (test result)",
+              "state": "SUCCESS",
+              "message": "5th Token match succeed. |BACKTICK < ` > template-edges.oph:1:13 (5)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |SEMICOLON < ; > template-edges.oph:1:14 (6)| (expected) and |KW_DECL < let > template-edges.oph:2:1 (6)| (test result)",
+              "state": "SUCCESS",
+              "message": "6th Token match succeed. |SEMICOLON < ; > template-edges.oph:1:14 (6)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |KW_DECL < let > template-edges.oph:2:1 (7)| (expected) and |IDENTIFIER < msg2 > template-edges.oph:2:5 (7)| (test result)",
+              "state": "SUCCESS",
+              "message": "7th Token match succeed. |KW_DECL < let > template-edges.oph:2:1 (7)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |IDENTIFIER < msg2 > template-edges.oph:2:5 (8)| (expected) and |EQUAL < = > template-edges.oph:2:10 (8)| (test result)",
+              "state": "SUCCESS",
+              "message": "8th Token match succeed. |IDENTIFIER < msg2 > template-edges.oph:2:5 (8)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |EQUAL < = > template-edges.oph:2:10 (9)| (expected) and |BACKTICK < ` > template-edges.oph:2:12 (9)| (test result)",
+              "state": "SUCCESS",
+              "message": "9th Token match succeed. |EQUAL < = > template-edges.oph:2:10 (9)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-edges.oph:2:12 (10)| (expected) and |IDENTIFIER < foo > template-edges.oph:2:13 (10)| (test result)",
+              "state": "SUCCESS",
+              "message": "10th Token match succeed. |BACKTICK < ` > template-edges.oph:2:12 (10)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART < foo > template-edges.oph:2:13 (11)| (expected) and |BACKTICK < ` > template-edges.oph:2:16 (11)| (test result)",
+              "state": "SUCCESS",
+              "message": "11th Token match succeed. |TMPL_PART < foo > template-edges.oph:2:13 (11)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-edges.oph:2:16 (12)| (expected) and |SEMICOLON < ; > template-edges.oph:2:17 (12)| (test result)",
+              "state": "SUCCESS",
+              "message": "12th Token match succeed. |BACKTICK < ` > template-edges.oph:2:16 (12)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |SEMICOLON < ; > template-edges.oph:2:17 (13)| (expected) and |KW_DECL < let > template-edges.oph:3:1 (13)| (test result)",
+              "state": "SUCCESS",
+              "message": "13th Token match succeed. |SEMICOLON < ; > template-edges.oph:2:17 (13)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |KW_DECL < let > template-edges.oph:3:1 (14)| (expected) and |IDENTIFIER < msg3 > template-edges.oph:3:5 (14)| (test result)",
+              "state": "SUCCESS",
+              "message": "14th Token match succeed. |KW_DECL < let > template-edges.oph:3:1 (14)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |IDENTIFIER < msg3 > template-edges.oph:3:5 (15)| (expected) and |EQUAL < = > template-edges.oph:3:10 (15)| (test result)",
+              "state": "SUCCESS",
+              "message": "15th Token match succeed. |IDENTIFIER < msg3 > template-edges.oph:3:5 (15)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |EQUAL < = > template-edges.oph:3:10 (16)| (expected) and |BACKTICK < ` > template-edges.oph:3:12 (16)| (test result)",
+              "state": "SUCCESS",
+              "message": "16th Token match succeed. |EQUAL < = > template-edges.oph:3:10 (16)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-edges.oph:3:12 (17)| (expected) and |IDENTIFIER < a > template-edges.oph:3:13 (17)| (test result)",
+              "state": "SUCCESS",
+              "message": "17th Token match succeed. |BACKTICK < ` > template-edges.oph:3:12 (17)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART < a > template-edges.oph:3:13 (18)| (expected) and |OPENEXPR < ${ > template-edges.oph:3:14 (18)| (test result)",
+              "state": "SUCCESS",
+              "message": "18th Token match succeed. |TMPL_PART < a > template-edges.oph:3:13 (18)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |OPENEXPR < ${ > template-edges.oph:3:14 (19)| (expected) and |STRING < \"b\" > template-edges.oph:3:16 (19)| (test result)",
+              "state": "SUCCESS",
+              "message": "19th Token match succeed. |OPENEXPR < ${ > template-edges.oph:3:14 (19)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |STRING < \"b\" > template-edges.oph:3:16 (20)| (expected) and |PLUS < + > template-edges.oph:3:20 (20)| (test result)",
+              "state": "SUCCESS",
+              "message": "20th Token match succeed. |STRING < \"b\" > template-edges.oph:3:16 (20)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |PLUS < + > template-edges.oph:3:20 (21)| (expected) and |BACKTICK < ` > template-edges.oph:3:22 (21)| (test result)",
+              "state": "SUCCESS",
+              "message": "21th Token match succeed. |PLUS < + > template-edges.oph:3:20 (21)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-edges.oph:3:22 (22)| (expected) and |OPENEXPR < ${ > template-edges.oph:3:23 (22)| (test result)",
+              "state": "SUCCESS",
+              "message": "22th Token match succeed. |BACKTICK < ` > template-edges.oph:3:22 (22)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  > template-edges.oph:3:23 (23)| (expected) and |IDENTIFIER < c > template-edges.oph:3:25 (23)| (test result)",
+              "state": "SUCCESS",
+              "message": "23th Token match succeed. |TMPL_PART <  > template-edges.oph:3:23 (23)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |OPENEXPR < ${ > template-edges.oph:3:23 (24)| (expected) and |RBRACE < } > template-edges.oph:3:26 (24)| (test result)",
+              "state": "SUCCESS",
+              "message": "24th Token match succeed. |OPENEXPR < ${ > template-edges.oph:3:23 (24)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |IDENTIFIER < c > template-edges.oph:3:25 (25)| (expected) and |BACKTICK < ` > template-edges.oph:3:27 (25)| (test result)",
+              "state": "SUCCESS",
+              "message": "25th Token match succeed. |IDENTIFIER < c > template-edges.oph:3:25 (25)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching column found between |RBRACE < } > template-edges.oph:3:26 (26)| (expected) and |RBRACE < } > template-edges.oph:3:28 (26)| (test result)",
+              "state": "SUCCESS",
+              "message": "26th Token match succeed. |RBRACE < } > template-edges.oph:3:26 (26)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  > template-edges.oph:3:27 (27)| (expected) and |BACKTICK < ` > template-edges.oph:3:29 (27)| (test result)",
+              "state": "SUCCESS",
+              "message": "27th Token match succeed. |TMPL_PART <  > template-edges.oph:3:27 (27)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-edges.oph:3:27 (28)| (expected) and |SEMICOLON < ; > template-edges.oph:3:30 (28)| (test result)",
+              "state": "SUCCESS",
+              "message": "28th Token match succeed. |BACKTICK < ` > template-edges.oph:3:27 (28)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |RBRACE < } > template-edges.oph:3:28 (29)| (expected) and |KW_DECL < let > template-edges.oph:4:1 (29)| (test result)",
+              "state": "SUCCESS",
+              "message": "29th Token match succeed. |RBRACE < } > template-edges.oph:3:28 (29)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |TEMPLATE_PART <  > template-edges.oph:3:29 (30)| (expected) and |IDENTIFIER < msg4 > template-edges.oph:4:5 (30)| (test result)",
+              "state": "SUCCESS",
+              "message": "30th Token match succeed. |TMPL_PART <  > template-edges.oph:3:29 (30)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |BACKTICK < ` > template-edges.oph:3:29 (31)| (expected) and |EQUAL < = > template-edges.oph:4:10 (31)| (test result)",
+              "state": "SUCCESS",
+              "message": "31th Token match succeed. |BACKTICK < ` > template-edges.oph:3:29 (31)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, line, column found between |SEMICOLON < ; > template-edges.oph:3:30 (32)| (expected) and |BACKTICK < ` > template-edges.oph:4:12 (32)| (test result)",
+              "state": "SUCCESS",
+              "message": "32th Token match succeed. |SEMICOLON < ; > template-edges.oph:3:30 (32)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |KW_DECL < let > template-edges.oph:4:1 (33)| (expected) and |OPENEXPR < ${ > template-edges.oph:4:13 (33)| (test result)",
+              "state": "SUCCESS",
+              "message": "33th Token match succeed. |KW_DECL < let > template-edges.oph:4:1 (33)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching value, column found between |IDENTIFIER < msg4 > template-edges.oph:4:5 (34)| (expected) and |IDENTIFIER < bar > template-edges.oph:4:15 (34)| (test result)",
+              "state": "SUCCESS",
+              "message": "34th Token match succeed. |IDENTIFIER < msg4 > template-edges.oph:4:5 (34)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |EQUAL < = > template-edges.oph:4:10 (35)| (expected) and |RBRACE < } > template-edges.oph:4:18 (35)| (test result)",
+              "state": "SUCCESS",
+              "message": "35th Token match succeed. |EQUAL < = > template-edges.oph:4:10 (35)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching column found between |BACKTICK < ` > template-edges.oph:4:12 (36)| (expected) and |BACKTICK < ` > template-edges.oph:4:19 (36)| (test result)",
+              "state": "SUCCESS",
+              "message": "36th Token match succeed. |BACKTICK < ` > template-edges.oph:4:12 (36)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  > template-edges.oph:4:13 (37)| (expected) and |SEMICOLON < ; > template-edges.oph:4:20 (37)| (test result)",
+              "state": "SUCCESS",
+              "message": "37th Token match succeed. |TMPL_PART <  > template-edges.oph:4:13 (37)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Missing token at index 38, for \"OPENEXPR < ${ > template-edges.oph:4:13 (38)\"",
+              "state": "SUCCESS",
+              "message": "38th Token match succeed. |OPENEXPR < ${ > template-edges.oph:4:13 (38)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Missing token at index 39, for \"IDENTIFIER < bar > template-edges.oph:4:15 (39)\"",
+              "state": "SUCCESS",
+              "message": "39th Token match succeed. |IDENTIFIER < bar > template-edges.oph:4:15 (39)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Missing token at index 40, for \"RBRACE < } > template-edges.oph:4:18 (40)\"",
+              "state": "SUCCESS",
+              "message": "40th Token match succeed. |RBRACE < } > template-edges.oph:4:18 (40)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Missing token at index 41, for \"TEMPLATE_PART <  > template-edges.oph:4:19 (41)\"",
+              "state": "SUCCESS",
+              "message": "41th Token match succeed. |TMPL_PART <  > template-edges.oph:4:19 (41)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Missing token at index 42, for \"BACKTICK < ` > template-edges.oph:4:19 (42)\"",
+              "state": "SUCCESS",
+              "message": "42th Token match succeed. |BACKTICK < ` > template-edges.oph:4:19 (42)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Missing token at index 43, for \"SEMICOLON < ; > template-edges.oph:4:20 (43)\"",
+              "state": "SUCCESS",
+              "message": "43th Token match succeed. |SEMICOLON < ; > template-edges.oph:4:20 (43)|",
               "children": []
             }
           ]
         },
         {
           "state": "FAILURE",
-          "message": "Lexer golden unit test for template-string failed. ( 4 / 18 )",
+          "message": "Lexer golden unit test for template-string failed. ( 15 / 18 )",
           "children": [
             {
-              "state": "FAILURE",
-              "message": "Expectation has less tokens than Expectation. ( 17 / 20 )",
+              "state": "SUCCESS",
+              "message": "Expectations and Results have same amount of tokens. ( 17 / 17 )",
               "children": []
             },
             {
@@ -523,78 +523,78 @@
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value found between |TEMPLATE_PART < John has  > template-string.oph:1:12 (4)| (expected) and |IDENTIFIER < John > template-string.oph:1:12 (4)| (test result)",
+              "message": "Unmatching kind found between |TEMPLATE_PART < John has  > template-string.oph:1:12 (4)| (expected) and |TMPL_PART < John has  > template-string.oph:1:12 (4)| (test result)",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "5th Token match succeed. |OPENEXPR < ${ > template-string.oph:1:21 (5)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "6th Token match succeed. |IDENTIFIER < x > template-string.oph:1:23 (6)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "7th Token match succeed. |RBRACE < } > template-string.oph:1:24 (7)|",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |OPENEXPR < ${ > template-string.oph:1:21 (5)| (expected) and |IDENTIFIER < has > template-string.oph:1:17 (5)| (test result)",
+              "message": "Unmatching kind found between |TEMPLATE_PART <  apples and  > template-string.oph:1:25 (8)| (expected) and |TMPL_PART <  apples and  > template-string.oph:1:25 (8)| (test result)",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "9th Token match succeed. |OPENEXPR < ${ > template-string.oph:1:37 (9)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "10th Token match succeed. |IDENTIFIER < y > template-string.oph:1:39 (10)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "11th Token match succeed. |PLUS < + > template-string.oph:1:41 (11)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "12th Token match succeed. |NUMBER < 10 > template-string.oph:1:43 (12)|",
+              "children": []
+            },
+            {
+              "state": "SUCCESS",
+              "message": "13th Token match succeed. |RBRACE < } > template-string.oph:1:45 (13)|",
               "children": []
             },
             {
               "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |IDENTIFIER < x > template-string.oph:1:23 (6)| (expected) and |OPENEXPR < ${ > template-string.oph:1:21 (6)| (test result)",
+              "message": "Unmatching kind found between |TEMPLATE_PART <  bananas. > template-string.oph:1:46 (14)| (expected) and |TMPL_PART <  bananas. > template-string.oph:1:46 (14)| (test result)",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |RBRACE < } > template-string.oph:1:24 (7)| (expected) and |IDENTIFIER < x > template-string.oph:1:23 (7)| (test result)",
+              "state": "SUCCESS",
+              "message": "15th Token match succeed. |BACKTICK < ` > template-string.oph:1:55 (15)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  apples and  > template-string.oph:1:25 (8)| (expected) and |RBRACE < } > template-string.oph:1:24 (8)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |OPENEXPR < ${ > template-string.oph:1:37 (9)| (expected) and |IDENTIFIER < apples > template-string.oph:1:26 (9)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching value, column found between |IDENTIFIER < y > template-string.oph:1:39 (10)| (expected) and |IDENTIFIER < and > template-string.oph:1:33 (10)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |PLUS < + > template-string.oph:1:41 (11)| (expected) and |OPENEXPR < ${ > template-string.oph:1:37 (11)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |NUMBER < 10 > template-string.oph:1:43 (12)| (expected) and |IDENTIFIER < y > template-string.oph:1:39 (12)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |RBRACE < } > template-string.oph:1:45 (13)| (expected) and |PLUS < + > template-string.oph:1:41 (13)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  bananas. > template-string.oph:1:46 (14)| (expected) and |NUMBER < 10 > template-string.oph:1:43 (14)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-string.oph:1:55 (15)| (expected) and |RBRACE < } > template-string.oph:1:45 (15)| (test result)",
-              "children": []
-            },
-            {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |SEMICOLON < ; > template-string.oph:1:56 (16)| (expected) and |IDENTIFIER < bananas > template-string.oph:1:47 (16)| (test result)",
+              "state": "SUCCESS",
+              "message": "16th Token match succeed. |SEMICOLON < ; > template-string.oph:1:56 (16)|",
               "children": []
             }
           ]
         },
         {
-          "state": "FAILURE",
-          "message": "Lexer golden unit test for template-string failed. ( 4 / 18 )",
+          "state": "SUCCESS",
+          "message": "Lexer golden unit test for template-string succeed! ( 18 / 18 )",
           "children": [
             {
-              "state": "FAILURE",
-              "message": "Expectation has less tokens than Expectation. ( 17 / 20 )",
+              "state": "SUCCESS",
+              "message": "Expectations and Results have same amount of tokens. ( 17 / 17 )",
               "children": []
             },
             {
@@ -618,68 +618,68 @@
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value found between |TEMPLATE_PART < John has  > template-string.oph:1:12 (4)| (expected) and |IDENTIFIER < John > template-string.oph:1:12 (4)| (test result)",
+              "state": "SUCCESS",
+              "message": "4th Token match succeed. |TMPL_PART < John has  > template-string.oph:1:12 (4)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |OPENEXPR < ${ > template-string.oph:1:21 (5)| (expected) and |IDENTIFIER < has > template-string.oph:1:17 (5)| (test result)",
+              "state": "SUCCESS",
+              "message": "5th Token match succeed. |OPENEXPR < ${ > template-string.oph:1:21 (5)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |IDENTIFIER < x > template-string.oph:1:23 (6)| (expected) and |OPENEXPR < ${ > template-string.oph:1:21 (6)| (test result)",
+              "state": "SUCCESS",
+              "message": "6th Token match succeed. |IDENTIFIER < x > template-string.oph:1:23 (6)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |RBRACE < } > template-string.oph:1:24 (7)| (expected) and |IDENTIFIER < x > template-string.oph:1:23 (7)| (test result)",
+              "state": "SUCCESS",
+              "message": "7th Token match succeed. |RBRACE < } > template-string.oph:1:24 (7)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  apples and  > template-string.oph:1:25 (8)| (expected) and |RBRACE < } > template-string.oph:1:24 (8)| (test result)",
+              "state": "SUCCESS",
+              "message": "8th Token match succeed. |TMPL_PART <  apples and  > template-string.oph:1:25 (8)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |OPENEXPR < ${ > template-string.oph:1:37 (9)| (expected) and |IDENTIFIER < apples > template-string.oph:1:26 (9)| (test result)",
+              "state": "SUCCESS",
+              "message": "9th Token match succeed. |OPENEXPR < ${ > template-string.oph:1:37 (9)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching value, column found between |IDENTIFIER < y > template-string.oph:1:39 (10)| (expected) and |IDENTIFIER < and > template-string.oph:1:33 (10)| (test result)",
+              "state": "SUCCESS",
+              "message": "10th Token match succeed. |IDENTIFIER < y > template-string.oph:1:39 (10)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |PLUS < + > template-string.oph:1:41 (11)| (expected) and |OPENEXPR < ${ > template-string.oph:1:37 (11)| (test result)",
+              "state": "SUCCESS",
+              "message": "11th Token match succeed. |PLUS < + > template-string.oph:1:41 (11)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |NUMBER < 10 > template-string.oph:1:43 (12)| (expected) and |IDENTIFIER < y > template-string.oph:1:39 (12)| (test result)",
+              "state": "SUCCESS",
+              "message": "12th Token match succeed. |NUMBER < 10 > template-string.oph:1:43 (12)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |RBRACE < } > template-string.oph:1:45 (13)| (expected) and |PLUS < + > template-string.oph:1:41 (13)| (test result)",
+              "state": "SUCCESS",
+              "message": "13th Token match succeed. |RBRACE < } > template-string.oph:1:45 (13)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |TEMPLATE_PART <  bananas. > template-string.oph:1:46 (14)| (expected) and |NUMBER < 10 > template-string.oph:1:43 (14)| (test result)",
+              "state": "SUCCESS",
+              "message": "14th Token match succeed. |TMPL_PART <  bananas. > template-string.oph:1:46 (14)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |BACKTICK < ` > template-string.oph:1:55 (15)| (expected) and |RBRACE < } > template-string.oph:1:45 (15)| (test result)",
+              "state": "SUCCESS",
+              "message": "15th Token match succeed. |BACKTICK < ` > template-string.oph:1:55 (15)|",
               "children": []
             },
             {
-              "state": "FAILURE",
-              "message": "Unmatching kind, value, column found between |SEMICOLON < ; > template-string.oph:1:56 (16)| (expected) and |IDENTIFIER < bananas > template-string.oph:1:47 (16)| (test result)",
+              "state": "SUCCESS",
+              "message": "16th Token match succeed. |SEMICOLON < ; > template-string.oph:1:56 (16)|",
               "children": []
             }
           ]

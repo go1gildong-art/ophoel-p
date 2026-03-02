@@ -11,13 +11,13 @@ export const unit = new UnitCase(
         "EQUAL < = > template-string.oph:1:9 (2)",
         "BACKTICK < ` > template-string.oph:1:11 (3)",
 
-        "TEMPLATE_PART < John has  > template-string.oph:1:12 (4)",
+        "TMPL_PART < John has  > template-string.oph:1:12 (4)",
         "OPENEXPR < ${ > template-string.oph:1:21 (5)",
 
         "IDENTIFIER < x > template-string.oph:1:23 (6)",
 
         "RBRACE < } > template-string.oph:1:24 (7)",
-        "TEMPLATE_PART <  apples and  > template-string.oph:1:25 (8)",
+        "TMPL_PART <  apples and  > template-string.oph:1:25 (8)",
         "OPENEXPR < ${ > template-string.oph:1:37 (9)",
 
         "IDENTIFIER < y > template-string.oph:1:39 (10)",
@@ -25,7 +25,7 @@ export const unit = new UnitCase(
         "NUMBER < 10 > template-string.oph:1:43 (12)",
         
         "RBRACE < } > template-string.oph:1:45 (13)",        
-        "TEMPLATE_PART <  bananas. > template-string.oph:1:46 (14)",
+        "TMPL_PART <  bananas. > template-string.oph:1:46 (14)",
 
         "BACKTICK < ` > template-string.oph:1:55 (15)",
         "SEMICOLON < ; > template-string.oph:1:56 (16)"

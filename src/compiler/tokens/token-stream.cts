@@ -23,6 +23,10 @@ export class TokenStream {
         this.tokens.forEach(callback, thisArg);
     }
 
+    filter(callback: (value: Token, index: number, array: Token[]) => any, thisArg?: any) {
+        return this.tokens.filter(callback, thisArg);
+    }
+
     map<U>(callback: (value: Token, index: number, array: Token[]) => U, thisArg?: any) {
         return this.tokens.map<U>(callback, thisArg);
     }

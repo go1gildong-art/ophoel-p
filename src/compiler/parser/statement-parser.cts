@@ -33,6 +33,11 @@ export class StatementParser extends Parser<ParserOption> {
 
     fnDecl() {
         if (!this.peek()?.is("KW_DECL", "fn")) return this.getFailure();
+
+        this.expect("KW_DECL", "fn");
+        const fnName = this.expect("IDENTIFIER");
+        this.expect("LPAREN");
+        const fnParams = this.getUntil("RPAREN").filter(token => to)
     }
 
     macroDecl() { }

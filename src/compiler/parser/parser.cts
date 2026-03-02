@@ -32,11 +32,15 @@ export abstract class Parser<config_T> {
     }
 
     getBetween(fromKind: string, toKind: string, fromValue?: string, toValue?: string) {
-        return this.getTail().getTokensBetween(fromKind, toKind, fromValue, toValue);
+        const tokens = this.getTail().getTokensBetween(fromKind, toKind, fromValue, toValue);
+        this.pos += tokens.length();
+        return tokens;
     }
 
     getUntil(kind: string, value: string) {
-        return this.getTail().getTokensUntil(kind, value);
+        const tokens = this.getTail().getTokensUntil(kind, value);
+        this.pos += tokens.length();
+        return tokens;
     }
 
     

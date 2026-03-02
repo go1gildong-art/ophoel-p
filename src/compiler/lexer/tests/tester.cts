@@ -4,13 +4,18 @@ import { LexerGoldenTester } from "./golden/tester.cjs";
 
 export class LexerTester implements Tester {
     public async test() {
-        const goldenResult = await new LexerGoldenTester().test();
+        try {
+            const goldenResult = await new LexerGoldenTester().test();
 
-        return TestResult.buildFromChildren(
-            [goldenResult],
-            "Full lexer test succeed!",
-            "Full lexer test failed."
-        )
+            return TestResult.buildFromChildren(
+                [goldenResult],
+                "Full lexer test succeed!",
+                "Full lexer test failed."
+            )
+
+        } catch (error) {
+            return TestResult.error(error);
+        }
     }
 }
 

@@ -1,5 +1,5 @@
-import { Statement } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Statement } from "../../ast.cjs";
+import { Location } from "../../../metadata.cjs";
 import { OphoelType } from "../../types.cjs";
 import { Block } from "../../block.cjs";
 

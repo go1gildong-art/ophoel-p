@@ -10,14 +10,18 @@ import { loadTests } from "../../../test-resources/test_loader.cjs";
 export class LexerGoldenTester implements Tester {
 
     public async test() {
-        const cases = await loadTests<UnitCase>("./out/compiler/lexer/tests/golden/units");
+        try {
+            const cases = await loadTests<UnitCase>("./out/compiler/lexer/tests/golden/units");
+            const results = await Promise.all(cases.map(async unitCase => new UnitTester(unitCase).test()));
 
-        const results = await Promise.all(cases.map(async unitCase => new UnitTester(unitCase).test()));
+            return TestResult.buildFromChildren(
+                results,
+                "Lexer golden test succeed!",
+                "Lexer golden test failed."
+            );
 
-        return TestResult.buildFromChildren(
-            results,
-            "Lexer golden test succeed!",
-            "Lexer golden test failed."
-        );
+        } catch (error) {
+            return TestResult.error(error);
+        }
     }
 }

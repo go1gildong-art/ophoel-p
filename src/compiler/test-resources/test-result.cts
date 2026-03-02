@@ -2,7 +2,8 @@
 export enum TestState {
     Success = "SUCCESS",
     Failure = "FAILURE",
-    Uninitialized = "UNINITIALIZED"
+    Uninitialized = "UNINITIALIZED",
+    Error = "ERROR"
 }
 
 export class TestResult {
@@ -24,12 +25,22 @@ export class TestResult {
         return new TestResult(TestState.Failure, message, children);
     }
 
+    static error(error: unknown) {
+        if (error instanceof Error) {
+            const msg = "An error occurred while testing: " + error.message;
+            return new TestResult(TestState.Error, msg);
+        } else {
+            const msg = "An unexpected object thrown while testing: " + error;
+            return new TestResult(TestState.Error, msg);
+        }
+    }
+
     static uninitialized() {
         return new TestResult(TestState.Uninitialized);
     }
 
     static hasNoFailure(children: TestResult[]) {
-        return !children.some(c => c.state === TestState.Failure);
+        return !children.some(c => [TestState.Failure, TestState.Error].includes(c.state));
     }
 
     static buildFromChildren(children: TestResult[], successMessage?: string, failureMessage?: string) {

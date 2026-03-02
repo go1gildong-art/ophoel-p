@@ -34,19 +34,24 @@ export class UnitTester implements Tester {
     }
 
     private checkTokenCounts() {
-        const expecLength = this.expectations.tokens.length;
-        const resultLength = this.testResults.tokens.length;
+        try {
+            const expecLength = this.expectations.tokens.length;
+            const resultLength = this.testResults.tokens.length;
 
-        if (expecLength > resultLength) {
-            const msg = "Expectation has more tokens than Result."
-            return TestResult.failure(msg);
+            if (expecLength > resultLength) {
+                const msg = "Expectation has more tokens than Result."
+                return TestResult.failure(msg);
 
-        } else if (expecLength < resultLength) {
-            const msg = "Result has more token than Expectation."
-            return TestResult.failure(msg);
-        } else {
-            const msg = "Expectations and Results have same length."
-            return TestResult.success(msg);
+            } else if (expecLength < resultLength) {
+                const msg = "Result has more token than Expectation."
+                return TestResult.failure(msg);
+            } else {
+                const msg = "Expectations and Results have same length."
+                return TestResult.success(msg);
+            }
+
+        } catch (error) {
+             return TestResult.error(error);
         }
     }
 
@@ -57,27 +62,32 @@ export class UnitTester implements Tester {
 
 
     private compareTokens(exp: Token, res: Token | undefined): TestResult {
-        if (!res) {
-            const msg = `Missing token at index ${exp.location.tokenIndex}, for "${exp.toString()}"`;
-            return TestResult.failure(msg);
-        }
+        try {
+            if (!res) {
+                const msg = `Missing token at index ${exp.location.tokenIndex}, for "${exp.toString()}"`;
+                return TestResult.failure(msg);
+            }
 
-        const expFlat = exp.flatten();
-        const resFlat = res.flatten();
+            const expFlat = exp.flatten();
+            const resFlat = res.flatten();
 
-        const unmatchingPortions = (Object.keys(expFlat) as (keyof typeof expFlat)[])
-            .filter(key => expFlat[key] !== resFlat[key]);
+            const unmatchingPortions = (Object.keys(expFlat) as (keyof typeof expFlat)[])
+                .filter(key => expFlat[key] !== resFlat[key]);
 
-        if (unmatchingPortions.length > 0) {
-            const msg =
-                `Unmatching ${unmatchingPortions.join(", ")} found between `
-                + `|${exp.toString()}| (expected) and `
-                + `|${res.toString()}| (test result)`;
-            return TestResult.failure(msg);
+            if (unmatchingPortions.length > 0) {
+                const msg =
+                    `Unmatching ${unmatchingPortions.join(", ")} found between `
+                    + `|${exp.toString()}| (expected) and `
+                    + `|${res.toString()}| (test result)`;
+                return TestResult.failure(msg);
 
-        } else {
-            const msg = `${exp.location.tokenIndex}th Token match succeed. |${exp.toString()}|`
-            return TestResult.success(msg);
+            } else {
+                const msg = `${exp.location.tokenIndex}th Token match succeed. |${exp.toString()}|`
+                return TestResult.success(msg);
+            }
+
+        } catch (error) {
+            return TestResult.error(error);
         }
     }
 

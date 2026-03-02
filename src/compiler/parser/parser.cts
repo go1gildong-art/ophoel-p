@@ -1,6 +1,8 @@
 import { ASTNode } from "../ast/ast.cjs"
+import { Location } from "../metadata.cjs";
 import { TokenStream } from "../tokens/token-stream.cjs"
 import { Token } from "../tokens/token.cjs";
+
 
 export abstract class Parser<config_T> {
     pos = 0;

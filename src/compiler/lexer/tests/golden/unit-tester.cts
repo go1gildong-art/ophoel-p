@@ -37,21 +37,22 @@ export class UnitTester implements Tester {
         try {
             const expecLength = this.expectations.tokens.length;
             const resultLength = this.testResults.tokens.length;
+            const lengthRate = `( ${expecLength} / ${resultLength} )`;
 
             if (expecLength > resultLength) {
-                const msg = "Expectation has more tokens than Result."
+                const msg = `Expectation has more tokens than Result. ${lengthRate}`
                 return TestResult.failure(msg);
 
             } else if (expecLength < resultLength) {
-                const msg = "Result has more token than Expectation."
+                const msg = `Expectation has less tokens than Expectation. ${lengthRate}`
                 return TestResult.failure(msg);
             } else {
-                const msg = "Expectations and Results have same length."
+                const msg = `Expectations and Results have same amount of tokens. ${lengthRate}`
                 return TestResult.success(msg);
             }
 
         } catch (error) {
-             return TestResult.error(error);
+            return TestResult.error(error);
         }
     }
 

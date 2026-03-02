@@ -5,6 +5,7 @@ import { Parser } from "./parser.cjs";
 import { ASTCollection } from "../ast/build-ast.cjs";
 import { TokenStream } from "../tokens/token-stream.cjs";
 import { ASTNode } from "../ast/ast.cjs";
+import { OphoelParseError } from "./parse-error.cjs";
 
 
 type ParserOption = {};

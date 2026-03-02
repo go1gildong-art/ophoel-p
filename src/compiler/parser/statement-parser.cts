@@ -4,9 +4,16 @@ import { Program } from "../ast/program.cjs";
 import { Parser } from "./parser.cjs";
 import { ASTCollection } from "../ast/build-ast.cjs";
 import { TokenStream } from "../tokens/token-stream.cjs";
+import { ASTNode } from "../ast/ast.cjs";
 
 
 type ParserOption = {};
+
+
+type ParseResult = {
+    succeed: "YES" | "NO",
+    result: ASTNode | undefined
+};
 
 export class StatementParser extends Parser<ParserOption> {
 
@@ -15,16 +22,16 @@ export class StatementParser extends Parser<ParserOption> {
         this.peek().location
     )
 
-    constructor(tokens: TokenStream, config: ParserOption) {
-        super(tokens, config);
-    }
+    emit(ast: ASTNode) { this.resultAst.body.statements.push(ast); }
+    getFailure() { return {succeed: "NO", result: undefined} as ParseResult }
+
 
     parse() { 
         return new Program(new Block([], new Location("e", 1, 1, 1)), new Location("e", 1, 1, 1)) 
     }
 
     fnDecl() {
-
+        if (!this.peek()?.is("KW_DECL", "fn")) return this.getFailure();
     }
 
     macroDecl() { }

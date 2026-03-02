@@ -7,7 +7,7 @@ export class TokenStream {
 
     length() { return this.tokens.length; }
 
-    at(index: number) { return this.tokens.at(index); }
+    at(index: number) { return this.tokens.at(index) as Token | undefined; }
 
     slice(start?: number, end?: number) { return new TokenStream(this.tokens.slice(start, end)); }
 

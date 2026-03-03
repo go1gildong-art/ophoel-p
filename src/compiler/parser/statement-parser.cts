@@ -19,8 +19,8 @@ type ParseResult = {
 export class StatementParser extends Parser<ParserOption> {
 
     resultAst = new ASTCollection.Program (
-        new ASTCollection.Block([], this.peek().location),
-        this.peek().location
+        new ASTCollection.Block([], this.peek()?.location ?? new Location("unfound", 1, 1, 1)),
+        this.peek()?.location ?? new Location("unfound", 1, 1, 1)
     )
 
     emit(ast: ASTNode) { this.resultAst.body.statements.push(ast); }

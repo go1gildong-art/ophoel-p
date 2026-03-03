@@ -7,6 +7,7 @@ export class VariableDecl implements Statement {
 
     constructor(
         public name: string,
+        public mutability: boolean,
         public initValue: Expression,
         public location: Location) {}
 }

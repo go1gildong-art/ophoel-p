@@ -42,14 +42,17 @@ export class StatementParser extends Parser<ParserOption> {
         this.expect("LPAREN");
 
         const paramNames: Token[] = [];
-        const paramTypes: Token[] = [];
         while (!this.check("RPAREN")) {
             paramNames.push(this.expect("IDENTIFIER"));
-            this.expect("COLON");
-            paramTypes.push(this.expect(["KW_TYPE", "IDENTIFIER"]));
+            if (this.check("COMMA")) this.eat();
         }
 
+        this.expect("LBRACE");
+        const body = this.unwrapProgram(
+            new StatementParser(this.getBetween("LBRACE", "RBRACE"), this.config).parse()
+        )
 
+        const 
     }
 
     macroDecl() { }

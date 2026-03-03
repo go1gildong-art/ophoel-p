@@ -1,6 +1,5 @@
 import { Statement } from "../../ast.cjs";
 import { Location } from "../../../metadata.cjs";
-import { OphoelType } from "../../types.cjs";
 import { Block } from "../../block.cjs";
 
 export class FunctionDecl implements Statement {
@@ -8,8 +7,7 @@ export class FunctionDecl implements Statement {
 
     constructor(
         public name: string,
-        public parameters: { name: string, type: OphoelType }[],
-        public returnType: OphoelType,
+        public parameters: string[],
         public body: Block,
         public location: Location) {}
 }

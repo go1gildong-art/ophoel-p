@@ -1,6 +1,6 @@
 
 import { Location } from "../metadata.cjs";
-import { OphoelType, OphoelValue } from "./types.cjs";
+import { OphoelValue } from "./types.cjs";
 
 export interface ASTNode {
     kind: string;
@@ -10,7 +10,6 @@ export interface ASTNode {
 export interface Preprocess extends ASTNode {}
 
 export interface Expression extends ASTNode {
-    type?: OphoelType;
     value?: OphoelValue;
 }
 

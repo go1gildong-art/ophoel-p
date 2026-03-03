@@ -1,33 +1,5 @@
-export const enum OphoelTypes {
-    STRING,
-    BOOL,
-    INT_C,
-    INT_S,
-    INT,
-    FLOAT,
-    VECTOR,
-    STRUCT,
-    COMPOUND,
-    NULL
-}
-
 export type OphoelValue = 
 string | boolean | number |
-OphoelValue[] | KVPair[];
+OphoelValue[] | {[key: string]: OphoelValue}[];
 
-type KVPair = {
-    key: string,
-    value: OphoelValue
-}
 
-export type OphoelType =
-{ kind: OphoelTypes.STRING }
-| { kind: OphoelTypes.BOOL }
-| { kind: OphoelTypes.INT_C }
-| { kind: OphoelTypes.INT_S }
-| { kind: OphoelTypes.INT }
-| { kind: OphoelTypes.FLOAT }
-| { kind: OphoelTypes.VECTOR, length: number, entryType: OphoelType }
-| { kind: OphoelTypes.STRUCT, name: string, entryTypes: { key: string, type: OphoelType }[] }
-| { kind: OphoelTypes.COMPOUND, entryTypes: { key: string, type: OphoelType }[] }
-| { kind: OphoelTypes.NULL };

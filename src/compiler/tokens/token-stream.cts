@@ -24,11 +24,15 @@ export class TokenStream {
     }
 
     filter(callback: (value: Token, index: number, array: Token[]) => any, thisArg?: any) {
-        return this.tokens.filter(callback, thisArg);
+        return new TokenStream(this.tokens.filter(callback, thisArg));
     }
 
     map<U>(callback: (value: Token, index: number, array: Token[]) => U, thisArg?: any) {
-        return this.tokens.map<U>(callback, thisArg);
+        return new TokenStream(this.tokens.map<U>(callback, thisArg));
+    }
+
+    reduce<U>(callback: (accumulator: U, value: Token, index: number, array: Token[]) => U, thisArg?: any) {
+        return new TokenStream(this.tokens.reduce(callback, thisArg));
     }
 
     // stops at first targetKind/Value found
@@ -53,6 +57,33 @@ export class TokenStream {
         }
 
         return new TokenStream(collectedTokens);
+    }
+
+    chunk<chunk_T>() {
+
+        const accumulator = [];
+
+        for (let i = 0; i < names.length; i++) {
+
+        }
+
+        const len = names.length;
+    const chunks = Object.fromEntries(
+
+        this.tokens.map((_, idx, stream) => 
+            (idx % len === 0)
+            ? stream.slice(idx, idx + len)
+            : undefined
+        )
+        .filter(stream => stream != undefined)
+        .map(stream => stream.map((token, idx) => [names[idx], token]))
+    )
+
+        Object.fromEntries()
+
+        const x = Array.from({ length: len }, (_, index) => {
+            const i = index
+        })
     }
 }
 

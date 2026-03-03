@@ -3,7 +3,7 @@ import { Token } from "./token.cjs";
 
 export class TokenStream {
 
-    constructor(public tokens: Token[]) {}
+    constructor(public tokens: Token[]) { }
 
     length() { return this.tokens.length; }
 
@@ -11,7 +11,7 @@ export class TokenStream {
 
     slice(start?: number, end?: number) { return new TokenStream(this.tokens.slice(start, end)); }
 
-    findIndex(predicate: (v: Token, idx: number, obj: Token[]) => boolean, thisArg?: any) { 
+    findIndex(predicate: (v: Token, idx: number, obj: Token[]) => boolean, thisArg?: any) {
         return this.tokens.findIndex(predicate, thisArg);
     }
 
@@ -59,31 +59,16 @@ export class TokenStream {
         return new TokenStream(collectedTokens);
     }
 
-    chunk<chunk_T>() {
+    chunk(len: number) {
+        const chunks =
+            this.tokens.map((_, idx, stream) =>
+                (idx % len === 0)
+                    ? stream.slice(idx, idx + len)
+                    : undefined
+            )
+            .filter(stream => stream != undefined)
 
-        const accumulator = [];
-
-        for (let i = 0; i < names.length; i++) {
-
-        }
-
-        const len = names.length;
-    const chunks = Object.fromEntries(
-
-        this.tokens.map((_, idx, stream) => 
-            (idx % len === 0)
-            ? stream.slice(idx, idx + len)
-            : undefined
-        )
-        .filter(stream => stream != undefined)
-        .map(stream => stream.map((token, idx) => [names[idx], token]))
-    )
-
-        Object.fromEntries()
-
-        const x = Array.from({ length: len }, (_, index) => {
-            const i = index
-        })
+            return chunks;
     }
 }
 

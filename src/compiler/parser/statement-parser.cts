@@ -2,13 +2,12 @@ import { Location } from "../metadata.cjs";
 import { Block } from "../ast/block.cjs";
 import { Program } from "../ast/program.cjs";
 import { Parser } from "./parser.cjs";
-import { ASTCollection } from "../ast/build-ast.cjs";
 import { TokenStream } from "../tokens/token-stream.cjs";
 import { ASTNode } from "../ast/ast.cjs";
 import { OphoelParseError } from "./parse-error.cjs";
 import { Token } from "../tokens/token.cjs";
 
-
+import { ASTCollection } from "../ast/build-ast.cjs";
 type ParserOption = {};
 
 
@@ -22,7 +21,7 @@ export class StatementParser extends Parser<ParserOption> {
     result: ASTNode[] = [];
     emit(ast: ASTNode) { this.result.push(ast); }
     getFailure() { return { succeed: "NO", result: undefined } as ParseResult }
-    unwrapProgram(program: Program) { return program.body.statements; }
+    unwrapProgram(program: Program) { return program.body; }
 
     parse() {
         const loc = this.peek()?.location ?? new Location("unfound", 1, 1, 1);
@@ -37,7 +36,7 @@ export class StatementParser extends Parser<ParserOption> {
     fnDecl() {
         if (!this.check("KW_DECL", "fn")) return this.getFailure();
 
-        this.expect("KW_DECL", "fn");
+        const keyword = this.expect("KW_DECL", "fn");
         const fnName = this.expect("IDENTIFIER");
         this.expect("LPAREN");
 
@@ -48,11 +47,21 @@ export class StatementParser extends Parser<ParserOption> {
         }
 
         this.expect("LBRACE");
-        const body = this.unwrapProgram(
-            new StatementParser(this.getBetween("LBRACE", "RBRACE"), this.config).parse()
-        )
+        const body = 
+            new StatementParser(this.getBetween("LBRACE", "RBRACE"), this.config)
+            .parse()
+            .body;
 
-        const 
+        this.expect("RBRACE");
+
+        const node = new ASTCollection.FunctionDecl(
+            fnName.value,
+            paramNames.map(token => token.value),
+            body,
+            keyword.location
+        );
+
+        return { succeed: "YES", result: node};
     }
 
     macroDecl() { }

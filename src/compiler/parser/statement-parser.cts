@@ -37,13 +37,10 @@ export class StatementParser extends Parser<ParserOption> {
         this.expect("KW_DECL", "fn");
         const fnName = this.expect("IDENTIFIER");
         this.expect("LPAREN");
-        const fnParams = this.getUntil("RPAREN")
-            .filter(token => !token.is("COMMA") && !token.is("COLON"))
-            .map((token, idx, stream) => 
-                idx % 2 === 0 
-                ? { name: token, type: stream[idx + 1] }
-                : undefined)
-            .filter(set => set != undefined)
+
+        const fnParamNames = this.getUntil("RPAREN")
+        .chunk(4)
+        .map(chunk => chunk)
     }
 
     macroDecl() { }

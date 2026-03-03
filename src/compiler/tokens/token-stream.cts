@@ -28,11 +28,11 @@ export class TokenStream {
     }
 
     map<U>(callback: (value: Token, index: number, array: Token[]) => U, thisArg?: any) {
-        return new TokenStream(this.tokens.map<U>(callback, thisArg));
+        return this.tokens.map<U>(callback, thisArg);
     }
 
     reduce<U>(callback: (accumulator: U, value: Token, index: number, array: Token[]) => U, thisArg?: any) {
-        return new TokenStream(this.tokens.reduce(callback, thisArg));
+        return this.tokens.reduce<U>(callback, thisArg);
     }
 
     // stops at first targetKind/Value found
@@ -61,7 +61,7 @@ export class TokenStream {
 
     chunk(len: number) {
         const chunks =
-            this.tokens.map((_, idx, stream) =>
+            this.map((_, idx, stream) =>
                 (idx % len === 0)
                     ? stream.slice(idx, idx + len)
                     : undefined

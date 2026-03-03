@@ -37,7 +37,7 @@ export abstract class Parser<config_T> {
         return tokens;
     }
 
-    getUntil(kind: string, value: string) {
+    getUntil(kind: string, value?: string) {
         const tokens = this.getTail().getTokensUntil(kind, value);
         this.pos += tokens.length();
         return tokens;

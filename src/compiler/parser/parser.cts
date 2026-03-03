@@ -20,10 +20,10 @@ export abstract class Parser<config_T> {
 
     eat() { return this.tokens.at(this.pos++); }
 
-    check(kind: string, value?: string) { return this.peek()?.is(kind, value); }
+    check(kind: string, value?: string) { return this.peek()?.is(kind, value) ?? false; }
 
     expect(kind: string, value?: string) { 
-        if (this.check(kind, value)) return this.peek();
+        if (this.check(kind, value)) return this.eat()!; // this.check() guarantees peek() isn't null
         else {
             const msg = `At token index ${this.pos}, Expected ${kind} : ${value ?? "(any value)"} `
             + `but got ${this.peek()?.kind} : ${this.peek()?.value}`;

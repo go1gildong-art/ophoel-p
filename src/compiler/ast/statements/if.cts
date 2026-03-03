@@ -7,7 +7,8 @@ export class IfStatement implements Statement {
     kind = "IfStatement";
 
     constructor(
-        public condition: Expression,
-        public body: Block,
+        public conditions: Expression[],
+        public bodies: Block[],
+        public elseBody: Block | undefined,
         public location: Location) {}
 }

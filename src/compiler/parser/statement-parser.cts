@@ -9,7 +9,6 @@ import { Token } from "../tokens/token.cjs";
 
 import { ASTCollection } from "../ast/build-ast.cjs";
 import { ExpressionParser } from "./expression-parser.cjs";
-import { AssertionError } from "assert";
 import { BinaryOperator } from "../ast/expressions/operations.cjs";
 type ParserOption = {};
 
@@ -121,66 +120,6 @@ export class StatementParser extends Parser<ParserOption> {
         return { succeed: "YES", result: node };
     }
 
-    variableAssign() {
-        if (!this.check("IDENTIFIER")) return this.getFailure();
-
-        const assignOpers = [
-            "EQUAL",
-            "PLUSCASSIGN",
-            "MINUSCASSIGN",
-            "MULTIPLYCASSIGN",
-            "DIVIDECASSIGN",
-            "REMAINDERCASSIGN"];
-
-        const address = new ExpressionParser(
-            this.getUntil(token => token.isInside(...assignOpers)),
-            this.config
-        ).parse();
-
-        if (this.check("EQUAL")) {
-            this.eat();
-            const expression = new ExpressionParser(
-                this.getUntil(token => token.is("SEMICOLON")),
-                this.config
-            ).parse();
-            this.expect("SEMICOLON");
-
-            const node = new ASTCollection.VariableAssign(
-                address,
-                expression,
-                address.location
-            );
-            return { succeed: "YES", result: node };
-
-        } else if (this.checkInside(...assignOpers)){
-            const compoundOper = this.eat();
-            const operator: BinaryOperator =
-                compoundOper?.is("PLUSCASSIGN") ? BinaryOperator.ADD :
-                    compoundOper?.is("MINUSCASSIGN") ? BinaryOperator.SUBTRACT :
-                        compoundOper?.is("MULTIPLYCASSIGN") ? BinaryOperator.MULTIPLY :
-                            compoundOper?.is("DIVIDECASSIGN") ? BinaryOperator.DIVIDE :
-                                compoundOper?.is("REMAINDERCASSIGN") ? BinaryOperator.REMAINDER :
-                                    (() => { throw new OphoelParseError(`Invalid compound assignment ${compoundOper?.toString}`) })();
-
-            const expression = new ExpressionParser(
-                this.getUntil(token => token.is("SEMICOLON")),
-                this.config
-            ).parse();
-
-            this.expect("SEMICOLON");
-
-            const node = new ASTCollection.CompoundAssign(
-                address,
-                operator,
-                expression,
-                address.location
-            );
-            return { succeed: "YES", result: node };
-            
-        } else {
-
-        }
-    }
 
     choose() { }
     if() { }
@@ -190,8 +129,7 @@ export class StatementParser extends Parser<ParserOption> {
     repeat() { }
     while() { }
 
-    fnCall() { }
-    macroCall() { }
+    execExpr() { }
 
     include() { }
 

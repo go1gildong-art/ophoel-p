@@ -18,8 +18,8 @@ import { MacroDecl } from "./statements/declarations/macro-decl.cjs";
 import { StructDecl } from "./statements/declarations/struct-decl.cjs";
 import { VariableDecl } from "./statements/declarations/var-decl.cjs";
 
-import { FunctionCall } from "./calls/fn-call.cjs";
-import { MacroCall } from "./calls/macro-call.cjs";
+import { FunctionCall } from "./expressions/calls/fn-call.cjs";
+import { MacroCall } from "./expressions/calls/macro-call.cjs";
 
 import { Include } from "./preprocesses/include.cjs";
 
@@ -47,6 +47,9 @@ export const ASTCollection = {
     VariableAssign,
     CompoundAssign,
 
+    FunctionCall,
+    MacroCall,
+
     Identifier,
 
     ChooseStatement,
@@ -62,9 +65,6 @@ export const ASTCollection = {
     MacroDecl,
     StructDecl,
     VariableDecl,
-
-    FunctionCall,
-    MacroCall,
 
     Include
 }

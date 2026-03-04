@@ -10,7 +10,7 @@ export abstract class Parser<config_T> {
 
     constructor(
         protected tokens: TokenStream,
-        protected config: config_T) { }
+        protected config?: config_T) { }
 
     abstract parse(): ASTNode;
 

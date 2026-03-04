@@ -120,8 +120,26 @@ export class StatementParser extends Parser<ParserOption> {
         return { succeed: "YES", result: node };
     }
 
+    choose() { 
+        if (!this.check("KW_CONTROL", "choose")) return this.getFailure();
 
-    choose() { }
+        const keyword = this.expect("KE_CONTROL", "choose");
+
+        const weights = [];
+        const bodies = [];
+        if (this.check("LPAREN")) {
+            this.eat();
+            const weight = this.getBetween(token => token.is("LPAREN"), token => token.is("RPAREN"));
+
+            this.weights.push(new ExpressionParser(weight, this.config).parse());
+        } else {
+            weights.push(new ASTCollection.IntLiteral("1", keyword.location));
+        }
+
+        const body = this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE"));
+        
+    }
+
     if() { }
     for() { }
     mcCommand() { }

@@ -1,11 +1,11 @@
 import { Location } from "../metadata.cjs";
 import { Block } from "./block.cjs";
-import { ASTNode } from "./ast.cjs";
+import { ASTNode, Statement } from "./ast.cjs";
 
 export class Program implements ASTNode {
     kind = "Program";
 
     constructor(
-        public body: Block,
+        public body: Statement[],
         public location: Location) {}
 }

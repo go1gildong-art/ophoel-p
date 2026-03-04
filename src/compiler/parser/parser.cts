@@ -10,23 +10,21 @@ export abstract class Parser<config_T> {
 
     constructor(
         protected tokens: TokenStream,
-        protected config: config_T) {}
+        protected config: config_T) { }
 
     abstract parse(): ASTNode;
 
     getTail(): TokenStream { return this.tokens.slice(this.pos); }
-
     peek() { return this.tokens.at(this.pos); }
-
     eat() { return this.tokens.at(this.pos++); }
-
     check(kind: string, value?: string) { return this.peek()?.is(kind, value) ?? false; }
+    checkInside(...kinds: string[]) { return this.peek()?.isInside(...kinds); }
 
-    expect(kind: string, value?: string) { 
+    expect(kind: string, value?: string) {
         if (this.check(kind, value)) return this.eat()!; // this.check() guarantees peek() isn't null
         else {
             const msg = `At token index ${this.pos}, Expected ${kind} : ${value ?? "(any value)"} `
-            + `but got ${this.peek()?.kind} : ${this.peek()?.value}`;
+                + `but got ${this.peek()?.kind} : ${this.peek()?.value}`;
             throw new OphoelParseError(msg, this.peek()?.location);
         }
     }
@@ -43,5 +41,5 @@ export abstract class Parser<config_T> {
         return tokens;
     }
 
-    
+
 }

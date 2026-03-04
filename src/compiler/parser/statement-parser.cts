@@ -51,7 +51,7 @@ export class StatementParser extends Parser<ParserOption> {
 
         this.expect("LBRACE");
         const body =
-            new StatementParser(this.getBetween("LBRACE", "RBRACE"), this.config)
+            new StatementParser(this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE")), this.config)
                 .parse()
                 .body;
 
@@ -124,27 +124,23 @@ export class StatementParser extends Parser<ParserOption> {
     variableAssign() {
         if (!this.check("IDENTIFIER")) return this.getFailure();
 
-        let nextEqualIndex =
-            this.getTail()
-                .findIndex(token =>
-                    token.is("EQUAL")
-                    || token.is("PLUSCASSIGN")
-                    || token.is("MINUSCASSIGN")
-                    || token.is("MULTIPLYCASSIGN")
-                    || token.is("DIVIDECASSIGN")
-                    || token.is("REMAINDERCASSIGN"));
-
-        nextEqualIndex = nextEqualIndex !== -1 ? nextEqualIndex : this.getTail().length();
+        const assignOpers = [
+            "EQUAL",
+            "PLUSCASSIGN",
+            "MINUSCASSIGN",
+            "MULTIPLYCASSIGN",
+            "DIVIDECASSIGN",
+            "REMAINDERCASSIGN"];
 
         const address = new ExpressionParser(
-            this.getTail().slice(0, nextEqualIndex),
+            this.getUntil(token => token.isInside(...assignOpers)),
             this.config
         ).parse();
 
         if (this.check("EQUAL")) {
             this.eat();
             const expression = new ExpressionParser(
-                this.getUntil("SEMICOLON"),
+                this.getUntil(token => token.is("SEMICOLON")),
                 this.config
             ).parse();
             this.expect("SEMICOLON");
@@ -153,26 +149,39 @@ export class StatementParser extends Parser<ParserOption> {
                 address,
                 expression,
                 address.location
-            )
-        } else {
+            );
+            return node;
+
+        } else if (this.checkInside(...assignOpers)){
             const compoundOper = this.eat();
             const operator: BinaryOperator =
-
                 compoundOper?.is("PLUSCASSIGN") ? BinaryOperator.ADD :
-                compoundOper?.is("MINUSCASSIGN") ? BinaryOperator.SUBTRACT :
-                compoundOper?.is("MULTIPLYCASSIGN") ? BinaryOperator.MULTIPLY :
-                compoundOper?.is("DIVIDECASSIGN") ? BinaryOperator.DIVIDE :
-                compoundOper?.is("REMAINDERCASSIGN") ? BinaryOperator.REMAINDER :
+                    compoundOper?.is("MINUSCASSIGN") ? BinaryOperator.SUBTRACT :
+                        compoundOper?.is("MULTIPLYCASSIGN") ? BinaryOperator.MULTIPLY :
+                            compoundOper?.is("DIVIDECASSIGN") ? BinaryOperator.DIVIDE :
+                                compoundOper?.is("REMAINDERCASSIGN") ? BinaryOperator.REMAINDER :
+                                    (() => { throw new OphoelParseError(`Invalid compound assignment ${compoundOper?.toString}`) })();
 
+            const expression = new ExpressionParser(
+                this.getUntil(token => token.is("SEMICOLON")),
+                this.config
+            ).parse();
 
-                                    new ASTCollection.CompoundAssign()
+            this.expect("SEMICOLON");
 
+            const node = new ASTCollection.CompoundAssign(
+                address,
+                operator,
+                expression,
+                address.location
+            );
+            return node;
         }
 
         this.expect("EQUAL");
 
         const
-        const node = new ASTCollection.VariableAssign()
+        const node = new ASTCollection.VariableAssign
 
         return { succeed: "YES", result: node };
     }

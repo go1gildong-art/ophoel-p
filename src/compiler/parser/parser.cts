@@ -1,6 +1,6 @@
 import { ASTNode } from "../ast/ast.cjs"
 import { Location } from "../metadata.cjs";
-import { TokenStream } from "../tokens/token-stream.cjs"
+import { TokenPredicate, TokenStream } from "../tokens/token-stream.cjs"
 import { Token } from "../tokens/token.cjs";
 import { OphoelParseError } from "./parse-error.cjs";
 
@@ -31,14 +31,14 @@ export abstract class Parser<config_T> {
         }
     }
 
-    getBetween(fromKind: string, toKind: string, fromValue?: string, toValue?: string) {
-        const tokens = this.getTail().getTokensBetween(fromKind, toKind, fromValue, toValue);
+    getBetween(fromPredicate: TokenPredicate, toPredicate: TokenPredicate, thisArg?: any) {
+        const tokens = this.getTail().getBetween(fromPredicate, toPredicate, thisArg);
         this.pos += tokens.length();
         return tokens;
     }
 
-    getUntil(kind: string, value?: string) {
-        const tokens = this.getTail().getTokensUntil(kind, value);
+    getUntil(predicate: TokenPredicate, thisArg?: any) {
+        const tokens = this.getTail().getUntil(predicate, thisArg);
         this.pos += tokens.length();
         return tokens;
     }

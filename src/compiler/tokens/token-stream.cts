@@ -1,7 +1,7 @@
 import { Location } from "../metadata.cjs"
 import { Token } from "./token.cjs";
 
-type predicate = (token: Token, index?: number, array?: Token[]) => boolean;
+export type TokenPredicate = (token: Token, index?: number, array?: Token[]) => boolean;
 export class TokenStream {
 
     constructor(public tokens: Token[]) { }
@@ -36,16 +36,17 @@ export class TokenStream {
         return this.tokens.reduce<U>(callback, thisArg);
     }
 
-    getUntil(predicate: predicate, thisArg?: any) {
+    getUntil(predicate: TokenPredicate, thisArg?: any) {
         const targetIndex = this.findIndex(predicate, thisArg);
-        return this.slice(0, targetIndex !== -1 ? targetIndex : this.length())
+        return targetIndex !== -1
+        ? this.slice(0, targetIndex)
+        : this
     }
 
-    getBetween(fromPredicate: predicate, toPredicate: predicate, thisArg?: any) {
-        
+    getBetween(fromPredicate: TokenPredicate, toPredicate: TokenPredicate, thisArg?: any) {
         let depth = 1; // initial depth for uncount starting from token
         const collectedTokens: Token[] = [];
-
+        
         let index = 0;
         const array = this.tokens;
         for (const currentToken of this.tokens) {

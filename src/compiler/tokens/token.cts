@@ -12,24 +12,14 @@ export class Token {
     // 2. reform object to make it more concise and readable
     toString(): string { return `${this.kind} < ${this.value} > ${this.location.toString()}`; }
 
-    is(kind: string, value?: string): boolean
-    is(caseSet: { kind: string, value?: string }[]): boolean
+    is(kind: string, value?: string) {
+        const isKind = this.kind === kind;
+        const isValue = [this.value, undefined].includes(value); 
+        return isKind && isValue;
+    }
 
-    is(arg1: string | { kind: string, value?: string }[], arg2?: string): boolean {
-        if (typeof arg1 === "string") {
-            const isKind = this.kind === arg1;
-            const isValue = [this.value, undefined].includes(arg2);
-            return isKind && isValue;
-        
-        } else if (Array.isArray(arg1)) {
-            return arg1
-            .map(matchCase => this.is(matchCase.kind, matchCase.value))
-            .reduce((acc, value) => acc || value);
-            
-        } else {
-            return false;
-        }
-
+    isInside(...kinds: string[]): boolean {
+        return kinds.includes(this.kind);
     }
 
     sameAs(token: Token) {

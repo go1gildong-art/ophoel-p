@@ -25,6 +25,19 @@ export class StatementParser extends Parser<ParserOption> {
     getFailure() { return { succeed: "NO", result: undefined } as ParseResult }
     unwrapProgram(program: Program) { return program.body; }
 
+    parseBlock() {
+        const startBrace = this.expect("LBRACE");
+        const tokens = this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE"))
+        const body =
+            new StatementParser(tokens, this.config)
+                .parse()
+                .body;
+
+        const block = new Block(body, startBrace.location);
+
+        return block;
+    }
+
     parse() {
         const loc = this.peek()?.location ?? new Location("unfound", 1, 1, 1);
 
@@ -136,7 +149,9 @@ export class StatementParser extends Parser<ParserOption> {
             weights.push(new ASTCollection.IntLiteral("1", keyword.location));
         }
 
-        const body = this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE"));
+        const body = 
+        new this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE"));
+        new Block
         
     }
 

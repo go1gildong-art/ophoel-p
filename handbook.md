@@ -27,3 +27,7 @@ Try making at least part of the dependency in the graph lazily loaded.
 1. Expression.value(from evaluation) is always javascript raw value
 2. Expression types are determined upon evaluation (not upon initialization!)
 3. Type system follows python style. Strong, Dynamic, duck typing, no manual type annotation on compilation
+
+# ASSIGNMENTS AND EXPRESSION EXECUTION
+1. Assignments (compound assignments too) are parsed at Expression parser, as an expression with side effect
+2. Expression + ; is parsed as statement 

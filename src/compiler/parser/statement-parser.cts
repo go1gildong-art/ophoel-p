@@ -150,7 +150,7 @@ export class StatementParser extends Parser<ParserOption> {
                 expression,
                 address.location
             );
-            return node;
+            return { succeed: "YES", result: node };
 
         } else if (this.checkInside(...assignOpers)){
             const compoundOper = this.eat();
@@ -175,15 +175,11 @@ export class StatementParser extends Parser<ParserOption> {
                 expression,
                 address.location
             );
-            return node;
+            return { succeed: "YES", result: node };
+            
+        } else {
+
         }
-
-        this.expect("EQUAL");
-
-        const
-        const node = new ASTCollection.VariableAssign
-
-        return { succeed: "YES", result: node };
     }
 
     choose() { }

@@ -1,6 +1,7 @@
 import { Location } from "../metadata.cjs"
 import { Token } from "./token.cjs";
 
+type predicate = (token: Token, index?: number, array?: Token[]) => boolean;
 export class TokenStream {
 
     constructor(public tokens: Token[]) { }
@@ -35,25 +36,27 @@ export class TokenStream {
         return this.tokens.reduce<U>(callback, thisArg);
     }
 
-    // stops at first targetKind/Value found
-    getTokensUntil(targetKind: string, targetValue?: string) {
-        return this.slice(0, this.findIndex(token => token.is(targetKind, targetValue)))
+    getUntil(predicate: predicate, thisArg?: any) {
+        const targetIndex = this.findIndex(predicate, thisArg);
+        return this.slice(0, targetIndex !== -1 ? targetIndex : this.length())
     }
 
-    // from: [, {, (... 
-    // to: ], }, )...
-    // DOES NOT include "from" token (should be excluded in tokens argument)
-    // DOES NOT include "to" token
-    getTokensBetween(fromKind: string, toKind: string, fromValue?: string, toValue?: string) {
+    getBetween(fromPredicate: predicate, toPredicate: predicate, thisArg?: any) {
+        
         let depth = 1; // initial depth for uncount starting from token
         const collectedTokens: Token[] = [];
 
+        let index = 0;
+        const array = this.tokens;
         for (const currentToken of this.tokens) {
-            if (currentToken.is(fromKind, fromValue)) depth++;
-            else if (currentToken.is(toKind, toValue)) depth--;
+            
+            if (fromPredicate(currentToken, index, array)) depth++;
+            else if (toPredicate(currentToken, index, array)) depth--;
 
             if (depth <= 0) break;
             collectedTokens.push(currentToken);
+
+            index++;
         }
 
         return new TokenStream(collectedTokens);

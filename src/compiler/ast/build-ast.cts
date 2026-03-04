@@ -13,6 +13,8 @@ import { McExecStatement } from "./statements/mc-exec.cjs";
 import { RepeatStatement } from "./statements/repeat.cjs";
 import { WhileStatement } from "./statements/while.cjs";
 
+import { ExecuteExpression } from "./statements/execute-expr.cjs";
+
 import { FunctionDecl } from "./statements/declarations/fn-decl.cjs";
 import { MacroDecl } from "./statements/declarations/macro-decl.cjs";
 import { StructDecl } from "./statements/declarations/struct-decl.cjs";
@@ -60,6 +62,7 @@ export const ASTCollection = {
     McExecStatement,
     RepeatStatement,
     WhileStatement,
+    ExecuteExpression,
 
     FunctionDecl,
     MacroDecl,

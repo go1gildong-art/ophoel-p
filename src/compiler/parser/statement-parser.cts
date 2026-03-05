@@ -23,6 +23,7 @@ export class StatementParser extends Parser<ParserOption> {
     result: ASTNode[] = [];
     emit(ast: ASTNode) { this.result.push(ast); }
     getFailure() { return { succeed: "NO", result: undefined } as ParseResult }
+    getSuccess(node: ASTNode) { return { succeed: "YES", result: node } as ParseResult }
     unwrapProgram(program: Program) { return program.body; }
 
     parseBlock() {
@@ -77,7 +78,7 @@ export class StatementParser extends Parser<ParserOption> {
             keyword.location
         );
 
-        return { succeed: "YES", result: node };
+        return this.getSuccess(node);
     }
 
     macroDecl() {
@@ -102,7 +103,7 @@ export class StatementParser extends Parser<ParserOption> {
             keyword.location
         );
 
-        return { succeed: "YES", result: node };
+        return this.getSuccess(node);
     }
 
     variableDecl() {
@@ -125,41 +126,48 @@ export class StatementParser extends Parser<ParserOption> {
             keyword.location
         );
 
-        return { succeed: "YES", result: node };
+        return this.getSuccess(node);
     }
 
     choose() {
         if (!this.check("KW_CONTROL", "choose")) return this.getFailure();
 
-        const keyword = this.expect("KE_CONTROL", "choose");
-
+        const keyword = this.expect("KW_CONTROL", "choose");
         const weights = [];
         const bodies = [];
 
-        do {
+        const getWeight = () => {
             if (this.check("LPAREN")) {
                 this.eat();
-                const weight = this.getBetween(token => token.is("LPAREN"), token => token.is("RPAREN"));
+                const weight = this.parseParenExpr();
+                return weight;
 
-                weights.push(new ExpressionParser(weight, this.config).parse());
             } else {
-
+                return new ASTCollection.IntLiteral("1", keyword.location);
             }
+        };
 
-            const body = this.parseBlock();
-            bodies.push(body);
+        weights.push(getWeight());
+        bodies.push(this.parseBlock());
+
+        while (this.check("KW_CONTROL", "or")) {
+            this.eat();
+            weights.push(getWeight());
+            bodies.push(this.parseBlock());
         }
+
+        const node = new ASTCollection.ChooseStatement(weights, bodies, keyword.location);
+        return this.getSuccess(node);
     }
 
-    if() { }
-    for() { }
-    mcCommand() { }
-    mcExec() { }
-    repeat() { }
-    while() { }
+    if () { }
+        for () { }
+        mcCommand() { }
+        mcExec() { }
+        repeat() { }
+        while () { }
 
-    execExpr() { }
+        execExpr() { }
 
-    include() { }
-
+        include() { }
 }

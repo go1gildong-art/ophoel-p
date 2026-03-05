@@ -22,8 +22,8 @@ export class StatementParser extends Parser<ParserOption> {
 
     result: ASTNode[] = [];
     emit(ast: ASTNode) { this.result.push(ast); }
-    getFailure() { return { succeed: "NO", result: undefined } as ParseResult }
-    getSuccess(node: ASTNode) { return { succeed: "YES", result: node } as ParseResult }
+    makeFailure() { return { succeed: "NO", result: undefined } as ParseResult }
+    makeSuccess(node: ASTNode) { return { succeed: "YES", result: node } as ParseResult }
     unwrapProgram(program: Program) { return program.body; }
 
     parseBlock() {
@@ -57,7 +57,7 @@ export class StatementParser extends Parser<ParserOption> {
 
 
     fnDecl() {
-        if (!this.check("KW_DECL", "fn")) return this.getFailure();
+        if (!this.check("KW_DECL", "fn")) return this.makeFailure();
 
         const keyword = this.expect("KW_DECL", "fn");
         const fnName = this.expect("IDENTIFIER");
@@ -78,11 +78,11 @@ export class StatementParser extends Parser<ParserOption> {
             keyword.location
         );
 
-        return this.getSuccess(node);
+        return this.makeSuccess(node);
     }
 
     macroDecl() {
-        if (!this.check("KW_DECL", "macro")) return this.getFailure();
+        if (!this.check("KW_DECL", "macro")) return this.makeFailure();
 
         const keyword = this.expect("KW_DECL", "macro");
         const macroName = this.expect("IDENTIFIER");
@@ -103,11 +103,11 @@ export class StatementParser extends Parser<ParserOption> {
             keyword.location
         );
 
-        return this.getSuccess(node);
+        return this.makeSuccess(node);
     }
 
     variableDecl() {
-        if (!this.check("KW_DECL", "let") && !this.check("KW_DECL", "const")) return this.getFailure();
+        if (!this.check("KW_DECL", "let") && !this.check("KW_DECL", "const")) return this.makeFailure();
 
         const keyword = this.expect("KW_DECL");
         const mutability = keyword.is("KW_DECL", "const");
@@ -126,11 +126,11 @@ export class StatementParser extends Parser<ParserOption> {
             keyword.location
         );
 
-        return this.getSuccess(node);
+        return this.makeSuccess(node);
     }
 
     choose() {
-        if (!this.check("KW_CONTROL", "choose")) return this.getFailure();
+        if (!this.check("KW_CONTROL", "choose")) return this.makeFailure();
 
         const keyword = this.expect("KW_CONTROL", "choose");
         const weights = [];
@@ -157,17 +157,48 @@ export class StatementParser extends Parser<ParserOption> {
         }
 
         const node = new ASTCollection.ChooseStatement(weights, bodies, keyword.location);
-        return this.getSuccess(node);
+        return this.makeSuccess(node);
     }
 
-    if () { }
-        for () { }
-        mcCommand() { }
-        mcExec() { }
-        repeat() { }
-        while () { }
+    if() {
+        if (!this.check("KW_CONTROL", "if")) return this.makeFailure();
 
-        execExpr() { }
+        const keyword = this.expect("KW_CONTROL", "if");
+        const conditions = [];
+        const bodies = [];
 
-        include() { }
+        const getWeight = () => {
+            if (this.check("LPAREN")) {
+                this.eat();
+                const weight = this.parseParenExpr();
+                return weight;
+
+            } else {
+                return new ASTCollection.IntLiteral("1", keyword.location);
+            }
+        };
+
+        weights.push(getWeight());
+        bodies.push(this.parseBlock());
+
+        while (this.check("KW_CONTROL", "or")) {
+            this.eat();
+            weights.push(getWeight());
+            bodies.push(this.parseBlock());
+        }
+
+        const node = new ASTCollection.IfStatement(weights, bodies, keyword.location);
+        return this.makeSuccess(node);
+    }
+
+
+    for() { }
+    mcCommand() { }
+    mcExec() { }
+    repeat() { }
+    while() { }
+
+    execExpr() { }
+
+    include() { }
 }

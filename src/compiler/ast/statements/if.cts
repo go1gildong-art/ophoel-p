@@ -3,12 +3,13 @@ import { Expression } from "../ast.cjs";
 import { Location } from "../../metadata.cjs";
 import { Block } from "../block.cjs";
 
+export type CondBodySet = { condition: Expression, body: Block }
 export class IfStatement implements Statement {
     kind = "IfStatement";
 
     constructor(
-        public conditions: Expression[],
-        public bodies: Block[],
-        public elseBody: Block | undefined,
-        public location: Location) {}
+        public ifSignature: CondBodySet,
+        public elifSignatures: CondBodySet[],
+        public elseSignature: CondBodySet,
+        public location: Location) { }
 }

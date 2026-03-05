@@ -1,4 +1,3 @@
-
 const KW_DECL: Array<string> = [
     "struct",
     "fn",

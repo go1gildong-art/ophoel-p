@@ -31,3 +31,6 @@ Try making at least part of the dependency in the graph lazily loaded.
 # ASSIGNMENTS AND EXPRESSION EXECUTION
 1. Assignments (compound assignments too) are parsed at Expression parser, as an expression with side effect
 2. Expression + ; is parsed as statement 
+
+# EXPLORER TAB GONE
+1. f1, and View: Show Explorer

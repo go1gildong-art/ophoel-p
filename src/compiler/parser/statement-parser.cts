@@ -9,7 +9,6 @@ import { Token } from "../tokens/token.cjs";
 
 import { ASTCollection } from "../ast/build-ast.cjs";
 import { ExpressionParser } from "./expression-parser.cjs";
-import { AssertionError } from "assert";
 import { BinaryOperator } from "../ast/expressions/operations.cjs";
 type ParserOption = {};
 
@@ -25,6 +24,19 @@ export class StatementParser extends Parser<ParserOption> {
     emit(ast: ASTNode) { this.result.push(ast); }
     getFailure() { return { succeed: "NO", result: undefined } as ParseResult }
     unwrapProgram(program: Program) { return program.body; }
+
+    parseBlock() {
+        const startBrace = this.expect("LBRACE");
+        const tokens = this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE"))
+        const body =
+            new StatementParser(tokens, this.config)
+                .parse()
+                .body;
+
+        const block = new Block(body, startBrace.location);
+
+        return block;
+    }
 
     parse() {
         const loc = this.peek()?.location ?? new Location("unfound", 1, 1, 1);
@@ -121,68 +133,28 @@ export class StatementParser extends Parser<ParserOption> {
         return { succeed: "YES", result: node };
     }
 
-    variableAssign() {
-        if (!this.check("IDENTIFIER")) return this.getFailure();
+    choose() { 
+        if (!this.check("KW_CONTROL", "choose")) return this.getFailure();
 
-        const assignOpers = [
-            "EQUAL",
-            "PLUSCASSIGN",
-            "MINUSCASSIGN",
-            "MULTIPLYCASSIGN",
-            "DIVIDECASSIGN",
-            "REMAINDERCASSIGN"];
+        const keyword = this.expect("KE_CONTROL", "choose");
 
-        const address = new ExpressionParser(
-            this.getUntil(token => token.isInside(...assignOpers)),
-            this.config
-        ).parse();
-
-        if (this.check("EQUAL")) {
+        const weights = [];
+        const bodies = [];
+        if (this.check("LPAREN")) {
             this.eat();
-            const expression = new ExpressionParser(
-                this.getUntil(token => token.is("SEMICOLON")),
-                this.config
-            ).parse();
-            this.expect("SEMICOLON");
+            const weight = this.getBetween(token => token.is("LPAREN"), token => token.is("RPAREN"));
 
-            const node = new ASTCollection.VariableAssign(
-                address,
-                expression,
-                address.location
-            );
-            return { succeed: "YES", result: node };
-
-        } else if (this.checkInside(...assignOpers)){
-            const compoundOper = this.eat();
-            const operator: BinaryOperator =
-                compoundOper?.is("PLUSCASSIGN") ? BinaryOperator.ADD :
-                    compoundOper?.is("MINUSCASSIGN") ? BinaryOperator.SUBTRACT :
-                        compoundOper?.is("MULTIPLYCASSIGN") ? BinaryOperator.MULTIPLY :
-                            compoundOper?.is("DIVIDECASSIGN") ? BinaryOperator.DIVIDE :
-                                compoundOper?.is("REMAINDERCASSIGN") ? BinaryOperator.REMAINDER :
-                                    (() => { throw new OphoelParseError(`Invalid compound assignment ${compoundOper?.toString}`) })();
-
-            const expression = new ExpressionParser(
-                this.getUntil(token => token.is("SEMICOLON")),
-                this.config
-            ).parse();
-
-            this.expect("SEMICOLON");
-
-            const node = new ASTCollection.CompoundAssign(
-                address,
-                operator,
-                expression,
-                address.location
-            );
-            return { succeed: "YES", result: node };
-            
+            this.weights.push(new ExpressionParser(weight, this.config).parse());
         } else {
-            
+
         }
+
+        const body = 
+        new this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE"));
+        new Block
+        
     }
 
-    choose() { }
     if() { }
     for() { }
     mcCommand() { }
@@ -190,8 +162,7 @@ export class StatementParser extends Parser<ParserOption> {
     repeat() { }
     while() { }
 
-    fnCall() { }
-    macroCall() { }
+    execExpr() { }
 
     include() { }
 

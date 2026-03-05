@@ -1,6 +1,8 @@
 import * as Literals from "./expressions/literals.cjs";
 import * as Operations from "./expressions/operations.cjs";
 import { Identifier } from "../../compiler-old/ast";
+import { VariableAssign } from "./expressions/var-assign.cjs";
+import { CompoundAssign } from "./expressions/compound-assign.cjs";
 
 import { ChooseStatement } from "./statements/choose.cjs";
 import { ForOfStatement } from "./statements/for-of.cjs";
@@ -11,15 +13,15 @@ import { McExecStatement } from "./statements/mc-exec.cjs";
 import { RepeatStatement } from "./statements/repeat.cjs";
 import { WhileStatement } from "./statements/while.cjs";
 
-import { CompoundAssign } from "./statements/declarations/compound-assign.cjs";
+import { ExecuteExpression } from "./statements/execute-expr.cjs";
+
 import { FunctionDecl } from "./statements/declarations/fn-decl.cjs";
 import { MacroDecl } from "./statements/declarations/macro-decl.cjs";
 import { StructDecl } from "./statements/declarations/struct-decl.cjs";
-import { VariableAssign } from "./statements/declarations/var-assign.cjs";
 import { VariableDecl } from "./statements/declarations/var-decl.cjs";
 
-import { FunctionCall } from "./calls/fn-call.cjs";
-import { MacroCall } from "./calls/macro-call.cjs";
+import { FunctionCall } from "./expressions/calls/fn-call.cjs";
+import { MacroCall } from "./expressions/calls/macro-call.cjs";
 
 import { Include } from "./preprocesses/include.cjs";
 
@@ -44,6 +46,12 @@ export const ASTCollection = {
     IndexAccess: Operations.IndexAccess,
     MemberAccess: Operations.MemberAccess,
 
+    VariableAssign,
+    CompoundAssign,
+
+    FunctionCall,
+    MacroCall,
+
     Identifier,
 
     ChooseStatement,
@@ -54,16 +62,12 @@ export const ASTCollection = {
     McExecStatement,
     RepeatStatement,
     WhileStatement,
+    ExecuteExpression,
 
-    CompoundAssign,
     FunctionDecl,
     MacroDecl,
     StructDecl,
-    VariableAssign,
     VariableDecl,
-
-    FunctionCall,
-    MacroCall,
 
     Include
 }

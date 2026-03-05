@@ -178,7 +178,7 @@ export class StatementParser extends Parser<ParserOption> {
             return { succeed: "YES", result: node };
             
         } else {
-
+            
         }
     }
 

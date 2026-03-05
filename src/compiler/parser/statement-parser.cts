@@ -33,18 +33,25 @@ export class StatementParser extends Parser<ParserOption> {
                 .parse()
                 .body;
 
+        this.expect("RBRACE");
         const block = new Block(body, startBrace.location);
-
         return block;
+    }
+
+    parseParenExpr() {
+        const startParen = this.expect("LPAREN");
+        const tokens = this.getBetween(token => token.is("LPAREN"), token => token.is("RPAREN"))
+        const expr =
+            new ExpressionParser(tokens, this.config)
+                .parse()
+
+        this.expect("RPAREN");
+        return expr;
     }
 
     parse() {
         const loc = this.peek()?.location ?? new Location("unfound", 1, 1, 1);
-
-        return new Program(
-            new Block(this.result, loc),
-            loc
-        );
+        return new Program(this.result, loc);
     }
 
 
@@ -61,13 +68,7 @@ export class StatementParser extends Parser<ParserOption> {
             if (this.check("COMMA")) this.eat();
         }
 
-        this.expect("LBRACE");
-        const body =
-            new StatementParser(this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE")), this.config)
-                .parse()
-                .body;
-
-        this.expect("RBRACE");
+        const body = this.parseBlock();
 
         const node = new ASTCollection.FunctionDecl(
             fnName.value,
@@ -92,13 +93,7 @@ export class StatementParser extends Parser<ParserOption> {
             if (this.check("COMMA")) this.eat();
         }
 
-        this.expect("LBRACE");
-        const body =
-            new StatementParser(this.getBetween("LBRACE", "RBRACE"), this.config)
-                .parse()
-                .body;
-
-        this.expect("RBRACE");
+        const body = this.parseBlock();
 
         const node = new ASTCollection.MacroDecl(
             macroName.value,
@@ -118,7 +113,7 @@ export class StatementParser extends Parser<ParserOption> {
         const varName = this.expect("IDENTIFIER");
         this.expect("EQUAL");
         const expression = new ExpressionParser(
-            this.getUntil("SEMICOLON"),
+            this.getUntil(token => token.is("SEMICOLON")),
             this.config
         ).parse();
         this.expect("SEMICOLON");
@@ -133,26 +128,27 @@ export class StatementParser extends Parser<ParserOption> {
         return { succeed: "YES", result: node };
     }
 
-    choose() { 
+    choose() {
         if (!this.check("KW_CONTROL", "choose")) return this.getFailure();
 
         const keyword = this.expect("KE_CONTROL", "choose");
 
         const weights = [];
         const bodies = [];
-        if (this.check("LPAREN")) {
-            this.eat();
-            const weight = this.getBetween(token => token.is("LPAREN"), token => token.is("RPAREN"));
 
-            this.weights.push(new ExpressionParser(weight, this.config).parse());
-        } else {
+        do {
+            if (this.check("LPAREN")) {
+                this.eat();
+                const weight = this.getBetween(token => token.is("LPAREN"), token => token.is("RPAREN"));
 
+                weights.push(new ExpressionParser(weight, this.config).parse());
+            } else {
+
+            }
+
+            const body = this.parseBlock();
+            bodies.push(body);
         }
-
-        const body = 
-        new this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE"));
-        new Block
-        
     }
 
     if() { }

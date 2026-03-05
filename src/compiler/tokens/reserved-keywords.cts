@@ -8,6 +8,7 @@ const KW_DECL: Array<string> = [
 
 const KW_CONTROL: Array<string> = [
     "if",
+    "elif",
     "else",
     "while",
     "for",

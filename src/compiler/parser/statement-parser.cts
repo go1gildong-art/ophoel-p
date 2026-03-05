@@ -10,6 +10,7 @@ import { Token } from "../tokens/token.cjs";
 import { ASTCollection } from "../ast/build-ast.cjs";
 import { ExpressionParser } from "./expression-parser.cjs";
 import { BinaryOperator } from "../ast/expressions/operations.cjs";
+import { CondBodySet } from "../ast/statements/if.cjs";
 type ParserOption = {};
 
 
@@ -28,7 +29,11 @@ export class StatementParser extends Parser<ParserOption> {
 
     parseBlock() {
         const startBrace = this.expect("LBRACE");
-        const tokens = this.getBetween(token => token.is("LBRACE"), token => token.is("RBRACE"))
+
+        const tokens = this.getBetween(
+            token => token.is("LBRACE"),
+            token => token.is("RBRACE"));
+
         const body =
             new StatementParser(tokens, this.config)
                 .parse()
@@ -41,7 +46,10 @@ export class StatementParser extends Parser<ParserOption> {
 
     parseParenExpr() {
         const startParen = this.expect("LPAREN");
-        const tokens = this.getBetween(token => token.is("LPAREN"), token => token.is("RPAREN"))
+        const tokens = this.getBetween(
+            token => token.is("LPAREN"),
+            token => token.is("RPAREN"));
+
         const expr =
             new ExpressionParser(tokens, this.config)
                 .parse()
@@ -107,7 +115,11 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     variableDecl() {
-        if (!this.check("KW_DECL", "let") && !this.check("KW_DECL", "const")) return this.makeFailure();
+        if (!this.check("KW_DECL", "let")
+            && !this.check("KW_DECL", "const")) {
+
+            return this.makeFailure();
+        }
 
         const keyword = this.expect("KW_DECL");
         const mutability = keyword.is("KW_DECL", "const");
@@ -164,30 +176,31 @@ export class StatementParser extends Parser<ParserOption> {
         if (!this.check("KW_CONTROL", "if")) return this.makeFailure();
 
         const keyword = this.expect("KW_CONTROL", "if");
-        const conditions = [];
-        const bodies = [];
 
-        const getWeight = () => {
-            if (this.check("LPAREN")) {
-                this.eat();
-                const weight = this.parseParenExpr();
-                return weight;
-
-            } else {
-                return new ASTCollection.IntLiteral("1", keyword.location);
-            }
-        };
-
-        weights.push(getWeight());
-        bodies.push(this.parseBlock());
-
-        while (this.check("KW_CONTROL", "or")) {
-            this.eat();
-            weights.push(getWeight());
-            bodies.push(this.parseBlock());
+        const getCondBody = () => {
+            return {
+                condition: this.parseParenExpr(),
+                body: this.parseBlock()
+            } as CondBodySet;
         }
 
-        const node = new ASTCollection.IfStatement(weights, bodies, keyword.location);
+        const ifSignature = getCondBody();
+        const elifSignatures: CondBodySet[] = [];
+
+        while (this.check("KW_CONTROL", "elif")) {
+            this.eat();
+            elifSignatures.push(getCondBody());
+        }
+
+        let elseSignature: CondBodySet | undefined = undefined;
+        if (this.check("KW_CONTROL", "else")) {
+            this.eat();
+            elifSignatures.push(getCondBody());
+        }
+
+        const node = new ASTCollection.IfStatement(
+            ifSignature, elifSignatures, elseSignature, keyword.location);
+
         return this.makeSuccess(node);
     }
 

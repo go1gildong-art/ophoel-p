@@ -10,6 +10,6 @@ export class IfStatement implements Statement {
     constructor(
         public ifSignature: CondBodySet,
         public elifSignatures: CondBodySet[],
-        public elseSignature: CondBodySet,
+        public elseSignature: CondBodySet | undefined,
         public location: Location) { }
 }

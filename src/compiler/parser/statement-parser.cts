@@ -59,8 +59,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     parse() {
-        const loc = this.peek()?.location ?? new Location("unfound", 1, 1, 1);
-        return new Program(this.result, loc);
+        return this.
     }
 
 
@@ -205,13 +204,118 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
 
-    for() { }
-    mcCommand() { }
-    mcExec() { }
+    for() {
+        if (!this.check("KW_CONTROL", "for")) return this.makeFailure();
+
+        const keyword = this.expect("KW_CONTROL", "for");
+
+        this.expect("LPAREN");
+
+        const getCondBody = () => {
+
+            return {
+                condition: this.parseParenExpr(),
+                body: this.parseBlock()
+            } as CondBodySet;
+        }
+
+        const ifSignature = getCondBody();
+        const elifSignatures: CondBodySet[] = [];
+
+        while (this.check("KW_CONTROL", "elif")) {
+            this.eat();
+            elifSignatures.push(getCondBody());
+        }
+
+        let elseSignature: CondBodySet | undefined = undefined;
+        if (this.check("KW_CONTROL", "else")) {
+            this.eat();
+            elifSignatures.push(getCondBody());
+        }
+
+        const node = new ASTCollection.IfStatement(
+            ifSignature, elifSignatures, elseSignature, keyword.location);
+
+        return this.makeSuccess(node);
+    }
+
+    mcCommand() {
+        if (!this.check("KW_CONTROL", "mc_")) return this.makeFailure();
+
+        const keyword = this.expect("KW_CONTROL", "if");
+
+        const getCondBody = () => {
+            return {
+                condition: this.parseParenExpr(),
+                body: this.parseBlock()
+            } as CondBodySet;
+        }
+
+        const ifSignature = getCondBody();
+        const elifSignatures: CondBodySet[] = [];
+
+        while (this.check("KW_CONTROL", "elif")) {
+            this.eat();
+            elifSignatures.push(getCondBody());
+        }
+
+        let elseSignature: CondBodySet | undefined = undefined;
+        if (this.check("KW_CONTROL", "else")) {
+            this.eat();
+            elifSignatures.push(getCondBody());
+        }
+
+        const node = new ASTCollection.IfStatement(
+            ifSignature, elifSignatures, elseSignature, keyword.location);
+
+        return this.makeSuccess(node);
+    }
+
+    mcExec() {
+        if (!this.check("KW_OPHOEL", "mc_exec")) return this.makeFailure();
+
+        const keyword = this.expect("KW_OPHOEL", "mc_exec");
+        const prefix = this.parseParenExpr();
+        const body = this.parseBlock();
+
+        const node = new ASTCollection.McExecStatement(
+            prefix, body, keyword.location);
+
+        return this.makeSuccess(node);
+    }
+
     repeat() { }
-    while() { }
 
-    execExpr() { }
+    while() {
+            if (!this.check("KW_CONTROL", "while")) return this.makeFailure();
 
-    include() { }
+            const keyword = this.expect("KW_CONTROL", "while");
+            const condition = this.parseParenExpr();
+            const body = this.parseBlock();
+
+            const node = new ASTCollection.WhileStatement(
+                condition, body, keyword.location);
+
+            return this.makeSuccess(node);
+    }
+
+     include() { 
+        if (!this.check("KW_CONTROL", "#include")) return this.makeFailure();
+
+            const keyword = this.expect("KW_CONTROL", "while");
+            const condition = this.parseParenExpr();
+            const body = this.parseBlock();
+
+            const node = new ASTCollection.WhileStatement(
+                condition, body, keyword.location);
+
+            return this.makeSuccess(node);
+     }
+
+
+    execExpr() { 
+
+    }
+
+   
 }

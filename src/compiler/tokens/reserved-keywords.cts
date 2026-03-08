@@ -17,6 +17,10 @@ const KW_CONTROL: Array<string> = [
     "or"
 ]
 
+const KW_PREPROCCESS = [
+    "include"
+]
+
 const KW_OPHOEL: Array<string> = [
     "mc_exec"
 ]
@@ -24,5 +28,6 @@ const KW_OPHOEL: Array<string> = [
 export const reservedKeywords = {
     KW_DECL,
     KW_CONTROL,
+    KW_PREPROCCESS,
     KW_OPHOEL
 }

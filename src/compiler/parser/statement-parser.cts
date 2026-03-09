@@ -14,17 +14,14 @@ import { CondBodySet } from "../ast/statements/if.cjs";
 type ParserOption = {};
 
 
-type ParseResult = {
-    succeed: "YES" | "NO",
-    result: ASTNode | undefined
-};
+type ParseResult = ASTNode | undefined
 
 export class StatementParser extends Parser<ParserOption> {
 
     result: ASTNode[] = [];
     emit(ast: ASTNode) { this.result.push(ast); }
-    makeFailure() { return { succeed: "NO", result: undefined } as ParseResult }
-    makeSuccess(node: ASTNode) { return { succeed: "YES", result: node } as ParseResult }
+    makeFailure(): ParseResult { return undefined }
+    makeSuccess(node: ASTNode): ParseResult { return node }
     unwrapProgram(program: Program) { return program.body; }
 
     parseBlock() {
@@ -37,7 +34,7 @@ export class StatementParser extends Parser<ParserOption> {
         const body =
             new StatementParser(tokens, this.config)
                 .parse()
-                .body;
+                .body
 
         this.expect("RBRACE");
         const block = new Block(body, startBrace.location);
@@ -58,8 +55,30 @@ export class StatementParser extends Parser<ParserOption> {
         return expr;
     }
 
-    parse() {
-        return this.
+    parse(): ASTNode {
+        const fail = (error: unknown): never => { throw error; };
+
+        const stmtParsers = [
+            this.fnDecl,
+            this.macroDecl,
+            this.variableDecl,
+            this.choose,
+            this.if,
+            this.for,
+            this.mcCommand,
+            this.mcExec,
+            this.repeat,
+            this.while,
+            this.include
+        ];
+
+        const ast = stmtParsers
+            .map(parseMethod => parseMethod.call(this))
+            .filter(parseResult => typeof parseResult !== "undefined")[0]
+            ?? this.execExpr() // fallback
+            ?? fail(new OphoelParseError("An unknown error occurred"));
+
+        return ast;
     }
 
 
@@ -284,38 +303,58 @@ export class StatementParser extends Parser<ParserOption> {
         return this.makeSuccess(node);
     }
 
-    repeat() { }
+    repeat() {
+        if (!this.check("KW_CONTROL", "while")) return this.makeFailure();
+
+        const keyword = this.expect("KW_CONTROL", "while");
+        const condition = this.parseParenExpr();
+        const body = this.parseBlock();
+
+        const node = new ASTCollection.WhileStatement(
+            condition, body, keyword.location);
+
+        return this.makeSuccess(node);
+    }
 
     while() {
-            if (!this.check("KW_CONTROL", "while")) return this.makeFailure();
+        if (!this.check("KW_CONTROL", "while")) return this.makeFailure();
 
-            const keyword = this.expect("KW_CONTROL", "while");
-            const condition = this.parseParenExpr();
-            const body = this.parseBlock();
+        const keyword = this.expect("KW_CONTROL", "while");
+        const condition = this.parseParenExpr();
+        const body = this.parseBlock();
 
-            const node = new ASTCollection.WhileStatement(
-                condition, body, keyword.location);
+        const node = new ASTCollection.WhileStatement(
+            condition, body, keyword.location);
 
-            return this.makeSuccess(node);
+        return this.makeSuccess(node);
     }
 
-     include() { 
-        if (!this.check("KW_CONTROL", "#include")) return this.makeFailure();
+    include() {
+        if (!this.check("KW_PREPROCESS", "include")) return this.makeFailure();
 
-            const keyword = this.expect("KW_CONTROL", "while");
-            const condition = this.parseParenExpr();
-            const body = this.parseBlock();
+        const keyword = this.expect("KW_CONTROL", "while");
+        const condition = this.parseParenExpr();
+        const body = this.parseBlock();
 
-            const node = new ASTCollection.WhileStatement(
-                condition, body, keyword.location);
+        const node = new ASTCollection.WhileStatement(
+            condition, body, keyword.location);
 
-            return this.makeSuccess(node);
-     }
-
-
-    execExpr() { 
-
+        return this.makeSuccess(node);
     }
 
-   
+
+    execExpr() {
+        if (!this.check("KW_PREPROCESS", "include")) return this.makeFailure();
+
+        const keyword = this.expect("KW_CONTROL", "while");
+        const condition = this.parseParenExpr();
+        const body = this.parseBlock();
+
+        const node = new ASTCollection.WhileStatement(
+            condition, body, keyword.location);
+
+        return this.makeSuccess(node);
+    }
+
+
 }

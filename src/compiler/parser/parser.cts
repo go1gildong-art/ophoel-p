@@ -4,13 +4,29 @@ import { TokenPredicate, TokenStream } from "../tokens/token-stream.cjs"
 import { Token } from "../tokens/token.cjs";
 import { OphoelParseError } from "./parse-error.cjs";
 
-
-export abstract class Parser<config_T> {
-    pos = 0;
+export class ParserState<config_T> {
 
     constructor(
-        protected tokens: TokenStream,
-        protected config?: config_T) { }
+        public readonly tokens: TokenStream,
+        public readonly pos: number = 0,
+        public readonly config?: config_T) { }
+
+    replicate({
+        tokens = this.tokens,
+        pos = this.pos,
+        config = this.config,
+    }: {
+        tokens?: TokenStream;
+        pos?: number;
+        config?: config_T;
+    } = {}) {
+        return new ParserState(tokens, pos, config);
+    }
+}
+
+export abstract class Parser<config_T> {
+    public readonly state: ParserState<config_T>;
+    constructor(tokens: TokenStream) { this.state = new ParserState(tokens); }
 
     abstract parse(): ASTNode;
 

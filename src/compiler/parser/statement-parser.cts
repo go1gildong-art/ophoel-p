@@ -79,31 +79,29 @@ export class StatementParser extends Parser<ParserOption> {
     parse(): ASTNode {
         const fail = (error: unknown): never => { throw error; };
 
-        const stmtParsers = [
-            this.fnDecl,
-            this.macroDecl,
-            this.variableDecl,
-            this.choose,
-            this.if,
-            this.for,
-            this.mcCommand,
-            this.mcExec,
-            this.repeat,
-            this.while,
-            this.include
-        ];
+        const stmtParsers: Map<string, () => ParseResult> = {
+            "fn": this.fnDecl,
+            "macro": this.macroDecl,
+            "let": this.variableDecl,
+            "choose": this.choose,
+            "if": this.if,
+            "for": this.for,
+            // this.mcCommand,
+            "mc_exec": this.mcExec,
+            "repeat": this.repeat,
+            "while": this.while,
+            "include": this.include
+        };
 
-        const ast = stmtParsers
-            .map(parseMethod => 
-                new StatementParser(this.state.snapshot())[parseMethod.name]() )
-            .filter(parseResult => typeof parseResult !== "undefined")[0]
-            ?? this.execExpr() // fallback
-            ?? fail(new OphoelParseError("An unknown error occurred"));
+        for (const [keyword, method] of stmtParsers.entries()) {
+            if (this.peek()?.value === keyword) {
+                return 
+            }
+        }
 
         return ast;
     }
 
-    parseMulti
 
 
     fnDecl() {

@@ -25,14 +25,18 @@ export class StatementParser extends Parser<ParserOption> {
     unwrapProgram(program: Program) { return program.body; }
 
     parseBlock() {
+        let state = this.state;
+
         const startBrace = this.expect("LBRACE");
+        state = startBrace.state;
 
         const tokens = this.getBetween(
             token => token.is("LBRACE"),
             token => token.is("RBRACE"));
+        state = tokens.state;
 
         const body =
-            new StatementParser(tokens, this.config)
+            new StatementParser(state)
                 .parse()
                 .body
 
@@ -81,17 +85,26 @@ export class StatementParser extends Parser<ParserOption> {
         return ast;
     }
 
+    parseMulti
+
 
     fnDecl() {
         if (!this.check("KW_DECL", "fn")) return this.makeFailure();
+        let state = this.state;
 
         const keyword = this.expect("KW_DECL", "fn");
+        state = keyword.state;
+
         const fnName = this.expect("IDENTIFIER");
-        this.expect("LPAREN");
+        state = fnName.state;
+
+        state = this.expect("LPAREN").state;
 
         const paramNames: Token[] = [];
         while (!this.check("RPAREN")) {
-            paramNames.push(this.expect("IDENTIFIER"));
+            const ident = this.expect("IDENTIFIER");
+            state = ident.state;
+            paramNames.push();
             if (this.check("COMMA")) this.eat();
         }
 

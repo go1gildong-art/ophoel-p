@@ -29,13 +29,14 @@ export class ParserStateMut<config_T = unknown> {
     parse() { return new Parser(); }
 }
 
-type ParseResult<result_T, config_T> =
+export type ParseResult<result_T, config_T> =
     | { success: true; result: result_T; state: ParserState<config_T> }
     | { success: false; error: string };
 
 export abstract class Parser<config_T> {
 
-    constructor(protected readonly state: ParserStateMut<config_T>) { }
+    protected state: ParserStateMut<config_T>;
+    constructor(state: ParserState<config_T>) { this.state = state.branch(); }
 
     abstract parse(): ParseResult;
 

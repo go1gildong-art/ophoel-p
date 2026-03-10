@@ -11,6 +11,7 @@ import { ASTCollection } from "../ast/build-ast.cjs";
 import { ExpressionParser } from "./expression-parser.cjs";
 import { BinaryOperator } from "../ast/expressions/operations.cjs";
 import { CondBodySet } from "../ast/statements/if.cjs";
+import { ParseResult } from "./parser.cjs";
 type ParserOption = {};
 
 
@@ -20,8 +21,22 @@ export class StatementParser extends Parser<ParserOption> {
 
     result: ASTNode[] = [];
     emit(ast: ASTNode) { this.result.push(ast); }
-    makeFailure(): ParseResult { return undefined }
-    makeSuccess(node: ASTNode): ParseResult { return node }
+
+    makeFailure(error: unknown): ParseResult {
+        return { 
+            success: false, 
+            error: error
+        }; 
+    }
+    
+    makeSuccess(node: ASTNode): ParseResult { 
+        return { 
+            success: true, 
+            result: node, 
+            state: this.state.snapshot()
+        }; 
+    }
+
     unwrapProgram(program: Program) { return program.body; }
 
     parseBlock() {
@@ -79,7 +94,8 @@ export class StatementParser extends Parser<ParserOption> {
         ];
 
         const ast = stmtParsers
-            .map(parseMethod => parseMethod.call(this))
+            .map(parseMethod => 
+                new StatementParser(this.state.snapshot())[parseMethod.name]() )
             .filter(parseResult => typeof parseResult !== "undefined")[0]
             ?? this.execExpr() // fallback
             ?? fail(new OphoelParseError("An unknown error occurred"));
@@ -102,7 +118,7 @@ export class StatementParser extends Parser<ParserOption> {
             paramNames.push();
             if (this.check("COMMA")) this.eat();
         }
-        
+
         const body = this.parseBlock();
 
         const node = new ASTCollection.FunctionDecl(
@@ -152,7 +168,7 @@ export class StatementParser extends Parser<ParserOption> {
         this.expect("EQUAL");
         const expression = new ExpressionParser(
             this.getUntil(token => token.is("SEMICOLON")),
-            this.config
+            this.state.config
         ).parse();
         this.expect("SEMICOLON");
 

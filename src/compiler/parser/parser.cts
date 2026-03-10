@@ -5,7 +5,6 @@ import { Token } from "../tokens/token.cjs";
 import { OphoelParseError } from "./parse-error.cjs";
 
 export class ParserState<config_T = unknown> {
-
     constructor(
         public readonly pos: number = 0,
         public readonly tokens: TokenStream,
@@ -15,9 +14,19 @@ export class ParserState<config_T = unknown> {
         pos = this.pos,
         tokens = this.tokens,
         config = this.config
-    ) {
-        return new ParserState(pos, tokens, config);
-    }
+    ) { return new ParserState(pos, tokens, config); }
+
+    branch() { return new ParserStateMut(this.pos, this.tokens, this.config); }
+}
+
+export class ParserStateMut<config_T = unknown> {
+    constructor(
+        public pos: number = 0,
+        public tokens: TokenStream,
+        public config: config_T) { }
+ 
+    snapshot() { return new ParserState(this.pos, this.tokens, this.config); }
+    parse() { return new Parser(); }
 }
 
 type ParseResult<result_T, config_T> =
@@ -26,15 +35,15 @@ type ParseResult<result_T, config_T> =
 
 export abstract class Parser<config_T> {
 
-    constructor(public readonly state: ParserState<config_T>) { }
+    constructor(protected readonly state: ParserStateMut<config_T>) { }
 
-    abstract parse(): ASTNode;
+    abstract parse(): ParseResult;
 
     getTail(): TokenStream { return this.state.tokens.slice(this.state.pos); }
 
-    peek() { return this.state.tokens.at(this.state.pos); }
+    peek(index: number = 0) { return this.state.tokens.at(this.state.pos + index); }
 
-    eat() { return { result: this.peek(), state: this.state.replicate(this.state.pos + 1) }; }
+    eat() { return this.state.tokens.at(this.state.pos++); }
 
     check(kind: string, value?: string) { return this.peek()?.is(kind, value) ?? false; }
 
@@ -52,13 +61,13 @@ export abstract class Parser<config_T> {
     getBetween(fromPredicate: TokenPredicate, toPredicate: TokenPredicate, thisArg?: any) {
         const tokens = this.getTail().getBetween(fromPredicate, toPredicate, thisArg);
         const newPos = this.state.pos + tokens.length();
-        return { result: tokens, state: this.state.replicate(newPos) };
+        return tokens;
     }
 
     getUntil(predicate: TokenPredicate, thisArg?: any) {
         const tokens = this.getTail().getUntil(predicate, thisArg);
         const newPos = this.state.pos + tokens.length();
-        return { result: tokens, state: this.state.replicate(newPos) };
+        return tokens
     }
 }
 

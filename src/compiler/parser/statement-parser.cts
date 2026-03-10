@@ -92,16 +92,9 @@ export class StatementParser extends Parser<ParserOption> {
 
     fnDecl() {
         if (!this.check("KW_DECL", "fn")) return this.makeFailure();
-        let state = this.state;
 
         const keyword = this.expect("KW_DECL", "fn");
-        state = keyword.state;
-
         const fnName = this.expect("IDENTIFIER");
-        state = fnName.state;
-
-        state = this.expect("LPAREN").state;
-
         const paramNames: Token[] = [];
         while (!this.check("RPAREN")) {
             const ident = this.expect("IDENTIFIER");
@@ -109,7 +102,7 @@ export class StatementParser extends Parser<ParserOption> {
             paramNames.push();
             if (this.check("COMMA")) this.eat();
         }
-
+        
         const body = this.parseBlock();
 
         const node = new ASTCollection.FunctionDecl(

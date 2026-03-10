@@ -28,12 +28,14 @@ export class StatementParser extends Parser<ParserOption> {
         let state = this.state;
 
         const startBrace = this.expect("LBRACE");
+
         state = startBrace.state;
 
         const tokens = this.getBetween(
             token => token.is("LBRACE"),
             token => token.is("RBRACE"));
         state = tokens.state;
+
 
         const body =
             new StatementParser(state)
@@ -132,7 +134,6 @@ export class StatementParser extends Parser<ParserOption> {
             paramNames.push(this.expect("IDENTIFIER"));
             if (this.check("COMMA")) this.eat();
         }
-
         const body = this.parseBlock();
 
         const node = new ASTCollection.MacroDecl(

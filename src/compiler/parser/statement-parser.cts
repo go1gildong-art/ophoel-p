@@ -45,12 +45,13 @@ export class StatementParser extends Parser<ParserOption> {
         const bodyResult =
             new StatementParser({ })
                 .parseMulti(index);
+        
+        newParser.expect("RBRACE");
             
         if (!bodyResult.success) return bodyResult;
-
-        newParser.expect("RBRACE");
+        this.update(bodyResult);
         const block = new Block(bodyResult.result, startBrace.location);
-        return this.makeSuccess(block);
+        return this.makeSuccess(block)
     }
 
     parseParenExpr() {
@@ -126,7 +127,9 @@ export class StatementParser extends Parser<ParserOption> {
             if (this.check("COMMA")) this.eat();
         }
 
-        const body = this.parseBlock();
+        const bodyResult = this.parseBlock();
+        if (!bodyResult.success) return bodyResult;
+        const body = bodyResult.result;
 
         const node = new ASTCollection.FunctionDecl(
             fnName.value,
@@ -152,7 +155,9 @@ export class StatementParser extends Parser<ParserOption> {
             paramNames.push(this.expect("IDENTIFIER"));
             if (this.check("COMMA")) this.eat();
         }
-        const body = this.parseBlock();
+                const bodyResult = this.parseBlock();
+        if (!bodyResult.success) return bodyResult;
+        const body = bodyResult.result;
 
         const node = new ASTCollection.MacroDecl(
             macroName.value,
@@ -327,7 +332,9 @@ export class StatementParser extends Parser<ParserOption> {
 
         const keyword = this.expect("KW_OPHOEL", "mc_exec");
         const prefix = this.parseParenExpr();
-        const body = this.parseBlock();
+                const bodyResult = this.parseBlock();
+        if (!bodyResult.success) return bodyResult;
+        const body = bodyResult.result;
 
         const node = new ASTCollection.McExecStatement(
             prefix, body, keyword.location);
@@ -340,7 +347,9 @@ export class StatementParser extends Parser<ParserOption> {
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
-        const body = this.parseBlock();
+                const bodyResult = this.parseBlock();
+        if (!bodyResult.success) return bodyResult;
+        const body = bodyResult.result;
 
         const node = new ASTCollection.WhileStatement(
             condition, body, keyword.location);
@@ -353,7 +362,9 @@ export class StatementParser extends Parser<ParserOption> {
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
-        const body = this.parseBlock();
+                const bodyResult = this.parseBlock();
+        if (!bodyResult.success) return bodyResult;
+        const body = bodyResult.result;
 
         const node = new ASTCollection.WhileStatement(
             condition, body, keyword.location);
@@ -366,7 +377,9 @@ export class StatementParser extends Parser<ParserOption> {
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
-        const body = this.parseBlock();
+                const bodyResult = this.parseBlock();
+        if (!bodyResult.success) return bodyResult;
+        const body = bodyResult.result;
 
         const node = new ASTCollection.WhileStatement(
             condition, body, keyword.location);
@@ -380,7 +393,9 @@ export class StatementParser extends Parser<ParserOption> {
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
-        const body = this.parseBlock();
+                const bodyResult = this.parseBlock();
+        if (!bodyResult.success) return bodyResult;
+        const body = bodyResult.result;
 
         const node = new ASTCollection.WhileStatement(
             condition, body, keyword.location);

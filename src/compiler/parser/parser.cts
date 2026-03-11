@@ -40,7 +40,7 @@ export abstract class Parser<config_T> {
     abstract parse(): ParseResult<ASTNode, config_T>;
 
     branch(): this { 
-        const Constructor = this.constructor as (state: ParserState<config_T>) => this;
+        const Constructor = this.constructor as new (state: ParserState<config_T>) => this;
         return Constructor(this.state.snapshot());
     }
 

@@ -76,13 +76,16 @@ export class StatementParser extends Parser<ParserOption> {
     parse(): ASTNode {
         const fail = (error: unknown): never => { throw error; };
 
-        const stmtParsers = new Map<string, () => ParseResult<ParserOption>>([
-            "fn" this.fnDecl,
-            "macro" this.macroDecl,
-            "let" this.variableDecl,
-            "choose" this.choose,
-            "if" this.if,
-            "for" this.for,
+        const stmtParsers: Map<
+            (token) => boolean, 
+            () => ParseResult    
+        > = {
+            "fn": this.fnDecl,
+            "macro": this.macroDecl,
+            "let": this.variableDecl,
+            "choose": this.choose,
+            "if": this.if,
+            "for": this.for,
             // this.mcCommand,
             "mc_exec" this.mcExec,
             "repeat" this.repeat,

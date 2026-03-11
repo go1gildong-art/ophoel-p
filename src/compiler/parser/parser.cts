@@ -44,6 +44,13 @@ export abstract class Parser<config_T> {
         return Constructor(this.state.snapshot());
     }
 
+
+
+    update 
+        <result_T> (result: { success: true; result: result_T; state: ParserState<config_T> }) {
+        this.state = result.state.branch();
+    }
+
     getTail(): TokenStream { return this.state.tokens.slice(this.state.pos); }
 
     peek(index: number = 0) { return this.state.tokens.at(this.state.pos + index); }

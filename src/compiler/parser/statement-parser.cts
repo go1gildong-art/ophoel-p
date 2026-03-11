@@ -3,7 +3,7 @@ import { Block } from "../ast/block.cjs";
 import { Program } from "../ast/program.cjs";
 import { Parser } from "./parser.cjs";
 import { TokenStream } from "../tokens/token-stream.cjs";
-import { ASTNode } from "../ast/ast.cjs";
+import { ASTNode, Statement } from "../ast/ast.cjs";
 import { OphoelParseError } from "./parse-error.cjs";
 import { Token } from "../tokens/token.cjs";
 
@@ -16,9 +16,6 @@ type ParserOption = {};
 
 export class StatementParser extends Parser<ParserOption> {
 
-    result: ASTNode[] = [];
-    emit(ast: ASTNode) { this.result.push(ast); }
-
     makeFailure(error: unknown): ParseResult<ParserOption> {
         return { 
             success: false, 
@@ -26,10 +23,10 @@ export class StatementParser extends Parser<ParserOption> {
         }; 
     }
     
-    makeSuccess(node: ASTNode): ParseResult<ParserOption> { 
+    makeSuccess<result_T>(node: result_T): ParseResult<ParserOption, result_T> { 
         return { 
             success: true, 
-            result: node, 
+            result: node,
             state: this.state.snapshot()
         }; 
     }
@@ -73,9 +70,28 @@ export class StatementParser extends Parser<ParserOption> {
         return expr;
     }
 
-    parse(): ASTNode {
+    parseMulti(): ParseResult {
+
+        const statements: Statement[] = [];
+        while (this.getTail().length > 0) {
+            const result = this.parse();
+
+            if (!result.success) return result;
+            this.update(result);
+            statements.push(result.result);
+        }
+
+        return this.makeSuccess(statements);
+    }
+
+    parse(): ParseResult {
         const makeCheck = (kind: string, value: string, index: number = 0) => 
             ((parser: this) => parser.peek(index).is(kind, value));
+
+        const branchMethod = (method: (() => ParseResult)) => {
+            try { return method.call(this.branch()); }
+            catch(err: unknown) { return this.makeFailure(err); }}
+
 
         const stmtParsers = [
             { condition: makeCheck("KW_DECL", "fn"), method: this.fnDecl },
@@ -93,7 +109,7 @@ export class StatementParser extends Parser<ParserOption> {
 
         const result = stmtParsers
         .filter( entry => entry.condition(this) )
-        .map( entry => entry.method.call(this.branch()) )[0]
+        .map( entry => branchMethod(entry.method) )[0]
         ?? this.branch().execExpr();        
 
         return result;
@@ -101,7 +117,7 @@ export class StatementParser extends Parser<ParserOption> {
 
 
 
-    fnDecl() {
+    fnDecl(){
         if (!this.check("KW_DECL", "fn")) return this.makeFailure();
 
         const keyword = this.expect("KW_DECL", "fn");
@@ -123,7 +139,9 @@ export class StatementParser extends Parser<ParserOption> {
             keyword.location
         );
 
-        return this.makeSuccess(node);
+        const x = this.makeSuccess(node);
+        if (x.success) x.result;
+        return x;
     }
 
     macroDecl() {

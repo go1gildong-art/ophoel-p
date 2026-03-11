@@ -67,7 +67,7 @@ export const ASTCollection = {
     FunctionDecl,
     MacroDecl,
     StructDecl,
-    VariableDecl,()
+    VariableDecl,
 
     Include
 }

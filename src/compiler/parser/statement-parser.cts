@@ -38,18 +38,19 @@ export class StatementParser extends Parser<ParserOption> {
 
         const startBrace = newParser.expect("LBRACE");
 
-        const tokens = newParser.getBetween(
+        const index = newParser.findIndexBetween(
             token => token.is("LBRACE"),
             token => token.is("RBRACE"));
 
-        const body =
+        const bodyResult =
             new StatementParser({ })
-                .parseMulti()
-                .
+                .parseMulti(index);
+            
+        if (!bodyResult.success) return bodyResult;
 
-        this.expect("RBRACE");
-        const block = new Block(body, startBrace.location);
-        return block;
+        newParser.expect("RBRACE");
+        const block = new Block(bodyResult.result, startBrace.location);
+        return this.makeSuccess(block);
     }
 
     parseParenExpr() {

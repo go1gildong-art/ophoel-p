@@ -74,32 +74,29 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     parse(): ASTNode {
-        const fail = (error: unknown): never => { throw error; };
+        const makeCheck = (kind: string, value: string, index: number = 0) => 
+            ((parser: this) => parser.peek(index).is(kind, value));
 
-        const stmtParsers: Map<
-            (token) => boolean, 
-            () => ParseResult    
-        > = {
-            "fn": this.fnDecl,
-            "macro": this.macroDecl,
-            "let": this.variableDecl,
-            "choose": this.choose,
-            "if": this.if,
-            "for": this.for,
-            // this.mcCommand,
-            "mc_exec" this.mcExec,
-            "repeat" this.repeat,
-            "while" this.while,
-            "include" this.include
-        ]);
+        const stmtParsers = [
+            { condition: makeCheck("KW_DECL", "fn"), method: this.fnDecl },
+            { condition: makeCheck("KW_DECL", "macro"), method: this.macroDecl },
+            { condition: makeCheck("KW_DECL", "let"), method: this.variableDecl },
+            { condition: makeCheck("KW_CONTROL", "choose"), method: this.choose },
+            { condition: makeCheck("KW_CONTROL", "if"), method: this.if },
+            { condition: makeCheck("KW_CONTROL", "for"), method: this.for },
+            { condition: makeCheck("DOUBLEBANG", "!!", 1), method: this.mcCommand, },
+            { condition: makeCheck("KW_CONTROL", "mc_exec"), method: this.mcExec },
+            { condition: makeCheck("KW_CONTROL", "repeat"), method: this.repeat },
+            { condition: makeCheck("KW_CONTROL", "while"), method: this.while },
+            { condition: makeCheck("KW_PREPROCESS","include"), method: this.include }
+        ];
 
-        for (const [keyword, method] of stmtParsers.entries()) {
-            if (this.peek()?.value === keyword) {
-                return 
-            }
-        }
+        const result = stmtParsers
+        .filter( entry => entry.condition(this) )
+        .map( entry => entry.method.call(this.branch()) )[0]
+        ?? this.branch().execExpr();        
 
-        return ast;
+        return result;
     }
 
 

@@ -14,22 +14,19 @@ import { CondBodySet } from "../ast/statements/if.cjs";
 import { ParseResult } from "./parser.cjs";
 type ParserOption = {};
 
-
-type ParseResult = ASTNode | undefined
-
 export class StatementParser extends Parser<ParserOption> {
 
     result: ASTNode[] = [];
     emit(ast: ASTNode) { this.result.push(ast); }
 
-    makeFailure(error: unknown): ParseResult {
+    makeFailure(error: unknown): ParseResult<ParserOption> {
         return { 
             success: false, 
             error: error
         }; 
     }
     
-    makeSuccess(node: ASTNode): ParseResult { 
+    makeSuccess(node: ASTNode): ParseResult<ParserOption> { 
         return { 
             success: true, 
             result: node, 
@@ -79,19 +76,19 @@ export class StatementParser extends Parser<ParserOption> {
     parse(): ASTNode {
         const fail = (error: unknown): never => { throw error; };
 
-        const stmtParsers: Map<string, () => ParseResult> = {
-            "fn": this.fnDecl,
-            "macro": this.macroDecl,
-            "let": this.variableDecl,
-            "choose": this.choose,
-            "if": this.if,
-            "for": this.for,
+        const stmtParsers = new Map<string, () => ParseResult<ParserOption>>([
+            "fn" this.fnDecl,
+            "macro" this.macroDecl,
+            "let" this.variableDecl,
+            "choose" this.choose,
+            "if" this.if,
+            "for" this.for,
             // this.mcCommand,
-            "mc_exec": this.mcExec,
-            "repeat": this.repeat,
-            "while": this.while,
-            "include": this.include
-        };
+            "mc_exec" this.mcExec,
+            "repeat" this.repeat,
+            "while" this.while,
+            "include" this.include
+        ]);
 
         for (const [keyword, method] of stmtParsers.entries()) {
             if (this.peek()?.value === keyword) {

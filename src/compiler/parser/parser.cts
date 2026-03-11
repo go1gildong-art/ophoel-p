@@ -28,29 +28,21 @@ export class ParserStateMut<config_T = unknown> {
     snapshot() { return new ParserState(this.pos, this.tokens, this.config); }
 }
 
-export type ParseResult<result_T, config_T> =
+export type ParseResult<config_T = unknown, result_T = unknown, error_T = unknown> =
     | { success: true; result: result_T; state: ParserState<config_T> }
-    | { success: false; error: string };
+    | { success: false; error: error_T};
 
 export abstract class Parser<config_T> {
 
     protected state: ParserStateMut<config_T>;
     constructor(state: ParserState<config_T>) { this.state = state.branch(); }
 
-    abstract parse(): ParseResult;
+    abstract parse(): ParseResult<ASTNode, config_T>;
 
     branch(): this { 
         const Constructor = this.constructor as (state: ParserState<config_T>) => this;
         return Constructor(this.state.snapshot());
     }
-
-
-branch(): this {
-        // 1. Get the constructor of the current instance
-        const Constructor = this.constructor as new (source: string, pos: number) => this;
-        
-        // 2. Return a new instance with the same state
-        return new Constructor(this.source, this.pos);}
 
     getTail(): TokenStream { return this.state.tokens.slice(this.state.pos); }
 

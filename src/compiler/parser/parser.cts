@@ -70,6 +70,11 @@ export abstract class Parser<config_T> {
         }
     }
 
+    findIndexBetween(fromPredicate: TokenPredicate, toPredicate: TokenPredicate, thisArg?: any) {
+        const index = this.getTail().findIndexBetween(fromPredicate, toPredicate, thisArg);
+        return index;
+    }
+
     getBetween(fromPredicate: TokenPredicate, toPredicate: TokenPredicate, thisArg?: any) {
         const tokens = this.getTail().getBetween(fromPredicate, toPredicate, thisArg);
         const newPos = this.state.pos + tokens.length();

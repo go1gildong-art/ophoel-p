@@ -34,22 +34,18 @@ export class StatementParser extends Parser<ParserOption> {
     unwrapProgram(program: Program) { return program.body; }
 
     parseBlock() {
-        let state = this.state;
+        let newParser = this.branch();
 
-        const startBrace = this.expect("LBRACE");
+        const startBrace = newParser.expect("LBRACE");
 
-        state = startBrace.state;
-
-        const tokens = this.getBetween(
+        const tokens = newParser.getBetween(
             token => token.is("LBRACE"),
             token => token.is("RBRACE"));
-        state = tokens.state;
-
 
         const body =
-            new StatementParser(state)
-                .parse()
-                .body
+            new StatementParser({ })
+                .parseMulti()
+                .
 
         this.expect("RBRACE");
         const block = new Block(body, startBrace.location);
@@ -70,10 +66,9 @@ export class StatementParser extends Parser<ParserOption> {
         return expr;
     }
 
-    parseMulti(): ParseResult {
-
+    parseMulti(until: number = this.state.tokens.length()): ParseResult {
         const statements: Statement[] = [];
-        while (this.getTail().length > 0) {
+        while (this.pos < until) {
             const result = this.parse();
 
             if (!result.success) return result;

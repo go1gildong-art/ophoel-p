@@ -43,7 +43,7 @@ export class TokenStream {
         : this
     }
 
-    getBetween(fromPredicate: TokenPredicate, toPredicate: TokenPredicate, thisArg?: any) {
+    findIndexBetween(fromPredicate: TokenPredicate, toPredicate: TokenPredicate, thisArg?: any) {
         let depth = 1; // initial depth for uncount starting from token
         const collectedTokens: Token[] = [];
         
@@ -53,14 +53,17 @@ export class TokenStream {
             
             if (fromPredicate(currentToken, index, array)) depth++;
             else if (toPredicate(currentToken, index, array)) depth--;
-
             if (depth <= 0) break;
-            collectedTokens.push(currentToken);
 
             index++;
         }
 
-        return new TokenStream(collectedTokens);
+        return index;
+    }
+
+    getBetween(fromPredicate: TokenPredicate, toPredicate: TokenPredicate, thisArg?: any) {
+        const index = this.findIndexBetween(fromPredicate, toPredicate, thisArg);
+        return this.slice(0, index);
     }
 
     chunk(len: number) {

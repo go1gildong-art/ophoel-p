@@ -16,26 +16,6 @@ type ParserOption = {};
 
 export class StatementParser extends Parser<ParserOption> {
 
-    safeWrap<result_T>(fn: (...args: any[]) => ParseResult<ParserOption, result_T>, ...args: any[]) {
-        try { return fn(...args); }
-        catch (err: unknown) { return this.makeFailure<result_T>(err); }
-    }
-
-    makeFailure<result_T>(error: unknown): ParseResult<ParserOption, result_T> {
-        return {
-            success: false,
-            error: error
-        };
-    }
-
-    makeSuccess<result_T>(node: result_T): ParseResult<ParserOption, result_T> {
-        return {
-            success: true,
-            result: node,
-            state: this.state.snapshot()
-        };
-    }
-
     unwrapProgram(program: Program) { return program.body; }
 
     parseBlock() {

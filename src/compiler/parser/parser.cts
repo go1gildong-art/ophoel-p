@@ -44,11 +44,29 @@ export abstract class Parser<config_T> {
         return new Constructor(this.state.snapshot());
     }
 
-
-
     update 
         <result_T> (result: { success: true; result: result_T; state: ParserState<config_T> }) {
         this.state = result.state.branch();
+    }
+
+    safeWrap<result_T>(fn: (...args: any[]) => ParseResult<config_T, result_T>, ...args: any[]) {
+        try { return fn(...args); }
+        catch (err: unknown) { return this.makeFailure<result_T>(err); }
+    }
+
+    makeFailure<result_T>(error: unknown): ParseResult<config_T, result_T> {
+        return {
+            success: false,
+            error: error
+        };
+    }
+
+    makeSuccess<result_T>(node: result_T): ParseResult<config_T, result_T> {
+        return {
+            success: true,
+            result: node,
+            state: this.state.snapshot()
+        };
     }
 
     getTail(): TokenStream { return this.state.tokens.slice(this.state.pos); }

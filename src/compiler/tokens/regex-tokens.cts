@@ -26,7 +26,8 @@ const Operations = {
 }
 
 const Comparisons = {
-  COMPARE_EQUAL: /^==/, // ==
+  ISEQUAL: /^==/, // ==
+  NOTEQUAL: /^!=/ // !=
   LESS: /^\</, // <
   OVER: /^\>/, // >
   EQLESS: /^\<=/, // <=

@@ -24,8 +24,9 @@ export class ExpressionParser extends Parser<ParserOption> {
             ((parser: this) => parser.peek(index)?.is(kind, value) ?? false);
 
         const bindpowerTable = ne[
-            { condition: makeCheckInside("PLUS", "MINUS"), bindpower: 10 },
-            { condition: makeCheckInside("ASTERISK", "SLASH", "PERCENT", "MINUSCASSIGN"), bindpower: 10 },
+            { condition: makeCheckInside("PLUS", "DASH"), bindpower: 10 },
+            { condition: makeCheckInside("ASTERISK", "SLASH", "PERCENT"), bindpower: 10 },
+            { condition: makeCheckInside("")}
             
         ]
 

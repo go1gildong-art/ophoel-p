@@ -42,7 +42,8 @@ export const ASTCollection = {
     VectorLiteral: Literals.VectorLiteral,
 
     BinaryOperation: Operations.BinaryOperation,
-    UnaryOperation: Operations.UnaryOperation,
+    PreUnary: Operations.PreUnary,
+    PostUnary: Operations.PostUnary,
     IndexAccess: Operations.IndexAccess,
     MemberAccess: Operations.MemberAccess,
 

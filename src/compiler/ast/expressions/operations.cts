@@ -35,14 +35,25 @@ export enum UnaryOperator {
 
     LOGIC_NOT
 };
-export class UnaryOperation implements Expression {
-    kind = "UnaryOperation";
+export class PreUnary implements Expression {
+    kind = "PreUnary";
 
     constructor(
         public operator: UnaryOperator, 
         public right: Expression, 
         public location: Location) {}
 }
+
+
+export class PostUnary implements Expression {
+    kind = "PostUnary";
+
+    constructor(
+        public operator: UnaryOperator, 
+        public left: Expression, 
+        public location: Location) {}
+}
+
 
 export class IndexAccess implements LValue {
     kind = "IndexAccess";

@@ -18,11 +18,11 @@ const CompoundAssigns = {
 }
 
 const Operations = {
-  PLUS: /^\+/, // +
-  MINUS: /^\-/, // -
-  MULTIPLY: /^\*/, // *
-  DIVIDE: /^\//, // /
-  REMAINDER: /^\%/, // %
+  // PLUS: /^\+/, // +
+  // MINUS: /^\-/, // -
+  // MULTIPLY: /^\*/, // *
+  // DIVIDE: /^\//, // /
+  // REMAINDER: /^\%/, // %
 }
 
 const Comparisons = {
@@ -54,6 +54,11 @@ const TemplateString = {
 }
 
 const Symbols = {
+  PLUS: /^\+/, // +
+  DASH: /^\-/, // -
+  ASTERISK: /^\*/, // *
+  SLASH: /^\//, // /
+  PERCENT: /^\%/, // %
   BANG: /^!/,
   CARET: /^\^/,
   DOLLAR: /^\$/,
@@ -62,13 +67,10 @@ const Symbols = {
   DQUOTE: /^"/,
   SQUOTE: /^'/,
   BACKTICK: /^`/,
-  ASTERISK: /^\*/,
   PERIOD: /^\./,
   QUESTION: /^\?/,
-  SLASH: /\//,
   BACKSLASH: /\\/,
   EQUAL: /^=/,
-  DASH: /^-/,
   UNDERSCORE: /^_/,
   COMMA: /^,/,
   COLON: /^:/,

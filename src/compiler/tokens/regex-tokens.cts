@@ -27,7 +27,7 @@ const Operations = {
 
 const Comparisons = {
   ISEQUAL: /^==/, // ==
-  NOTEQUAL: /^!=/ // !=
+  NOTEQUAL: /^!=/, // !=
   LESS: /^\</, // <
   OVER: /^\>/, // >
   EQLESS: /^\<=/, // <=
@@ -52,6 +52,11 @@ const OphoelSpecial = {
 
 const TemplateString = {
   OPENEXPR: /^\$\{/
+}
+
+const DoubleOperators = {
+  DOUBLEPLUS: /^\+\+/,
+  DOUBLEDASH:/^\-\-/
 }
 
 const Symbols = {
@@ -99,6 +104,7 @@ export const regexTokens = {
   ...Operations,
   ...Literals,
   ...Brackets,
+  ...DoubleOperators,
   ...Symbols,
   ...KeywordToken
 }

@@ -20,14 +20,22 @@ export class ExpressionParser extends Parser<ParserOption> {
         const makeCheck = (kind: string, value: string, index: number = 0) =>
             ((parser: this) => parser.peek(index)?.is(kind, value) ?? false);
 
-        const makeCheckInside = (kind: string, value: string, index: number = 0) =>
-            ((parser: this) => parser.peek(index)?.is(kind, value) ?? false);
+        const makeCheckInside = (...kind: string[]) =>
+            ((parser: this) => parser.peek(index)?.isInside(...kind) ?? false);
 
-        const bindpowerTable = ne[
-            { condition: makeCheckInside("PLUS", "DASH"), bindpower: 10 },
-            { condition: makeCheckInside("ASTERISK", "SLASH", "PERCENT"), bindpower: 10 },
-            { condition: makeCheckInside("")}
-            
+
+
+        const compoundAssigns = ["PLUSCASSIGN", "MINUSCASSIGN", "MULTIPLYCASSIGN", "DIVIDECASSIGN", "REMAINDERCASSIGN"];
+        
+        const bindpowerTable = [
+            { bindpoewr: 10, condition: makeCheckInside("ASSIGN", ...compoundAssigns)},
+            { bindpower: 10, condition: makeCheckInside("PLUS", "DASH") },
+            { bindpower: 20, condition: makeCheckInside("ASTERISK", "SLASH", "PERCENT") },
+            { bindpower: 30, condition: makeCheckInside("EQUAL", "NOTEQUAL", "LESS", "MORE", "EQLESS", "EQMORE") },
+            { bindpower: 40, condition: makeCheck("OR") },
+            { bindpower: 50, condition: makeCheck("AND") },
+            { bindpower: 40, condition: makeCheck("LBRACKET") },
+            { bindpower: 91, condition: makeCheck("LBRACE") }
         ]
 
         function parseAtomic() {
@@ -40,6 +48,7 @@ export class ExpressionParser extends Parser<ParserOption> {
             elif (backtick) parseTmpl();
             elif (Lbracket) parseArr();
             elif (Lcbrace) parseObj();
+            elif (ident) parseIdent(); // will handle ident vs funciton vs macro
         }
 
         const left = this.eat();

@@ -37,11 +37,11 @@ export abstract class Parser<config_T> {
     protected state: ParserStateMut<config_T>;
     constructor(state: ParserState<config_T>) { this.state = state.branch(); }
 
-    abstract parse(): ParseResult<ASTNode, config_T>;
+    abstract parse(): ParseResult<config_T, ASTNode>;
 
     branch(): this { 
         const Constructor = this.constructor as new (state: ParserState<config_T>) => this;
-        return Constructor(this.state.snapshot());
+        return new Constructor(this.state.snapshot());
     }
 
 
@@ -62,7 +62,8 @@ export abstract class Parser<config_T> {
     checkInside(...kinds: string[]) { return this.peek()?.isInside(...kinds); }
 
     expect(kind: string, value?: string) {
-        if (this.check(kind, value)) return this.eat();
+        const token = this.eat();
+        if (token?.is(kind, value) && token) return token;
         else {
             const msg = `At token index ${this.state.pos}, Expected ${kind} : ${value ?? "(any value)"} `
                 + `but got ${this.peek()?.kind} : ${this.peek()?.value}`;

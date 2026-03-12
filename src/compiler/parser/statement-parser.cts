@@ -3,7 +3,7 @@ import { Block } from "../ast/block.cjs";
 import { Program } from "../ast/program.cjs";
 import { Parser } from "./parser.cjs";
 import { TokenStream } from "../tokens/token-stream.cjs";
-import { ASTNode, Statement } from "../ast/ast.cjs";
+import { ASTNode, Preprocess, Statement } from "../ast/ast.cjs";
 import { OphoelParseError } from "./parse-error.cjs";
 import { Token } from "../tokens/token.cjs";
 
@@ -16,7 +16,7 @@ type ParserOption = {};
 
 export class StatementParser extends Parser<ParserOption> {
 
-    makeFailure(error: unknown): ParseResult<ParserOption> {
+    makeFailure<result_T>(error: unknown): ParseResult<ParserOption, result_T> {
         return { 
             success: false, 
             error: error
@@ -43,7 +43,7 @@ export class StatementParser extends Parser<ParserOption> {
             token => token.is("RBRACE"));
 
         const bodyResult =
-            new StatementParser({ })
+            new StatementParser(this.state.snapshot().replicate(index))
                 .parseMulti(index);
         
         newParser.expect("RBRACE");
@@ -70,7 +70,7 @@ export class StatementParser extends Parser<ParserOption> {
 
     parseMulti(until: number = this.state.tokens.length()): ParseResult {
         const statements: Statement[] = [];
-        while (this.pos < until) {
+        while (this.state.pos < until) {
             const result = this.parse();
 
             if (!result.success) return result;
@@ -81,16 +81,22 @@ export class StatementParser extends Parser<ParserOption> {
         return this.makeSuccess(statements);
     }
 
-    parse(): ParseResult {
+    parse() {
         const makeCheck = (kind: string, value: string, index: number = 0) => 
-            ((parser: this) => parser.peek(index).is(kind, value));
+            ((parser: this) => parser.peek(index)?.is(kind, value) ?? false);
 
-        const branchMethod = (method: (() => ParseResult)) => {
-            try { return method.call(this.branch()); }
-            catch(err: unknown) { return this.makeFailure(err); }}
+        const branchMethod = (method: (() => Result)): Result => {
+            try { return method.bind(this.branch())(); }
+            catch(err: unknown) { return this.makeFailure<Statement | Preprocess>(err); }}
 
+        type _this = this;
+        type Result = ParseResult<ParserOption, Statement | Preprocess>;
+        type stmtEntry = {
+            condition: (parser: _this) => boolean,
+            method: () => Result
+        }
 
-        const stmtParsers = [
+        const stmtParsers: stmtEntry[] = [
             { condition: makeCheck("KW_DECL", "fn"), method: this.fnDecl },
             { condition: makeCheck("KW_DECL", "macro"), method: this.macroDecl },
             { condition: makeCheck("KW_DECL", "let"), method: this.variableDecl },
@@ -115,14 +121,11 @@ export class StatementParser extends Parser<ParserOption> {
 
 
     fnDecl(){
-        if (!this.check("KW_DECL", "fn")) return this.makeFailure();
-
         const keyword = this.expect("KW_DECL", "fn");
         const fnName = this.expect("IDENTIFIER");
         const paramNames: Token[] = [];
         while (!this.check("RPAREN")) {
             const ident = this.expect("IDENTIFIER");
-            state = ident.state;
             paramNames.push();
             if (this.check("COMMA")) this.eat();
         }
@@ -144,8 +147,6 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     macroDecl() {
-        if (!this.check("KW_DECL", "macro")) return this.makeFailure();
-
         const keyword = this.expect("KW_DECL", "macro");
         const macroName = this.expect("IDENTIFIER");
         this.expect("LPAREN");
@@ -170,19 +171,13 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     variableDecl() {
-        if (!this.check("KW_DECL", "let")
-            && !this.check("KW_DECL", "const")) {
-
-            return this.makeFailure();
-        }
-
         const keyword = this.expect("KW_DECL");
         const mutability = keyword.is("KW_DECL", "const");
         const varName = this.expect("IDENTIFIER");
         this.expect("EQUAL");
         const expression = new ExpressionParser(
-            this.getUntil(token => token.is("SEMICOLON")),
-            this.state.config
+            this.getUntil(token => token.is("SEMICOLON"))
+            //this.state.config
         ).parse();
         this.expect("SEMICOLON");
 
@@ -197,7 +192,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     choose() {
-        if (!this.check("KW_CONTROL", "choose")) return this.makeFailure();
+        
 
         const keyword = this.expect("KW_CONTROL", "choose");
         const weights = [];
@@ -228,7 +223,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     if() {
-        if (!this.check("KW_CONTROL", "if")) return this.makeFailure();
+        
 
         const keyword = this.expect("KW_CONTROL", "if");
 
@@ -261,7 +256,7 @@ export class StatementParser extends Parser<ParserOption> {
 
 
     for() {
-        if (!this.check("KW_CONTROL", "for")) return this.makeFailure();
+        
 
         const keyword = this.expect("KW_CONTROL", "for");
 
@@ -296,7 +291,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     mcCommand() {
-        if (!this.check("KW_CONTROL", "mc_")) return this.makeFailure();
+        
 
         const keyword = this.expect("KW_CONTROL", "if");
 
@@ -328,7 +323,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     mcExec() {
-        if (!this.check("KW_OPHOEL", "mc_exec")) return this.makeFailure();
+        
 
         const keyword = this.expect("KW_OPHOEL", "mc_exec");
         const prefix = this.parseParenExpr();
@@ -343,7 +338,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     repeat() {
-        if (!this.check("KW_CONTROL", "while")) return this.makeFailure();
+        
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
@@ -351,14 +346,14 @@ export class StatementParser extends Parser<ParserOption> {
         if (!bodyResult.success) return bodyResult;
         const body = bodyResult.result;
 
-        const node = new ASTCollection.WhileStatement(
+        const node = new ASTCollection.RepeatStatement(
             condition, body, keyword.location);
 
         return this.makeSuccess(node);
     }
 
     while() {
-        if (!this.check("KW_CONTROL", "while")) return this.makeFailure();
+        
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
@@ -373,7 +368,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     include() {
-        if (!this.check("KW_PREPROCESS", "include")) return this.makeFailure();
+        
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
@@ -381,15 +376,15 @@ export class StatementParser extends Parser<ParserOption> {
         if (!bodyResult.success) return bodyResult;
         const body = bodyResult.result;
 
-        const node = new ASTCollection.WhileStatement(
-            condition, body, keyword.location);
+        const node = new ASTCollection.Include(
+            "foo", keyword.location);
 
         return this.makeSuccess(node);
     }
 
 
     execExpr() {
-        if (!this.check("KW_PREPROCESS", "include")) return this.makeFailure();
+        
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
@@ -397,8 +392,8 @@ export class StatementParser extends Parser<ParserOption> {
         if (!bodyResult.success) return bodyResult;
         const body = bodyResult.result;
 
-        const node = new ASTCollection.WhileStatement(
-            condition, body, keyword.location);
+        const node = new ASTCollection.ExecuteExpression(
+            condition, keyword.location);
 
         return this.makeSuccess(node);
     }

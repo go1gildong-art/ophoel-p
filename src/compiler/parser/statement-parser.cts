@@ -16,42 +16,51 @@ type ParserOption = {};
 
 export class StatementParser extends Parser<ParserOption> {
 
-    makeFailure<result_T>(error: unknown): ParseResult<ParserOption, result_T> {
-        return { 
-            success: false, 
-            error: error
-        }; 
+    safeWrap<result_T>(fn: (...args: any[]) => ParseResult<ParserOption, result_T>, ...args: any[]) {
+        try { return fn(...args); }
+        catch (err: unknown) { return this.makeFailure<result_T>(err); }
     }
-    
-    makeSuccess<result_T>(node: result_T): ParseResult<ParserOption, result_T> { 
-        return { 
-            success: true, 
+
+    makeFailure<result_T>(error: unknown): ParseResult<ParserOption, result_T> {
+        return {
+            success: false,
+            error: error
+        };
+    }
+
+    makeSuccess<result_T>(node: result_T): ParseResult<ParserOption, result_T> {
+        return {
+            success: true,
             result: node,
             state: this.state.snapshot()
-        }; 
+        };
     }
 
     unwrapProgram(program: Program) { return program.body; }
 
     parseBlock() {
-        let newParser = this.branch();
+        const inner = () => {
+            let newParser = this.branch();
 
-        const startBrace = newParser.expect("LBRACE");
+            const startBrace = newParser.expect("LBRACE");
 
-        const index = newParser.findIndexBetween(
-            token => token.is("LBRACE"),
-            token => token.is("RBRACE"));
+            const index = newParser.findIndexBetween(
+                token => token.is("LBRACE"),
+                token => token.is("RBRACE"));
 
-        const bodyResult =
-            new StatementParser(this.state.snapshot().replicate(index))
-                .parseMulti(index);
-        
-        newParser.expect("RBRACE");
-            
-        if (!bodyResult.success) return bodyResult;
-        this.update(bodyResult);
-        const block = new Block(bodyResult.result, startBrace.location);
-        return this.makeSuccess(block)
+            const bodyResult =
+                new StatementParser(this.state.snapshot().replicate(index))
+                    .parseMulti(index);
+
+            newParser.expect("RBRACE");
+
+            if (!bodyResult.success) throw bodyResult.error;
+            this.update(bodyResult);
+            const block = new Block(bodyResult.result, startBrace.location);
+            return this.makeSuccess(block);
+        };
+
+        return this.safeWrap(inner);
     }
 
     parseParenExpr() {
@@ -68,7 +77,7 @@ export class StatementParser extends Parser<ParserOption> {
         return expr;
     }
 
-    parseMulti(until: number = this.state.tokens.length()): ParseResult {
+    parseMulti(until: number = this.state.tokens.length()) {
         const statements: Statement[] = [];
         while (this.state.pos < until) {
             const result = this.parse();
@@ -81,13 +90,9 @@ export class StatementParser extends Parser<ParserOption> {
         return this.makeSuccess(statements);
     }
 
-    parse() {
-        const makeCheck = (kind: string, value: string, index: number = 0) => 
+    parse(): ParseResult<ParserOption, Statement | Preprocess> {
+        const makeCheck = (kind: string, value: string, index: number = 0) =>
             ((parser: this) => parser.peek(index)?.is(kind, value) ?? false);
-
-        const branchMethod = (method: (() => Result)): Result => {
-            try { return method.bind(this.branch())(); }
-            catch(err: unknown) { return this.makeFailure<Statement | Preprocess>(err); }}
 
         type _this = this;
         type Result = ParseResult<ParserOption, Statement | Preprocess>;
@@ -107,20 +112,21 @@ export class StatementParser extends Parser<ParserOption> {
             { condition: makeCheck("KW_CONTROL", "mc_exec"), method: this.mcExec },
             { condition: makeCheck("KW_CONTROL", "repeat"), method: this.repeat },
             { condition: makeCheck("KW_CONTROL", "while"), method: this.while },
-            { condition: makeCheck("KW_PREPROCESS","include"), method: this.include }
+            { condition: makeCheck("KW_PREPROCESS", "include"), method: this.include }
         ];
 
-        const result = stmtParsers
-        .filter( entry => entry.condition(this) )
-        .map( entry => branchMethod(entry.method) )[0]
-        ?? this.branch().execExpr();        
+        const result: Result = stmtParsers
+            .filter(entry => entry.condition(this))
+            .map(entry => entry.method.bind(this.branch()))
+            .map(method => this.safeWrap(method))[0]
+            ?? this.safeWrap(this.branch().execExpr);
 
         return result;
     }
 
 
 
-    fnDecl(){
+    fnDecl() {
         const keyword = this.expect("KW_DECL", "fn");
         const fnName = this.expect("IDENTIFIER");
         const paramNames: Token[] = [];
@@ -156,7 +162,7 @@ export class StatementParser extends Parser<ParserOption> {
             paramNames.push(this.expect("IDENTIFIER"));
             if (this.check("COMMA")) this.eat();
         }
-                const bodyResult = this.parseBlock();
+        const bodyResult = this.parseBlock();
         if (!bodyResult.success) return bodyResult;
         const body = bodyResult.result;
 
@@ -192,7 +198,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     choose() {
-        
+
 
         const keyword = this.expect("KW_CONTROL", "choose");
         const weights = [];
@@ -223,7 +229,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     if() {
-        
+
 
         const keyword = this.expect("KW_CONTROL", "if");
 
@@ -256,7 +262,7 @@ export class StatementParser extends Parser<ParserOption> {
 
 
     for() {
-        
+
 
         const keyword = this.expect("KW_CONTROL", "for");
 
@@ -291,7 +297,7 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     mcCommand() {
-        
+
 
         const keyword = this.expect("KW_CONTROL", "if");
 
@@ -323,11 +329,11 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     mcExec() {
-        
+
 
         const keyword = this.expect("KW_OPHOEL", "mc_exec");
         const prefix = this.parseParenExpr();
-                const bodyResult = this.parseBlock();
+        const bodyResult = this.parseBlock();
         if (!bodyResult.success) return bodyResult;
         const body = bodyResult.result;
 
@@ -338,11 +344,11 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     repeat() {
-        
+
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
-                const bodyResult = this.parseBlock();
+        const bodyResult = this.parseBlock();
         if (!bodyResult.success) return bodyResult;
         const body = bodyResult.result;
 
@@ -353,11 +359,11 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     while() {
-        
+
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
-                const bodyResult = this.parseBlock();
+        const bodyResult = this.parseBlock();
         if (!bodyResult.success) return bodyResult;
         const body = bodyResult.result;
 
@@ -368,11 +374,11 @@ export class StatementParser extends Parser<ParserOption> {
     }
 
     include() {
-        
+
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
-                const bodyResult = this.parseBlock();
+        const bodyResult = this.parseBlock();
         if (!bodyResult.success) return bodyResult;
         const body = bodyResult.result;
 
@@ -384,11 +390,11 @@ export class StatementParser extends Parser<ParserOption> {
 
 
     execExpr() {
-        
+
 
         const keyword = this.expect("KW_CONTROL", "while");
         const condition = this.parseParenExpr();
-                const bodyResult = this.parseBlock();
+        const bodyResult = this.parseBlock();
         if (!bodyResult.success) return bodyResult;
         const body = bodyResult.result;
 

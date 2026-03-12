@@ -23,25 +23,54 @@ export class ExpressionParser extends Parser<ParserOption> {
         const makeCheckInside = (...kind: string[]) =>
             ((parser: this) => parser.peek(index)?.isInside(...kind) ?? false);
 
+        enum BindPower {
+            INITIAL,
+            ASSIGN,
+            ADD,
+            MULTIPLY,
+            COMPARE,
+            OR,
+            AND,
+            ACCESS,
+            CALL,
+            POSTFIX
+        }
 
+        const compoundAssigns = [
+            "PLUSCASSIGN", 
+            "MINUSCASSIGN", 
+            "MULTIPLYCASSIGN", 
+            "DIVIDECASSIGN", 
+            "REMAINDERCASSIGN"
+        ];
 
-        const compoundAssigns = ["PLUSCASSIGN", "MINUSCASSIGN", "MULTIPLYCASSIGN", "DIVIDECASSIGN", "REMAINDERCASSIGN"];
-        
+        const comparisons = [
+            "EQUAL", 
+            "NOTEQUAL", 
+            "LESS", 
+            "MORE", 
+            "EQLESS", 
+            "EQMORE"
+        ];
+
         const bindpowerTable = [
-            { bindpoewr: 10, condition: makeCheckInside("ASSIGN", ...compoundAssigns)},
-            { bindpower: 10, condition: makeCheckInside("PLUS", "DASH") },
-            { bindpower: 20, condition: makeCheckInside("ASTERISK", "SLASH", "PERCENT") },
-            { bindpower: 30, condition: makeCheckInside("EQUAL", "NOTEQUAL", "LESS", "MORE", "EQLESS", "EQMORE") },
-            { bindpower: 40, condition: makeCheck("OR") },
-            { bindpower: 50, condition: makeCheck("AND") },
-            { bindpower: 40, condition: makeCheck("LBRACKET") },
-            { bindpower: 91, condition: makeCheck("LBRACE") }
+            { bindpower: BindPower.ASSIGN, condition: makeCheckInside("ASSIGN", ...compoundAssigns)},
+            { bindpower: BindPower.ADD, condition: makeCheckInside("PLUS", "DASH") },
+            { bindpower: BindPower.MULTIPLY, condition: makeCheckInside("ASTERISK", "SLASH", "PERCENT") },
+            { bindpower: BindPower.COMPARE, condition: makeCheckInside(...comparisons) },
+            { bindpower: BindPower.OR, condition: makeCheck("OR") },
+            { bindpower: BindPower.AND, condition: makeCheck("AND") },
+            { bindpower: BindPower.ACCESS, condition: makeCheck("PERIOD", "LBRACKET") },
+            { bindpower: BindPower.CALL, condition: makeCheck("LPAREN") },
+            { bindpower: BindPower.POSTFIX, condition: makeCheckInside("DOUBLEPLUS", "DOUBLEDASH")},
         ]
 
         function parseAtomic() {
             const token = this.eat();
 
             if (paren) parseParen();
+            elif (bang) parseNot();
+            elif (++ | --) parsePreUnary();
             elif (num) parseNum();
             elif (quote) parseStr();
             elif (true | false) parseBool();
@@ -49,6 +78,13 @@ export class ExpressionParser extends Parser<ParserOption> {
             elif (Lbracket) parseArr();
             elif (Lcbrace) parseObj();
             elif (ident) parseIdent(); // will handle ident vs funciton vs macro
+        }
+
+        function parseExpr() {
+            parseAtomic();
+            bindpowerTable
+            .filter(entry => entry.condition(this))
+            
         }
 
         const left = this.eat();

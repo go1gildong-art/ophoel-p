@@ -1,5 +1,5 @@
 import { Expression, LValue } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Location } from "../../compiler/metadata.cjs";
 
 export enum BinaryOperator {
     ADD,

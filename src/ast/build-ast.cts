@@ -1,6 +1,6 @@
 import * as Literals from "./expressions/literals.cjs";
 import * as Operations from "./expressions/operations.cjs";
-import { Identifier } from "../../compiler-old/ast";
+import { Identifier } from "../ast/expressions/identifier.cjs";
 import { VariableAssign } from "./expressions/var-assign.cjs";
 import { CompoundAssign } from "./expressions/compound-assign.cjs";
 

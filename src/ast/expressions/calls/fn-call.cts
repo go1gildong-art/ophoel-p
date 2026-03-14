@@ -1,5 +1,5 @@
 import { Expression } from "../../ast.cjs";
-import { Location } from "../../../metadata.cjs";
+import { Location } from "../../../compiler/metadata.cjs";
 
 
 export class FunctionCall implements Expression {

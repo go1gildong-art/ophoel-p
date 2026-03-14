@@ -36,7 +36,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ASTCollection = void 0;
 const Literals = __importStar(require("./expressions/literals.cjs"));
 const Operations = __importStar(require("./expressions/operations.cjs"));
-const ast_1 = require("../../compiler-old/ast");
+const identifier_cjs_1 = require("../ast/expressions/identifier.cjs");
 const var_assign_cjs_1 = require("./expressions/var-assign.cjs");
 const compound_assign_cjs_1 = require("./expressions/compound-assign.cjs");
 const choose_cjs_1 = require("./statements/choose.cjs");
@@ -76,7 +76,7 @@ exports.ASTCollection = {
     CompoundAssign: compound_assign_cjs_1.CompoundAssign,
     FunctionCall: fn_call_cjs_1.FunctionCall,
     MacroCall: macro_call_cjs_1.MacroCall,
-    Identifier: ast_1.Identifier,
+    Identifier: identifier_cjs_1.Identifier,
     ChooseStatement: choose_cjs_1.ChooseStatement,
     ForStatement: for_cjs_1.ForStatement,
     ForOfStatement: for_of_cjs_1.ForOfStatement,

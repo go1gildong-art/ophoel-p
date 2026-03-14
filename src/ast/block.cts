@@ -1,5 +1,5 @@
 import { Statement } from "./ast.cjs";
-import { Location } from "../metadata.cjs";
+import { Location } from "../compiler/metadata.cjs";
 import { ASTNode } from "./ast.cjs";
 
 export class Block implements ASTNode {

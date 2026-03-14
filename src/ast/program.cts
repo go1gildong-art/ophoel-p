@@ -1,4 +1,4 @@
-import { Location } from "../metadata.cjs";
+import { Location } from "../compiler/metadata.cjs";
 import { Block } from "./block.cjs";
 import { ASTNode, Statement } from "./ast.cjs";
 

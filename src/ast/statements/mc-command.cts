@@ -1,5 +1,5 @@
 import { Expression, Statement } from "../ast.cjs";
-import { Location } from "../../metadata.cjs";
+import { Location } from "../../compiler/metadata.cjs";
 
 
 export class McCommand implements Statement {

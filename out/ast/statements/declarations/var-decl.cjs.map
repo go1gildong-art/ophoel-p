@@ -1,1 +1,0 @@
-{"version":3,"file":"var-decl.cjs","sourceRoot":"","sources":["../../../../src/ast/statements/declarations/var-decl.cts"],"names":[],"mappings":";;;AAIA,MAAa,YAAY;IAGrB,YACW,IAAY,EACZ,UAAmB,EACnB,SAAqB,EACrB,QAAkB;QAHlB,SAAI,GAAJ,IAAI,CAAQ;QACZ,eAAU,GAAV,UAAU,CAAS;QACnB,cAAS,GAAT,SAAS,CAAY;QACrB,aAAQ,GAAR,QAAQ,CAAU;QAN7B,SAAI,GAAG,cAAc,CAAC;IAMU,CAAC;CACpC;AARD,oCAQC"}

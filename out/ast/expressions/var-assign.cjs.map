@@ -1,1 +1,0 @@
-{"version":3,"file":"var-assign.cjs","sourceRoot":"","sources":["../../../src/ast/expressions/var-assign.cts"],"names":[],"mappings":";;;AAIA,MAAa,cAAc;IAGvB,YACW,OAAmB,EACnB,QAAoB,EACpB,QAAkB;QAFlB,YAAO,GAAP,OAAO,CAAY;QACnB,aAAQ,GAAR,QAAQ,CAAY;QACpB,aAAQ,GAAR,QAAQ,CAAU;QAL7B,SAAI,GAAG,gBAAgB,CAAC;IAKQ,CAAC;CACpC;AAPD,wCAOC"}

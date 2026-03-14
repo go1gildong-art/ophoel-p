@@ -1,8 +1,8 @@
 import { parseDSL } from './parser.cjs';
 
 const code = `
-inject hello world;
-10 + + 10;
+say!! "Hello, World!";
+10 + 10;
 `;
 
 try {

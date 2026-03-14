@@ -2,7 +2,9 @@ Ophoel {
   // The entry point
   Program = Statement*
 
-  Statement = InjectStmt | ExecExpr
+  Statement = InjectStmt | ExecExpr | McCommand
+
+  McCommand = ident "!!" Expr ";"
   
   // "inject" followed by a string and a semicolon
   InjectStmt = "inject" Expr ";"
@@ -23,4 +25,6 @@ Ophoel {
   string = "\"" (~"\"" any)* "\""
   number = digit+
   // space += "//" (~"\n" any)* // This adds support for // comments
+
+  ident = letter (alnum | "_")+
 }

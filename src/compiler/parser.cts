@@ -5,6 +5,7 @@ import { Location } from './metadata.cjs'; // Your existing class
 import { ASTCollection } from '../ast/build-ast.cjs'; // Your nodes
 import { BinaryOperator } from '../ast/expressions/operations.cjs';
 import { McCommand } from '../ast/statements/mc-command.cjs';
+import { ExecuteExpression } from '../ast/statements/execute-expr.cjs';
 
 // 1. Load the grammar
 // This builds an absolute path regardless of where you run the command from
@@ -35,6 +36,14 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
             getLoc(kw, __filename)
         );
     },
+
+    McCommand(cmd, _dbang, arg, _semi) {
+        return new McCommand(
+            cmd.sourceString,
+            arg.toAST(__filename),
+            getLoc(cmd, __filename)
+        );
+    },
     
     string(_openQuote, chars, _closeQuote) {
         // .sourceString gives you the raw text of the characters rule
@@ -58,6 +67,13 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
             BinaryOperator.ADD,
             right.toAST(__filename),
             getLoc(op, __filename)
+        );
+    },
+
+    ExecExpr(expr, _semi) {
+        return new ASTCollection.ExecuteExpression(
+            expr.toAST(__filename),
+            getLoc(expr, __filename)
         );
     },
 

@@ -1,0 +1,21 @@
+import { readdir } from "fs/promises";
+import { join } from "path";
+import path from "node:path";
+
+export async function loadTests<T>(folder: string): Promise<T[]> {
+  const entries = await readdir(folder);
+
+  const testFiles = entries.filter(
+    name => name.startsWith("test_") && name.endsWith(".cjs")
+  );
+
+  const tests: T[] = [];
+
+  for (const file of testFiles) {
+    const fullPath = path.resolve(join(folder, file));
+    const module = require(fullPath);
+    tests.push(module.unit);
+  }
+
+  return tests;
+}

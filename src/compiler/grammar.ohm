@@ -1,0 +1,24 @@
+Ophoel {
+  // The entry point
+  Program = Statement*
+
+  Statement = InjectStmt | ExprStmt
+  
+  // "inject" followed by a string and a semicolon
+  InjectStmt = "inject" string ";"
+  
+  // A simple expression statement
+  ExprStmt = AddExp
+  
+  // Binary Expression (Left-associative)
+  AddExp = AddExp "+" MulExp  -- plus
+         | AddExp "-" MulExp  -- minus
+         | MulExp
+         
+  MulExp = number
+  
+  // Terminals
+  string = "\"" (~"\"" any)* "\""
+  number = digit+
+  space += "//" (~"\n" any)* // This adds support for // comments
+}

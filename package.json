@@ -2,57 +2,71 @@
   "name": "ophoel-language",
   "displayName": "Ophoel Language Support",
   "version": "0.1.0",
-
-  "engines": { "vscode": "^1.88.0" },
-
-  "categories": [ "Programming Languages" ],
-
-  
-
-  "contributes": {
-    "languages": [{
-      "id": "ophoel",
-      "aliases": ["Ophoel", "oph"],
-      "extensions": [".oph"],
-      "configuration": "./language-configuration.json"
-    }],
-
-    "grammars": [{
-      "language": "ophoel",
-      "scopeName": "source.oph",
-      "path": "./syntaxes/ophoel.tmLanguage.json"
-    }]
+  "engines": {
+    "vscode": "^1.88.0"
   },
-
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "ophoel",
+        "aliases": [
+          "Ophoel",
+          "oph"
+        ],
+        "extensions": [
+          ".oph"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ophoel",
+        "scopeName": "source.oph",
+        "path": "./syntaxes/ophoel.tmLanguage.json"
+      }
+    ]
+  },
   "main": "./out/extension.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/skibidi/ophoel-formatter"
+    "url": "git+https://github.com/skibidi/ophoel-formatter.git"
   },
   "scripts": {
     "compile": "tsc",
     "watch": "npx tsc -w",
-
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "node build.js",
     "dev": "nodemon --prefix \"C:/Users/nines/Desktop/릴름즈/ophoel/\" --watch \"ophoel_config.json\" --watch \"data/*/ophoel\" --ext oph,json --exec \"node ./src/compiler/build.js\""
   },
   "devDependencies": {
-    "@types/node": "^20.19.28",
+    "@types/node": "^20.19.37",
     "@types/vscode": "^1.88.0",
-    "typescript": "^5.2.2"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
   },
-
   "activationEvents": [
     "onLanguage:ophoel"
   ],
-
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bin": {
-    "ophoel-build": "./src/compiler/build.js"
+    "ophoel-build": "src/compiler/build.js"
+  },
+  "description": "sch commit test",
+  "directories": {
+    "test": "tests"
+  },
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/skibidi/ophoel-formatter/issues"
+  },
+  "homepage": "https://github.com/skibidi/ophoel-formatter#readme",
+  "dependencies": {
+    "ohm-js": "^17.5.0"
   }
-
-
 }

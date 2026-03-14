@@ -1,8 +1,8 @@
 import { parseDSL } from './parser.cjs';
 
 const code = `
-"hello world";
-10 + 20
+inject hello world;
+10 + + 10;
 `;
 
 try {
@@ -10,6 +10,7 @@ try {
     console.log("AST successfully generated:");
     console.log(JSON.stringify(ast, null, 2));
 } catch (e) {
+    // throw e;
     if (e instanceof Error) console.error(e.message);
     else throw e;
 }

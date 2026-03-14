@@ -2,23 +2,25 @@ Ophoel {
   // The entry point
   Program = Statement*
 
-  Statement = InjectStmt | ExprStmt
+  Statement = InjectStmt | ExecExpr
   
   // "inject" followed by a string and a semicolon
-  InjectStmt = "inject" string ";"
+  InjectStmt = "inject" Expr ";"
   
+  ExecExpr = Expr ";"
+
   // A simple expression statement
-  ExprStmt = AddExp
+  Expr = AddExp
   
   // Binary Expression (Left-associative)
   AddExp = AddExp "+" MulExp  -- plus
          | AddExp "-" MulExp  -- minus
          | MulExp
          
-  MulExp = number
+  MulExp = number | string
   
   // Terminals
   string = "\"" (~"\"" any)* "\""
   number = digit+
-  space += "//" (~"\n" any)* // This adds support for // comments
+  // space += "//" (~"\n" any)* // This adds support for // comments
 }

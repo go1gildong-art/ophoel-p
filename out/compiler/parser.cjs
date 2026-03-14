@@ -35,37 +35,42 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseDSL = parseDSL;
 const ohm = __importStar(require("ohm-js"));
+const path = __importStar(require("path"));
 const fs = __importStar(require("fs"));
 const metadata_cjs_1 = require("./metadata.cjs"); // Your existing class
 const build_ast_cjs_1 = require("../ast/build-ast.cjs"); // Your nodes
 const operations_cjs_1 = require("../ast/expressions/operations.cjs");
+const mc_command_cjs_1 = require("../ast/statements/mc-command.cjs");
 // 1. Load the grammar
-const grammarSource = fs.readFileSync('./src/grammar.ohm', 'utf-8');
+// This builds an absolute path regardless of where you run the command from
+// We go up from 'out/' to the root, then into 'src/compiler/'
+const grammarPath = path.join(__dirname, '..', '..', 'src', 'compiler', 'grammar.ohm');
+const grammarSource = fs.readFileSync('./src/compiler/grammar.ohm', 'utf-8');
 const myGrammar = ohm.grammar(grammarSource);
 // 2. Helper to create your Location object from an Ohm node
 function getLoc(node, fileName) {
     const { lineNum, colNum } = node.source.getLineAndColumn();
     // node.source.start is the character offset
-    return new metadata_cjs_1.Location(fileName, lineNum, colNum, node.source.start);
+    return new metadata_cjs_1.Location(fileName, lineNum, colNum, node.source.startIdx);
 }
 // 3. Define Semantics
 const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     Program(statements) {
         return statements.toAST(__filename);
     },
-    /*
     InjectStmt(kw, str, _semi) {
-        return new InjectNode(
-            str.sourceString.replace(/"/g, ''), // clean quotes
-            getLoc(kw, __filename)
-        );
+        return new mc_command_cjs_1.McCommand("foo", str.toAST(__filename), getLoc(kw, __filename));
     },
-    */
-    AddExp_plus(left, op, right) {
-        return new build_ast_cjs_1.ASTCollection.BinaryOperation(left.toAST(__filename), operations_cjs_1.BinaryOperator.ADD, right.toAST(__filename), getLoc(op, __filename));
+    string(_openQuote, chars, _closeQuote) {
+        // .sourceString gives you the raw text of the characters rule
+        return new build_ast_cjs_1.ASTCollection.StringLiteral(chars.sourceString, getLoc(chars, __filename));
     },
+    // If you have a 'number' rule, you'll need this too:
     number(digits) {
         return new build_ast_cjs_1.ASTCollection.IntLiteral(parseInt(digits.sourceString).toString(), getLoc(digits, __filename));
+    },
+    AddExp_plus(left, op, right) {
+        return new build_ast_cjs_1.ASTCollection.BinaryOperation(left.toAST(__filename), operations_cjs_1.BinaryOperator.ADD, right.toAST(__filename), getLoc(op, __filename));
     },
     // Built-in Ohm iteration handler (for the * in Statement*)
     _iter(...children) {

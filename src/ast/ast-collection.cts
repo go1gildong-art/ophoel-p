@@ -1,6 +1,6 @@
 import * as Literals from "./expressions/literals.cjs";
 import * as Operations from "./expressions/operations.cjs";
-import { Identifier } from "../ast/expressions/identifier.cjs";
+import { Identifier } from "./expressions/identifier.cjs";
 import { VariableAssign } from "./expressions/var-assign.cjs";
 import { CompoundAssign } from "./expressions/compound-assign.cjs";
 
@@ -29,7 +29,7 @@ import { Block } from "./block.cjs";
 import { Program } from "./program.cjs";
 
 
-export const ASTCollection = {
+export const ASTs = {
     Block,
     Program,
 

@@ -2,7 +2,7 @@ import * as ohm from 'ohm-js';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Location } from './metadata.cjs'; // Your existing class
-import { ASTCollection } from '../ast/build-ast.cjs'; // Your nodes
+import { ASTs } from '../ast/ast-collection.cjs'; // Your nodes
 import { BinaryOperator } from '../ast/expressions/operations.cjs';
 import { McCommand } from '../ast/statements/mc-command.cjs';
 import { ExecuteExpression } from '../ast/statements/execute-expr.cjs';
@@ -47,7 +47,7 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     
     string(_openQuote, chars, _closeQuote) {
         // .sourceString gives you the raw text of the characters rule
-        return new ASTCollection.StringLiteral(
+        return new ASTs.StringLiteral(
             chars.sourceString,
             getLoc(chars, __filename)
         );
@@ -55,14 +55,14 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
 
     // If you have a 'number' rule, you'll need this too:
     number(digits) {
-        return new ASTCollection.IntLiteral(
+        return new ASTs.IntLiteral(
             parseInt(digits.sourceString).toString(),
             getLoc(digits, __filename)
         );
     },
 
     AddExp_plus(left, op, right) {
-        return new ASTCollection.BinaryOperation(
+        return new ASTs.BinaryOperation(
             left.toAST(__filename),
             BinaryOperator.ADD,
             right.toAST(__filename),
@@ -71,7 +71,7 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     },
 
     ExecExpr(expr, _semi) {
-        return new ASTCollection.ExecuteExpression(
+        return new ASTs.ExecuteExpression(
             expr.toAST(__filename),
             getLoc(expr, __filename)
         );

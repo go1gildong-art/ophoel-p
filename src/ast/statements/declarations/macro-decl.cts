@@ -1,9 +1,9 @@
-import { Statement } from "../../ast.cjs";
+import { Statement, ASTKind } from "../../ast.cjs";
 import { Location } from "../../../compiler/metadata.cjs";
 import { Block } from "../../block.cjs";
 
 export class MacroDecl implements Statement {
-    kind = "MacroDecl";
+    kind = ASTKind.MacroDecl;
 
     constructor(
         public name: string,

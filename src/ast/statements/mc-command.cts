@@ -1,9 +1,9 @@
-import { Expression, Statement } from "../ast.cjs";
+import { Expression, Statement, ASTKind } from "../ast.cjs";
 import { Location } from "../../compiler/metadata.cjs";
 
 
 export class McCommand implements Statement {
-    kind = "McCommand";
+    kind = ASTKind.McCommand;
 
     constructor(
         public command: string,

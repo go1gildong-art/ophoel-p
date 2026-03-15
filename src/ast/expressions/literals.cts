@@ -1,8 +1,8 @@
-import { ASTNode, Expression } from "../ast.cjs";
+import { ASTNode, Expression, ASTKind } from "../ast.cjs";
 import { Location } from "../../compiler/metadata.cjs";
 
 export class BoolLiteral implements Expression {
-    kind = "BoolLiteral";
+    kind = ASTKind.BoolLiteral;
 
     constructor(
         public raw: string,
@@ -10,7 +10,7 @@ export class BoolLiteral implements Expression {
 }
 
 export class CompoundLiteral implements Expression {
-    kind = "CompoundLiteral";
+    kind = ASTKind.CompoundLiteral;
 
     constructor(
         public keys: string[], 
@@ -19,7 +19,7 @@ export class CompoundLiteral implements Expression {
 }
 
 export class FloatLiteral implements Expression {
-    kind = "FloatLiteral";
+    kind = ASTKind.FloatLiteral;
 
     constructor(
         public raw: string,
@@ -27,7 +27,7 @@ export class FloatLiteral implements Expression {
 }
 
 export class IntLiteral implements Expression {
-    kind = "IntLiteral";
+    kind = ASTKind.IntLiteral;
 
     constructor(
         public raw: string,
@@ -35,7 +35,7 @@ export class IntLiteral implements Expression {
 }
 
 export class StringLiteral implements Expression {
-    kind = "StringLiteral";
+    kind = ASTKind.StringLiteral;
 
     constructor(
         public raw: string,
@@ -43,7 +43,7 @@ export class StringLiteral implements Expression {
 }
 
 export class TemplateStringLiteral implements Expression {
-    kind = "TemplateStringLiteral";
+    kind = ASTKind.TemplateStringLiteral;
     
     constructor(
         public quasis: string[],
@@ -52,7 +52,7 @@ export class TemplateStringLiteral implements Expression {
 }
 
 export class VectorLiteral implements Expression {
-    kind = "VectorLiteral";
+    kind = ASTKind.VectorLiteral;
 
     constructor(
         public entries: Expression[],

@@ -1,9 +1,8 @@
-import { Statement } from "../ast.cjs";
-import { Expression } from "../ast.cjs";
+import { Statement, Expression, ASTKind } from "../ast.cjs";
 import { Location } from "../../compiler/metadata.cjs";
 
 export class ExecuteExpression implements Statement {
-    kind = "ExecuteExpression";
+    kind = ASTKind.ExecuteExpression;
 
     constructor(
         public expression: Expression,

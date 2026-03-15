@@ -1,9 +1,9 @@
 import { Statement } from "../ast.cjs";
-import { Expression } from "../ast.cjs";
+import { Expression, ASTKind } from "../ast.cjs";
 import { Location } from "../../compiler/metadata.cjs";
 
 export class VariableAssign implements Expression {
-    kind = "VariableAssign";
+    kind = ASTKind.VariableAssign;
 
     constructor(
         public address: Expression,

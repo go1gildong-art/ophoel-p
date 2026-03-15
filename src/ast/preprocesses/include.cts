@@ -1,9 +1,9 @@
-import { Expression, Preprocess, Statement } from "../ast.cjs";
+import { Expression, Preprocess, Statement, ASTKind } from "../ast.cjs";
 import { Location } from "../../compiler/metadata.cjs";
 
 
 export class Include implements Preprocess {
-    kind = "Include";
+    kind = ASTKind.Include;
 
     constructor(
         public path: string,

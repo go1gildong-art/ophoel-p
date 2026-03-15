@@ -1,11 +1,10 @@
-import { Statement } from "../ast.cjs";
-import { Expression } from "../ast.cjs";
+import { Statement, Expression, ASTKind } from "../ast.cjs";
 import { Location } from "../../compiler/metadata.cjs";
 import { Block } from "../block.cjs";
 
 export type CondBodySet = { condition: Expression, body: Statement }
 export class IfStatement implements Statement {
-    kind = "IfStatement";
+    kind = ASTKind.IfStatement;
 
     constructor(
         public ifSignature: CondBodySet,

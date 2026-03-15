@@ -1,9 +1,8 @@
-import { Statement } from "../../ast.cjs";
-import { Expression } from "../../ast.cjs";
+import { Statement, Expression, ASTKind } from "../../ast.cjs";
 import { Location } from "../../../compiler/metadata.cjs";
 
 export class VariableDecl implements Statement {
-    kind = "VariableDecl";
+    kind = ASTKind.VariableDecl;
 
     constructor(
         public name: string,

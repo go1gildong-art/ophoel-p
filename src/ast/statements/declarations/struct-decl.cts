@@ -1,8 +1,8 @@
-import { Statement } from "../../ast.cjs";
+import { Statement, ASTKind } from "../../ast.cjs";
 import { Location } from "../../../compiler/metadata.cjs";
 
 export class StructDecl implements Statement {
-    kind = "StructDecl";
+    kind = ASTKind.StructDecl;
 
     constructor(
         public name: string,

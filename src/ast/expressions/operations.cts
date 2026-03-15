@@ -1,4 +1,4 @@
-import { Expression, LValue } from "../ast.cjs";
+import { Expression, LValue, ASTKind } from "../ast.cjs";
 import { Location } from "../../compiler/metadata.cjs";
 
 export enum BinaryOperator {
@@ -19,7 +19,7 @@ export enum BinaryOperator {
     CMPARE_SSMALLER
 };
 export class BinaryOperation implements Expression {
-    kind = "BinaryOperation";
+    kind = ASTKind.BinaryOperation;
 
     constructor(
         public left: Expression, 
@@ -36,7 +36,7 @@ export enum UnaryOperator {
     LOGIC_NOT
 };
 export class PreUnary implements Expression {
-    kind = "PreUnary";
+    kind = ASTKind.PreUnary;
 
     constructor(
         public operator: UnaryOperator, 
@@ -46,7 +46,7 @@ export class PreUnary implements Expression {
 
 
 export class PostUnary implements Expression {
-    kind = "PostUnary";
+    kind = ASTKind.PostUnary;
 
     constructor(
         public operator: UnaryOperator, 
@@ -56,7 +56,7 @@ export class PostUnary implements Expression {
 
 
 export class IndexAccess implements LValue {
-    kind = "IndexAccess";
+    kind = ASTKind.IndexAccess;
 
     constructor(
         public left: Expression, 
@@ -65,7 +65,7 @@ export class IndexAccess implements LValue {
 }
 
 export class MemberAccess implements LValue {
-    kind = "MemberAccess";
+    kind = ASTKind.MemberAccess;
 
     constructor(
         public left: Expression, 

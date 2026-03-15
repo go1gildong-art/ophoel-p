@@ -9,6 +9,6 @@ export class ForOfStatement implements Statement {
     constructor(
         public iterator: string,
         public target: Expression,
-        public body: Block,
+        public body: Statement,
         public location: Location) {}
 }

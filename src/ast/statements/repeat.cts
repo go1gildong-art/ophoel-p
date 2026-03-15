@@ -8,6 +8,6 @@ export class RepeatStatement implements Statement {
 
     constructor(
         public count: Expression,
-        public body: Block,
+        public body: Statement,
         public location: Location) {}
 }

@@ -10,6 +10,6 @@ export class ForStatement implements Statement {
         public declaration: Statement,
         public condition: Expression,
         public increment: Statement,
-        public body: Block,
+        public body: Statement,
         public location: Location) {}
 }

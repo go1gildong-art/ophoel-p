@@ -8,6 +8,6 @@ export class ChooseStatement implements Statement {
 
     constructor(
         public weights: Expression[],
-        public bodies: Block[],
+        public bodies: Statement[],
         public location: Location) {}
 }

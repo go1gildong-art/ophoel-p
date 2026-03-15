@@ -2,7 +2,7 @@ import { Statement } from "./ast.cjs";
 import { Location } from "../compiler/metadata.cjs";
 import { ASTNode } from "./ast.cjs";
 
-export class Block implements ASTNode {
+export class Block implements Statement {
     kind = "Block";
 
     constructor(

@@ -8,6 +8,6 @@ export class WhileStatement implements Statement {
 
     constructor(
         public condition: Expression,
-        public body: Block,
+        public body: Statement,
         public location: Location) {}
 }

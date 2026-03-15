@@ -8,6 +8,6 @@ export class McExecStatement implements Statement {
 
     constructor(
         public prefix: Expression,
-        public body: Block,
+        public body: Statement,
         public location: Location) {}
 }

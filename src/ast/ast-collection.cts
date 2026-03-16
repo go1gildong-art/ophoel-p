@@ -72,3 +72,9 @@ export const ASTs = {
 
     Include
 }
+
+type Constructors = typeof ASTs
+
+export type ASTTypes = {
+  [K in keyof Constructors]: InstanceType<Constructors[K]>
+};

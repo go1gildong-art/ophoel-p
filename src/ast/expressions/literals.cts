@@ -48,6 +48,7 @@ export class TemplateStringLiteral implements Expression {
     constructor(
         public quasis: string[],
         public expressions: Expression[],
+        public raw: string,
         public location: Location) {}
 }
 

@@ -2,21 +2,21 @@ import { Expression, LValue, ASTKind } from "../ast.cjs";
 import { Location } from "../../compiler/metadata.cjs";
 
 export enum BinaryOperator {
-    ADD,
-    SUBTRACT,
-    MULTIPLY,
-    DIVIDE,
-    REMAINDER,
+    ADD = "+",
+    SUBTRACT = "-",
+    MULTIPLY = "*",
+    DIVIDE = "/",
+    REMAINDER = "%",
 
-    LOGIC_IS,
-    LOGIC_IS_NOT,
-    LOGIC_AND,
-    LOGIC_OR,
+    LOGIC_IS = "==",
+    LOGIC_IS_NOT = "!=",
+    LOGIC_AND = "&&",
+    LOGIC_OR = "||",
 
-    CMPARE_LARGER,
-    CMPARE_SMALLER,
-    CMPARE_SLARGER,
-    CMPARE_SSMALLER
+    CMPARE_LARGER = ">",
+    CMPARE_SMALLER = "<",
+    CMPARE_SLARGER = ">=",
+    CMPARE_SSMALLER = "<="
 };
 export class BinaryOperation implements Expression {
     kind = ASTKind.BinaryOperation;
@@ -30,10 +30,9 @@ export class BinaryOperation implements Expression {
 
 
 export enum UnaryOperator {
-    INCREMENT,
-    DECREMENT,
-
-    LOGIC_NOT
+    INCREMENT = "++",
+    DECREMENT = "--",
+    LOGIC_NOT = "!"
 };
 export class PreUnary implements Expression {
     kind = ASTKind.PreUnary;

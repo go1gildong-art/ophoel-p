@@ -1,6 +1,7 @@
 import { stringify } from "node:querystring";
 import { ASTs, ASTTypes } from "../ast/ast-collection.cjs";
 import { ASTNode } from "../ast/ast.cjs";
+import { CondBodySet } from "../ast/statements/if.cjs";
 
 class Stringifier {
 
@@ -117,9 +118,60 @@ class Stringifier {
     ChooseStatement(ast: ASTTypes["ChooseStatement"]) {
         const cases = ast.weights
             .map((weight, index) => ({ weight, body: ast.bodies[index] }))
+            .map(({ weight, body }) => `(${this.stringify(weight)} ${this.stringify(body)})`);
 
-        const ceases = ast..map(c => `(${this.stringify(c.condition)} ${this.stringify(c.consequent)})`).join(" ");
-        const defaultCase = ast.defaultCase ? this.stringify(ast.defaultCase) : "";
-        return `(choose ${cases} ${defaultCase})`;
+        return `(choose ${cases})`;
+    }
+
+    ForOfStatement(ast: ASTTypes["ForOfStatement"]) {
+        const target = this.stringify(ast.target);
+        const body = this.stringify(ast.body);
+        return `(for ${ast.iterator} of ${target} ${body})`;
+    }
+
+    ForStatement(ast: ASTTypes["ForStatement"]) {
+        const init = this.stringify(ast.declaration);
+        const condition = this.stringify(ast.condition);
+        const increment = this.stringify(ast.increment);
+        const body = this.stringify(ast.body);
+        return `(for ${init} ${condition} ${increment} ${body})`;
+    }
+
+    IfStatement(ast: ASTTypes["IfStatement"]) {
+        const stringifySignature =
+            (sign: CondBodySet) => `(${this.stringify(sign.condition)} ${this.stringify(sign.body)})`;
+
+        const mainBranch = `(if ${stringifySignature(ast.ifSignature)}`;
+        const elifBranches = ast.elifSignatures
+            .map(sign => stringifySignature(sign))
+            .map(sign => `(elif ${sign})`)
+            .join(" ");
+        const elseBranch = typeof ast.elseSignature !== "undefined"
+            ? `(else ${stringifySignature(ast.elseSignature)})`
+            : "";
+
+        return [mainBranch, ...elifBranches, elseBranch].join("");
+    }
+
+    McCommand(ast: ASTTypes["McCommand"]) {
+        const arg = this.stringify(ast.argument);
+        return `(${ast.command}!! ${arg})`;
+    }
+
+    RepeatStatement(ast: ASTTypes["RepeatStatement"]) {
+        const count = this.stringify(ast.count);
+        const body = this.stringify(ast.body);
+        return `(repeat ${count} ${body})`;
+    }
+
+    WhileStatement(ast: ASTTypes["WhileStatement"]) {
+        const condition = this.stringify(ast.condition);
+        const body = this.stringify(ast.body);
+        return `(while ${condition} ${body})`;
+    }
+
+    ExecuteExpression(ast: ASTTypes["ExecuteExpression"]) {
+        const expr = this.stringify(ast.expression);
+        return `(execute ${expr})`;
     }
 }

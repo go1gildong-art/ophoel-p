@@ -17,7 +17,6 @@ import { ExecuteExpression } from "./statements/execute-expr.cjs";
 
 import { FunctionDecl } from "./statements/declarations/fn-decl.cjs";
 import { MacroDecl } from "./statements/declarations/macro-decl.cjs";
-import { StructDecl } from "./statements/declarations/struct-decl.cjs";
 import { VariableDecl } from "./statements/declarations/var-decl.cjs";
 
 import { FunctionCall } from "./expressions/calls/fn-call.cjs";
@@ -70,7 +69,6 @@ export const ASTs = {
 
     FunctionDecl,
     MacroDecl,
-    StructDecl,
     VariableDecl,
     ConstDecl,
 

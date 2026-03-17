@@ -1,9 +1,8 @@
-import { stringify } from "node:querystring";
 import { ASTs, ASTTypes } from "../ast/ast-collection.cjs";
 import { ASTNode } from "../ast/ast.cjs";
 import { CondBodySet } from "../ast/statements/if.cjs";
 
-class Stringifier {
+export class Stringifier {
 
     constructor(
         public indent: string = "  ",

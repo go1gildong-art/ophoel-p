@@ -90,4 +90,21 @@ class Stringifier {
     Include(ast: ASTTypes["Include"]) {
         return `(include ${ast.path})`;
     }
+
+    FunctionDecl(ast: ASTTypes["FunctionDecl"]) {
+        const params = ast.parameters.join(" ");
+        const body = this.stringify(ast.body);
+        return `(fn ${ast.name} (${params}) ${body})`;
+    }
+
+    MacroDecl(ast: ASTTypes["MacroDecl"]) {
+        const params = ast.parameters.join(" ");
+        const body = this.stringify(ast.body);
+        return `(macro ${ast.name} (${params}) ${body})`;
+    }
+
+    VariableDecl(ast: ASTTypes["VariableDecl"]) {
+        const value = this.stringify(ast.initValue);
+        return `(let ${ast.name} ${value})`;
+    }
 }

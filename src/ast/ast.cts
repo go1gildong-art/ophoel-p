@@ -9,6 +9,7 @@ export enum ASTKind {
     ChooseStatement = "ChooseStatement",
     CompoundAssign = "CompoundAssign",
     CompoundLiteral = "CompoundLiteral",
+    ConstDecl = "ConstDecl",
     ExecuteExpression = "ExecuteExpression",
     FloatLiteral = "FloatLiteral",
     ForOfStatement = "ForOfStatement",

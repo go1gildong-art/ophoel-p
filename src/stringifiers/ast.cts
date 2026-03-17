@@ -8,8 +8,9 @@ class Stringifier {
         public indent: string = "  ",
         public depth: number = 0) { }
 
-    stringify(ast: ASTNode): string {
-      return (this[ast.kind as keyof this] as (node: ASTNode) => string)(ast);
+    stringify(ast: ASTNode | undefined): string {
+        if (typeof ast === "undefined") return "undefined";
+        return (this[ast.kind as keyof this] as (node: ASTNode) => string)(ast);
     }
 
     IntLiteral(ast: ASTTypes["IntLiteral"]) { return ast.raw; }
@@ -113,5 +114,12 @@ class Stringifier {
         return `(const ${ast.name} ${value})`;
     }
 
-    
+    ChooseStatement(ast: ASTTypes["ChooseStatement"]) {
+        const cases = ast.weights
+            .map((weight, index) => ({ weight, body: ast.bodies[index] }))
+
+        const ceases = ast..map(c => `(${this.stringify(c.condition)} ${this.stringify(c.consequent)})`).join(" ");
+        const defaultCase = ast.defaultCase ? this.stringify(ast.defaultCase) : "";
+        return `(choose ${cases} ${defaultCase})`;
+    }
 }

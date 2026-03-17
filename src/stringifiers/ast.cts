@@ -86,4 +86,8 @@ class Stringifier {
         const args = ast.args.map(a => this.stringify(a)).join(" ");
         return `(${ast.callee}! ${args})`;
     }
+
+    Include(ast: ASTTypes["Include"]) {
+        return `(include ${ast.path})`;
+    }
 }

@@ -28,6 +28,7 @@ import { Include } from "./preprocesses/include.cjs";
 import { Block } from "./block.cjs";
 import { Program } from "./program.cjs";
 import { ParenExpression } from "./expressions/paren-expr.cjs";
+import { ConstDecl } from "./statements/declarations/const-decl.cjs";
 
 
 export const ASTs = {
@@ -71,6 +72,7 @@ export const ASTs = {
     MacroDecl,
     StructDecl,
     VariableDecl,
+    ConstDecl,
 
     Include
 }

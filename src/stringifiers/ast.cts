@@ -107,4 +107,11 @@ class Stringifier {
         const value = this.stringify(ast.initValue);
         return `(let ${ast.name} ${value})`;
     }
+
+    ConstDecl(ast: ASTTypes["ConstDecl"]) {
+        const value = this.stringify(ast.initValue);
+        return `(const ${ast.name} ${value})`;
+    }
+
+    
 }

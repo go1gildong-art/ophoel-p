@@ -9,81 +9,80 @@ class Stringifier {
         public depth: number = 0) { }
 
     stringify(ast: ASTNode): string {
-        const methodName = ast.kind.charAt(0).toLowerCase() + ast.kind.slice(1);
-        return this[methodName](ast);
+      return (this[ast.kind as keyof this] as (node: ASTNode) => string)(ast);
     }
 
-    intLiteral(ast: ASTTypes["IntLiteral"]) { return ast.raw; }
+    IntLiteral(ast: ASTTypes["IntLiteral"]) { return ast.raw; }
 
-    floatLiteral(ast: ASTTypes["FloatLiteral"]) { return ast.raw; }
+    FloatLiteral(ast: ASTTypes["FloatLiteral"]) { return ast.raw; }
 
-    boolLiteral(ast: ASTTypes["BoolLiteral"]) { return ast.raw; }
+    BoolLiteral(ast: ASTTypes["BoolLiteral"]) { return ast.raw; }
 
-    stringLiteral(ast: ASTTypes["StringLiteral"]) { return `"${ast.raw}"`; }
+    StringLiteral(ast: ASTTypes["StringLiteral"]) { return `"${ast.raw}"`; }
 
-    templateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) { return `\`${ast.raw}\``; }
+    TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) { return `\`${ast.raw}\``; }
 
-    vectorLiteral(ast: ASTTypes["VectorLiteral"]) {
+    VectorLiteral(ast: ASTTypes["VectorLiteral"]) {
         const entries = ast.entries.map(e => this.stringify(e)).join(" ");
         return `(${entries})`;
     }
 
-    compoundLiteral(ast: ASTTypes["CompoundLiteral"]) {
+    CompoundLiteral(ast: ASTTypes["CompoundLiteral"]) {
         const pairs = ast.keys.map((key, i, compound) => `(${key} ${compound[i]})`).join(" ");
         return `(${pairs})`;
     }
 
-    binaryOperation(ast: ASTTypes["BinaryOperation"]) {
+    BinaryOperation(ast: ASTTypes["BinaryOperation"]) {
         const left = this.stringify(ast.left);
         const right = this.stringify(ast.right);
         return `(${ast.operator} ${left} ${right})`;
     }
 
-    preUnary(ast: ASTTypes["PreUnary"]) {
+    PreUnary(ast: ASTTypes["PreUnary"]) {
         const right = this.stringify(ast.right);
         return `(${ast.operator} ${right})`;
     }
 
-    postUnary(ast: ASTTypes["PostUnary"]) {
+    PostUnary(ast: ASTTypes["PostUnary"]) {
         const left = this.stringify(ast.left);
         return `(${left} ${ast.operator})`;
     }
 
-    indexAccess(ast: ASTTypes["IndexAccess"]) {
+    IndexAccess(ast: ASTTypes["IndexAccess"]) {
         const left = this.stringify(ast.left);
         const index = this.stringify(ast.index);
         return `(index ${left} ${index})`;
     }
 
-    memberAccess(ast: ASTTypes["MemberAccess"]) {
+    MemberAccess(ast: ASTTypes["MemberAccess"]) {
         const left = this.stringify(ast.left);
         return `(member ${left} ${ast.member})`;
     }
 
-    identifier(ast: ASTTypes["Identifier"]) { return ast.name; }
+    Identifier(ast: ASTTypes["Identifier"]) { return ast.name; }
 
-    parenExpr(ast: ASTTypes["ParenExpression"]) {
+    ParenExpression(ast: ASTTypes["ParenExpression"]) {
         const expr = this.stringify(ast.expression);
         return `(${expr})`;
     }
 
-    variableAssign(ast: ASTTypes["VariableAssign"]) {
+    VariableAssign(ast: ASTTypes["VariableAssign"]) {
         const value = this.stringify(ast.setValue);
         return `(= ${ast.address} ${value})`;
     }
 
-    compoundAssign(ast: ASTTypes["CompoundAssign"]) {
+    CompoundAssign(ast: ASTTypes["CompoundAssign"]) {
         const operation = ast.operation;
         const value = this.stringify(ast.setValue);
         return `(${operation}= ${ast.address} ${value})`;
     }
 
-    functionCall(ast: ASTTypes["FunctionCall"]) {
+    FunctionCall(ast: ASTTypes["FunctionCall"]) {
         const args = ast.args.map(a => this.stringify(a)).join(" ");
         return `(${ast.callee} ${args})`;
     }
 
-    macroCall(ast: ASTTypes["MacroCall"]) {
+    MacroCall(ast: ASTTypes["MacroCall"]) {
         const args = ast.args.map(a => this.stringify(a)).join(" ");
         return `(${ast.callee}! ${args})`;
     }

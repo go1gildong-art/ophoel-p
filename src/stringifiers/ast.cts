@@ -174,4 +174,14 @@ class Stringifier {
         const expr = this.stringify(ast.expression);
         return `(execute ${expr})`;
     }
+
+    Block(ast: ASTTypes["Block"]) {
+        const statements = ast.statements.map(s => this.stringify(s)).join(" ");
+        return `(block ${statements})`;
+    }
+
+    Program(ast: ASTTypes["Program"]) {
+        const body = ast.body.map(s => this.stringify(s)).join(" ");
+        return `(program ${body})`;
+    }
 }

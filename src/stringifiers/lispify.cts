@@ -2,13 +2,17 @@ import { ASTs, ASTTypes } from "../ast/ast-collection.cjs";
 import { ASTNode } from "../ast/ast.cjs";
 import { CondBodySet } from "../ast/statements/if.cjs";
 
-export class Stringifier {
+export function lispify(ast: ASTNode | undefined) {
+    return new Lispifier().lispify(ast);
+}
+
+export class Lispifier {
 
     constructor(
         public indent: string = "  ",
         public depth: number = 0) { }
 
-    stringify(ast: ASTNode | undefined): string {
+    lispify(ast: ASTNode | undefined): string {
         if (typeof ast === "undefined") return "undefined";
         return (this[ast.kind as keyof this] as (node: ASTNode) => string)(ast);
     }
@@ -24,7 +28,7 @@ export class Stringifier {
     TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) { return `\`${ast.raw}\``; }
 
     VectorLiteral(ast: ASTTypes["VectorLiteral"]) {
-        const entries = ast.entries.map(e => this.stringify(e)).join(" ");
+        const entries = ast.entries.map(e => this.lispify(e)).join(" ");
         return `(${entries})`;
     }
 
@@ -34,57 +38,57 @@ export class Stringifier {
     }
 
     BinaryOperation(ast: ASTTypes["BinaryOperation"]) {
-        const left = this.stringify(ast.left);
-        const right = this.stringify(ast.right);
+        const left = this.lispify(ast.left);
+        const right = this.lispify(ast.right);
         return `(${ast.operator} ${left} ${right})`;
     }
 
     PreUnary(ast: ASTTypes["PreUnary"]) {
-        const right = this.stringify(ast.right);
+        const right = this.lispify(ast.right);
         return `(${ast.operator} ${right})`;
     }
 
     PostUnary(ast: ASTTypes["PostUnary"]) {
-        const left = this.stringify(ast.left);
+        const left = this.lispify(ast.left);
         return `(${left} ${ast.operator})`;
     }
 
     IndexAccess(ast: ASTTypes["IndexAccess"]) {
-        const left = this.stringify(ast.left);
-        const index = this.stringify(ast.index);
+        const left = this.lispify(ast.left);
+        const index = this.lispify(ast.index);
         return `(index ${left} ${index})`;
     }
 
     MemberAccess(ast: ASTTypes["MemberAccess"]) {
-        const left = this.stringify(ast.left);
+        const left = this.lispify(ast.left);
         return `(member ${left} ${ast.member})`;
     }
 
     Identifier(ast: ASTTypes["Identifier"]) { return ast.name; }
 
     ParenExpression(ast: ASTTypes["ParenExpression"]) {
-        const expr = this.stringify(ast.expression);
+        const expr = this.lispify(ast.expression);
         return `(${expr})`;
     }
 
     VariableAssign(ast: ASTTypes["VariableAssign"]) {
-        const value = this.stringify(ast.setValue);
+        const value = this.lispify(ast.setValue);
         return `(= ${ast.address} ${value})`;
     }
 
     CompoundAssign(ast: ASTTypes["CompoundAssign"]) {
         const operation = ast.operation;
-        const value = this.stringify(ast.setValue);
+        const value = this.lispify(ast.setValue);
         return `(${operation}= ${ast.address} ${value})`;
     }
 
     FunctionCall(ast: ASTTypes["FunctionCall"]) {
-        const args = ast.args.map(a => this.stringify(a)).join(" ");
+        const args = ast.args.map(a => this.lispify(a)).join(" ");
         return `(${ast.callee} ${args})`;
     }
 
     MacroCall(ast: ASTTypes["MacroCall"]) {
-        const args = ast.args.map(a => this.stringify(a)).join(" ");
+        const args = ast.args.map(a => this.lispify(a)).join(" ");
         return `(${ast.callee}! ${args})`;
     }
 
@@ -94,93 +98,93 @@ export class Stringifier {
 
     FunctionDecl(ast: ASTTypes["FunctionDecl"]) {
         const params = ast.parameters.join(" ");
-        const body = this.stringify(ast.body);
+        const body = this.lispify(ast.body);
         return `(fn ${ast.name} (${params}) ${body})`;
     }
 
     MacroDecl(ast: ASTTypes["MacroDecl"]) {
         const params = ast.parameters.join(" ");
-        const body = this.stringify(ast.body);
+        const body = this.lispify(ast.body);
         return `(macro ${ast.name} (${params}) ${body})`;
     }
 
     VariableDecl(ast: ASTTypes["VariableDecl"]) {
-        const value = this.stringify(ast.initValue);
+        const value = this.lispify(ast.initValue);
         return `(let ${ast.name} ${value})`;
     }
 
     ConstDecl(ast: ASTTypes["ConstDecl"]) {
-        const value = this.stringify(ast.initValue);
+        const value = this.lispify(ast.initValue);
         return `(const ${ast.name} ${value})`;
     }
 
     ChooseStatement(ast: ASTTypes["ChooseStatement"]) {
         const cases = ast.weights
             .map((weight, index) => ({ weight, body: ast.bodies[index] }))
-            .map(({ weight, body }) => `(${this.stringify(weight)} ${this.stringify(body)})`);
+            .map(({ weight, body }) => `(${this.lispify(weight)} ${this.lispify(body)})`);
 
         return `(choose ${cases})`;
     }
 
     ForOfStatement(ast: ASTTypes["ForOfStatement"]) {
-        const target = this.stringify(ast.target);
-        const body = this.stringify(ast.body);
+        const target = this.lispify(ast.target);
+        const body = this.lispify(ast.body);
         return `(for ${ast.iterator} of ${target} ${body})`;
     }
 
     ForStatement(ast: ASTTypes["ForStatement"]) {
-        const init = this.stringify(ast.declaration);
-        const condition = this.stringify(ast.condition);
-        const increment = this.stringify(ast.increment);
-        const body = this.stringify(ast.body);
+        const init = this.lispify(ast.declaration);
+        const condition = this.lispify(ast.condition);
+        const increment = this.lispify(ast.increment);
+        const body = this.lispify(ast.body);
         return `(for ${init} ${condition} ${increment} ${body})`;
     }
 
     IfStatement(ast: ASTTypes["IfStatement"]) {
-        const stringifySignature =
-            (sign: CondBodySet) => `(${this.stringify(sign.condition)} ${this.stringify(sign.body)})`;
+        const lispifySignature =
+            (sign: CondBodySet) => `(${this.lispify(sign.condition)} ${this.lispify(sign.body)})`;
 
-        const mainBranch = `(if ${stringifySignature(ast.ifSignature)}`;
+        const mainBranch = `(if ${lispifySignature(ast.ifSignature)}`;
         const elifBranches = ast.elifSignatures
-            .map(sign => stringifySignature(sign))
+            .map(sign => lispifySignature(sign))
             .map(sign => `(elif ${sign})`)
             .join(" ");
         const elseBranch = typeof ast.elseSignature !== "undefined"
-            ? `(else ${stringifySignature(ast.elseSignature)})`
+            ? `(else ${lispifySignature(ast.elseSignature)})`
             : "";
 
         return [mainBranch, ...elifBranches, elseBranch].join("");
     }
 
     McCommand(ast: ASTTypes["McCommand"]) {
-        const arg = this.stringify(ast.argument);
+        const arg = this.lispify(ast.argument);
         return `(${ast.command}!! ${arg})`;
     }
 
     RepeatStatement(ast: ASTTypes["RepeatStatement"]) {
-        const count = this.stringify(ast.count);
-        const body = this.stringify(ast.body);
+        const count = this.lispify(ast.count);
+        const body = this.lispify(ast.body);
         return `(repeat ${count} ${body})`;
     }
 
     WhileStatement(ast: ASTTypes["WhileStatement"]) {
-        const condition = this.stringify(ast.condition);
-        const body = this.stringify(ast.body);
+        const condition = this.lispify(ast.condition);
+        const body = this.lispify(ast.body);
         return `(while ${condition} ${body})`;
     }
 
     ExecuteExpression(ast: ASTTypes["ExecuteExpression"]) {
-        const expr = this.stringify(ast.expression);
+        const expr = this.lispify(ast.expression);
         return `(execute ${expr})`;
     }
 
     Block(ast: ASTTypes["Block"]) {
-        const statements = ast.statements.map(s => this.stringify(s)).join(" ");
+        const statements = ast.statements.map(s => this.lispify(s)).join(" ");
         return `(block ${statements})`;
     }
 
     Program(ast: ASTTypes["Program"]) {
-        const body = ast.body.map(s => this.stringify(s)).join(" ");
+        const body = ast.body.map(s => this.lispify(s)).join(" ");
         return `(program ${body})`;
     }
 }

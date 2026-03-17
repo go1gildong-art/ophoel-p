@@ -1,25 +1,17 @@
 import { GoldenCase } from "../../golden-interface.cjs";
+import { Lispifier } from "../../../stringifiers/lispify.cjs";
 
-export class ParserGolden implements GoldenCase<string, string> {
-    readonly title: string;
-    readonly description: string;
-    readonly source: string;
-    readonly expectation: string;
-    readonly process: ((arg: string) => string)
+export class ParserGolden extends GoldenCase<string, string> {
 
-    constructor({ title, description, source, expectation, process }: {
+
+    constructor(args: {
 
         title: string;
         description: string;
         source: string;
         expectation: string;
-        process: (arg: string) => string;
-        
+
     }) {
-        this.title = title;
-        this.description = description;
-        this.source = source;
-        this.expectation = expectation;
-        this.process = process;
+        return super({ ...args, process: (args: string) => new Lispifier().lispify() });
     }
 }

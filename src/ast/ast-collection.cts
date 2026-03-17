@@ -27,6 +27,7 @@ import { Include } from "./preprocesses/include.cjs";
 
 import { Block } from "./block.cjs";
 import { Program } from "./program.cjs";
+import { ParenExpression } from "./expressions/paren-expr.cjs";
 
 
 export const ASTs = {
@@ -53,6 +54,7 @@ export const ASTs = {
     FunctionCall,
     MacroCall,
 
+    ParenExpression,
     Identifier,
 
     ChooseStatement,

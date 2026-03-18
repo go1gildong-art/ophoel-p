@@ -2,7 +2,7 @@ import * as ohm from 'ohm-js';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Location } from './metadata.cjs'; // Your existing class
-import { ASTs } from '../ast/ast-collection.cjs'; // Your nodes
+import { ASTs, ASTTypes } from '../ast/ast-collection.cjs'; // Your nodes
 import { BinaryOperator } from '../ast/expressions/operations.cjs';
 import { McCommand } from '../ast/statements/mc-command.cjs';
 import { ExecuteExpression } from '../ast/statements/execute-expr.cjs';
@@ -83,7 +83,7 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     }
 });
 
-export function parse(source: string, __filename: string) {
+export function parse({source, __filename}: { source: string; __filename: string }): ASTTypes["Program"] {
     const match = myGrammar.match(source);
     if (match.failed()) {
         // Ohm provides a detailed error string with line/col automatically

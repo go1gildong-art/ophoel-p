@@ -1,5 +1,6 @@
 type AsyncFn<I, O> = (input: I) => Promise<O> | O;
 
+
 // overloads. can consume up to 6 pipelines
 export function pipe<A, B>(
     ab: AsyncFn<A, B>
@@ -32,7 +33,7 @@ export function pipe<A, B, C, D, E, F>(
 ): (a: A) => Promise<F>;
 
 export function pipe(...fns: Function[]) {
-    return async (input: unknown) => {
+    return async (...input: unknown[]) => {
         let current = input;
         for (const fn of fns) {
             current = await fn(current);

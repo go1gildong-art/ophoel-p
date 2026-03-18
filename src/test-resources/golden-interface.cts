@@ -26,18 +26,19 @@ export abstract class GoldenCase<source_T, result_T> {
         this.process = process;
     }
 
-    test(compare: <T>(a: T, b: T) => boolean): TestResult {
+    async test(compare: (a: result_T, b: result_T) => boolean = ((a, b) => a === b)): Promise<TestResult> {
         try {
-            if (this.skip) return new TestResult(Test) 
+            if (this.skip) return TestResult.skip();
 
-            const expected = this.expectation;
             const actual = await this.process(this.source);
+            const isMatch = compare(this.expectation, actual);
 
-            const matches = compare(expected, actual);
-            const state = matches ? TestState.Success : TestState.Failure;
-            const msg = matches ? "Test result matched." : "Test result did not match.";
-            return new TestResult(state, msg);
+            return new TestResult(
+                isMatch ? TestState.Success : TestState.Failure,
+                isMatch ? "Test result matched." : "Test result did not match."
+            );
+        } catch (err) {
+            return TestResult.error(err);
         }
-        
     }
 }

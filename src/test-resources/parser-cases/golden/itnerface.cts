@@ -1,22 +1,25 @@
 import { GoldenCase } from "../../golden-interface.cjs";
 import { lispify } from "../../../stringifiers/lispify.cjs";
 import { parse } from "../../../compiler/parser.cjs";
-import { pipe } from "../../../utils/functional.cjs";
-export class ParserGolden extends GoldenCase<{ source: string; __filename: string }, Promise<string>> {
+import * as fp from "../../../utils/functional.cjs";
+export class ParserGolden extends GoldenCase<{ source: string; __filename: string }, string> {
     constructor(args: {
         title: string;
         description: string;
-        source: string,
-        fileName: string,
+        skip: boolean;
+        source: string;
+        fileName: string;
         expectation: string;
 
     }) {
         super({
             title: args.title,
             description: args.description,
-            expectation: Promise.resolve(args.expectation),
+            skip: args.skip,
+
+            expectation: args.expectation,
             source: { source: args.source, __filename: args.fileName },
-            process: pipe(parse, lispify)
+            process: fp.pipe(parse, lispify)
         });
     }
 }

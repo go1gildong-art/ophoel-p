@@ -8,14 +8,16 @@ export abstract class GoldenCase<source_T, result_T> {
     readonly expectation: result_T;
     readonly skip: boolean;
     readonly process: (arg: source_T) => Promise<result_T>
+    readonly compare: (a: result_T, b: result_T) => boolean
 
-    constructor({ title, description, source, expectation, skip, process }: {
+    constructor({ title, description, source, expectation, skip, process, compare }: {
         title: string;
         description: string;
         source: source_T;
         expectation: result_T;
         skip: boolean;
         process: (arg: source_T) => Promise<result_T>;
+        compare?: (a: result_T, b: result_T) => boolean
 
     }) {
         this.title = title;
@@ -24,14 +26,15 @@ export abstract class GoldenCase<source_T, result_T> {
         this.expectation = expectation;
         this.skip = skip;
         this.process = process;
+        this.compare = compare ?? ((a, b) => a === b);
     }
 
-    async test(compare: (a: result_T, b: result_T) => boolean = ((a, b) => a === b)): Promise<TestResult> {
+    async test(): Promise<TestResult> {
         try {
             if (this.skip) return TestResult.skip();
 
             const actual = await this.process(this.source);
-            const isMatch = compare(this.expectation, actual);
+            const isMatch = this.compare(this.expectation, actual);
 
             return new TestResult(
                 isMatch ? TestState.Success : TestState.Failure,

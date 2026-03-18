@@ -1,8 +1,9 @@
-import { GoldenCase } from "../../golden-interface.cjs";
-import { lispify } from "../../../stringifiers/lispify.cjs";
-import { parse } from "../../../compiler/parser.cjs";
-import * as fp from "../../../utils/functional.cjs";
-export class ParserGolden extends GoldenCase<{ source: string; __filename: string }, string> {
+import { GoldenCase } from "../golden-interface.cjs";
+import { lispify } from "../../stringifiers/lispify.cjs";
+import { parse } from "../../compiler/parser.cjs";
+import * as fp from "../../utils/functional.cjs";
+
+export class ParserUnit extends GoldenCase<{ source: string; __filename: string }, string> {
     constructor(args: {
         title: string;
         description: string;

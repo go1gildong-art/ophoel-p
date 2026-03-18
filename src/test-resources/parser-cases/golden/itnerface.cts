@@ -8,9 +8,15 @@ export class ParserGolden extends GoldenCase<{ source: string; __filename: strin
         description: string;
         source: string,
         fileName: string,
-        expectation: Promise<string>;
+        expectation: string;
 
     }) {
-        super({ ...args, source: { source: args.source, __filename: args.fileName }, process: pipe(parse, lispify) });
+        super({
+            title: args.title,
+            description: args.description,
+            expectation: Promise.resolve(args.expectation),
+            source: { source: args.source, __filename: args.fileName },
+            process: pipe(parse, lispify)
+        });
     }
 }

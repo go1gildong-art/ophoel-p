@@ -1,5 +1,6 @@
 import { GoldenCase } from "../../golden-interface.cjs";
-import { Lispifier } from "../../../stringifiers/lispify.cjs";
+import { lispify } from "../../../stringifiers/lispify.cjs";
+import { parse } from "../../../compiler/parser.cjs";
 
 export class ParserGolden extends GoldenCase<string, string> {
 
@@ -12,6 +13,6 @@ export class ParserGolden extends GoldenCase<string, string> {
         expectation: string;
 
     }) {
-        return super({ ...args, process: (args: string) => new Lispifier().lispify() });
+        super({ ...args, process: (arg: string) => lispify(parse(arg, `${this.title}.oph`)) });
     }
 }

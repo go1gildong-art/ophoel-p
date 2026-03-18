@@ -83,7 +83,7 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     }
 });
 
-export function parseDSL(source: string, __filename: string) {
+export function parse(source: string, __filename: string) {
     const match = myGrammar.match(source);
     if (match.failed()) {
         // Ohm provides a detailed error string with line/col automatically

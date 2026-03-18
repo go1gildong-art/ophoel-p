@@ -1,4 +1,4 @@
-import { parseDSL } from './parser.cjs';
+import { parse } from './parser.cjs';
 
 const code = `
 say!! "Hello, World!";
@@ -6,7 +6,7 @@ say!! "Hello, World!";
 `;
 
 try {
-    const ast = parseDSL(code, "test.dsl");
+    const ast = parse(code, "test.dsl");
     console.log("AST successfully generated:");
     console.log(JSON.stringify(ast, null, 2));
 } catch (e) {

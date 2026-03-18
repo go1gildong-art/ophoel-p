@@ -1,23 +1,24 @@
-import { Tester } from "../../tester.cjs";
 import { loadTests } from "../../test_loader.cjs";
 import { ParserGolden } from "./unit.cjs";
+import { TestResult } from "../../test-result.cjs";
 
-export class ParseGoldenGatherer implements Tester {
+export async function ParserTest() {
+    try {
+        const cases = await loadTests<ParserGolden>("./units");
+        cases.forEach(c => console.log(c.title));
+        const results = await Promise.all(
+            cases.map(
+                async unitCase => unitCase.test()
+            )
+        );
 
-    public async test() {
-        try {
-            const cases = await loadTests<ParserGolden>("./units");
-            cases.forEach(c => console.log(c.title));
-            const results = await Promise.all(cases.map(async unitCase => new UnitTester(unitCase).test()));
+        return TestResult.buildFromChildren(
+            results,
+            "Parser golden test succeed!",
+            "Parser golden test failed."
+        );
 
-            return TestResult.buildFromChildren(
-                results,
-                "Lexer golden test succeed!",
-                "Lexer golden test failed."
-            );
-
-        } catch (error) {
-            return TestResult.error(error);
-        }
+    } catch (error) {
+        return TestResult.error(error);
     }
 }

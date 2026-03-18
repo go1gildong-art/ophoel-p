@@ -1,6 +1,6 @@
 import { Tester } from "../../tester.cjs";
 import { loadTests } from "../../test_loader.cjs";
-import { ParserGolden } from "./itnerface.cjs";
+import { ParserGolden } from "./unit.cjs";
 
 export class ParseGoldenGatherer implements Tester {
 

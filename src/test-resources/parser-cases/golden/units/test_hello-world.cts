@@ -1,4 +1,4 @@
-import { ParserGolden } from "../itnerface.cjs";
+import { ParserGolden } from "../unit.cjs";
 
 export const HelloWorld = new ParserGolden({
     title: "Hello World",

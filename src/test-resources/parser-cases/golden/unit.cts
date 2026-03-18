@@ -6,7 +6,7 @@ export class ParserGolden extends GoldenCase<{ source: string; __filename: strin
     constructor(args: {
         title: string;
         description: string;
-        skip: boolean;
+        skip?: boolean;
         source: string;
         fileName: string;
         expectation: string;
@@ -15,7 +15,7 @@ export class ParserGolden extends GoldenCase<{ source: string; __filename: strin
         super({
             title: args.title,
             description: args.description,
-            skip: args.skip,
+            skip: args.skip ?? false,
 
             expectation: args.expectation,
             source: { source: args.source, __filename: args.fileName },

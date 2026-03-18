@@ -3,7 +3,8 @@ export enum TestState {
     Success = "SUCCESS",
     Failure = "FAILURE",
     Uninitialized = "UNINITIALIZED",
-    Error = "ERROR"
+    Error = "ERROR",
+    Skip = "SKIP"
 }
 
 export class TestResult {
@@ -37,6 +38,11 @@ export class TestResult {
 
     static uninitialized() {
         return new TestResult(TestState.Uninitialized);
+    }
+
+    static skip() {
+        const msg = "Skipped this test."
+        return new TestResult(TestState.Skip, msg);
     }
 
     static hasNoFailure(children: TestResult[]) {

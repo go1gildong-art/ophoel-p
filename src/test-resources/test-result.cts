@@ -72,7 +72,7 @@ export class TestResult {
 
     static getCoverageMark(children: readonly TestResult[]) {
         const allchildren = children
-            .filter(result => [TestState.Success, TestState.Failure].includes(result.state));
+            .filter(result => ![TestState.Skip].includes(result.state));
 
         const succeedchildren = children
             .filter(result => [TestState.Success].includes(result.state));

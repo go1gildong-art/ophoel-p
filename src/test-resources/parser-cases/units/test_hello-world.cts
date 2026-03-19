@@ -5,6 +5,6 @@ export const unit = new ParserUnit({
     description: "Simple ",
     fileName: "test_hello-world.cts",
 
-    source: `say!! "Hello, World!";`,
+    source: `say!! "Hello world!";`,
     expectation: `(Program (McCommand "say" (StringLiteral "Hello, World!")))`
 });

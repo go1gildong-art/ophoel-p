@@ -1,12 +1,9 @@
 import { parse } from './parser.cjs';
 
-const code = `
-say!! "Hello, World!";
-10 + 10;
-`;
+const code = `say!! "Hello world!";`;
 
 try {
-    const ast = parse({ source: code, __filename: "test.dsl" });
+    const ast = parse({ source: code, __filename: "test_hello-world.cts" });
     console.log("AST successfully generated:");
     console.log(JSON.stringify(ast, null, 2));
 } catch (e) {

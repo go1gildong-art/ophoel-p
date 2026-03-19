@@ -1,5 +1,6 @@
-type AsyncFn<I, O> = (input: I) => Promise<O> | O;
+// pipe function
 
+type AsyncFn<I, O> = (input: I) => Promise<O> | O;
 
 // overloads. can consume up to 6 pipelines
 export function pipe<A, B>(
@@ -41,6 +42,14 @@ export function pipe(...fns: Function[]) {
         return current;
     }
 }
+
+
+
+export function print<T>(x: T) {
+    console.log(x);
+    return x;
+}
+
 
 /*
 type source = string;

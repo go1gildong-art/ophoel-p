@@ -6,5 +6,5 @@ export const unit = new ParserUnit({
     fileName: "test_hello-world.cts",
 
     source: `say!! "Hello world!";`,
-    expectation: `(program (say!! 'Hello World!'))`
+    expectation: `(program (say!! 'Hello world!'))`
 });

@@ -40,9 +40,15 @@ export abstract class GoldenCase<source_T, result_T> {
             const actual = await this.process(this.source);
             const isMatch = this.compare(this.expectation, actual);
 
+            const msg = {
+                result: isMatch ? "Test result matched." : "Test result did not match.",
+                expected: this.expectation,
+                actual: actual
+            };
+
             return new TestResult(
                 isMatch ? TestState.Success : TestState.Failure,
-                isMatch ? "Test result matched." : "Test result did not match."
+                msg
             );
         } catch (err) {
             return TestResult.errorVerbose(err);

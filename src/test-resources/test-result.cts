@@ -39,8 +39,9 @@ export class TestResult {
     static errorVerbose(error: unknown) {
         if (error instanceof Error) {
             const msg = {
-                error: "An error occurred while testing: " + error.message,
-                stack: error.stack?.split("\n") ?? []
+                error: "An error occurred while testing",
+                stack: error.stack?.split("\n") ?? [],
+                errorObject: error // property for inspecting inside code
             };
             return new TestResult(TestState.Error, msg);
         } else {

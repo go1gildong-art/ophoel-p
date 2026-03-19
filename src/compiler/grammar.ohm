@@ -28,5 +28,5 @@ Ophoel {
   number = digit+
   // space += "//" (~"\n" any)* // This adds support for // comments
 
-  ident = letter (alnum | "_")+
+  ident = (letter | "_") (alnum | "_")*
 }

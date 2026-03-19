@@ -22,7 +22,9 @@ Ophoel {
   MulExp = number | string
   
   // Terminals
-  string = "\"" (~"\"" any)* "\""
+  string = ("\"" (~"\"" any)* "\"")
+        | ("'" (~"'" any)* "'")
+
   number = digit+
   // space += "//" (~"\n" any)* // This adds support for // comments
 

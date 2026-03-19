@@ -9,13 +9,9 @@ export async function loadTests<T>(folder: string): Promise<T[]> {
     name => name.startsWith("test_") && name.endsWith(".cjs")
   );
 
-  const tests: T[] = [];
-
-  for (const file of testFiles) {
+  return testFiles.map(file => {
     const fullPath = path.resolve(join(folder, file));
     const module = require(fullPath);
-    tests.push(module.unit);
-  }
-
-  return tests;
+    return module.unit;
+  });
 }

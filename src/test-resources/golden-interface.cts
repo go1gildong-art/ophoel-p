@@ -34,16 +34,13 @@ export abstract class GoldenCase<source_T, result_T> {
         try {
             if (this.skip) return TestResult.skip();
 
-            console.log("aaa" + this.source);
-
-            // console.log(parse(this.source));
             const actual = await this.process(this.source);
             const isMatch = this.compare(this.expectation, actual);
 
             const msg = {
                 result: isMatch ? "Test result matched." : "Test result did not match.",
                 expected: this.expectation,
-                actual: actual
+                __actual: actual
             };
 
             return new TestResult(

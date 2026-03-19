@@ -40,7 +40,7 @@ export class TestResult {
         if (error instanceof Error) {
             const msg = {
                 error: "An error occurred while testing: " + error.message,
-                stack: error.stack?.split("\n").map(line => line.trim()) ?? []
+                stack: error.stack?.split("\n") ?? []
             };
             return new TestResult(TestState.Error, msg);
         } else {

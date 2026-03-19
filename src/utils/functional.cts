@@ -37,7 +37,7 @@ export function pipe(...fns: Function[]) {
     return async (...input: unknown[]) => {
         let current = input;
         for (const fn of fns) {
-            current = await fn(current);
+            current = await fn(...current);
         }
         return current;
     }
@@ -79,7 +79,7 @@ export function pipeVerbose(...fns: Function[]) {
         let current = input;
         for (const fn of fns) {
             console.log(current);
-            current = await fn(current);
+            current = await fn(...current);
         }
         return current;
     }

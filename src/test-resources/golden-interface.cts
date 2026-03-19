@@ -34,9 +34,8 @@ export abstract class GoldenCase<source_T, result_T> {
         try {
             if (this.skip) return TestResult.skip();
 
-            console.log(this.source);
+            console.log("aaa" + this.source);
 
-            // @ts-ignore
             // console.log(parse(this.source));
             const actual = await this.process(this.source);
             const isMatch = this.compare(this.expectation, actual);

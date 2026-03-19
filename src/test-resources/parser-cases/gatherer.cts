@@ -21,7 +21,7 @@ export async function parserGatherer() {
         );
 
     } catch (error) {
-        return TestResult.error(error);
+        return TestResult.errorVerbose(error);
     }
 }
 

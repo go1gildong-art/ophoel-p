@@ -1,6 +1,6 @@
 Ophoel {
   // The entry point
-  Program = Statement*
+  Program = Statement* end
 
   Statement = InjectStmt | ExecExpr | McCommand
 

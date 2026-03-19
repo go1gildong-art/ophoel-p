@@ -24,7 +24,16 @@ function getLoc(node: ohm.Node, fileName: string): Location {
 
 // 3. Define Semantics
 const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
-    Program(statements) {
+    
+    Program(statements, _end) {
+        const statementList = statements.toAST(__filename);
+        
+        return new ASTs.Program(
+            statementList,
+            getLoc(this, __filename)
+        )
+        
+
         return statements.toAST(__filename);
     },
 

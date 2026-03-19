@@ -34,10 +34,10 @@ export function pipe<A, B, C, D, E, F>(
 ): (a: A) => Promise<F>;
 
 export function pipe(...fns: Function[]) {
-    return async (...input: unknown[]) => {
+    return async (input: unknown) => {
         let current = input;
         for (const fn of fns) {
-            current = await fn(...current);
+            current = await fn(current);
         }
         return current;
     }
@@ -75,11 +75,11 @@ export function pipeVerbose<A, B, C, D, E, F>(
 ): (a: A) => Promise<F>;
 
 export function pipeVerbose(...fns: Function[]) {
-    return async (...input: unknown[]) => {
+    return async (input: unknown) => {
         let current = input;
         for (const fn of fns) {
             console.log(current);
-            current = await fn(...current);
+            current = await fn(current);
         }
         return current;
     }

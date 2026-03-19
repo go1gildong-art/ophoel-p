@@ -23,7 +23,7 @@ export class Lispifier {
 
     BoolLiteral(ast: ASTTypes["BoolLiteral"]) { return ast.raw; }
 
-    StringLiteral(ast: ASTTypes["StringLiteral"]) { return `"${ast.raw}"`; }
+    StringLiteral(ast: ASTTypes["StringLiteral"]) { return `'${ast.raw}'`; }
 
     TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) { return `\`${ast.raw}\``; }
 

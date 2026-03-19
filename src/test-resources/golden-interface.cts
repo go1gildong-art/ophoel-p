@@ -41,7 +41,7 @@ export abstract class GoldenCase<source_T, result_T> {
                 isMatch ? "Test result matched." : "Test result did not match."
             );
         } catch (err) {
-            return TestResult.error(err);
+            return TestResult.errorVerbose(err);
         }
     }
 }

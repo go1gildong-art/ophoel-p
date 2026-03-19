@@ -1,11 +1,13 @@
 import { loadTests } from "../test_loader.cjs";
 import { ParserUnit } from "./unit.cjs";
 import { TestResult } from "../test-result.cjs";
+import * as fp from "../../utils/functional.cjs";
+import path from "node:path";
 
-export async function ParserTest() {
+export async function parserGatherer() {
     try {
-        const cases = await loadTests<ParserUnit>("./units");
-        cases.forEach(c => console.log(c.title));
+        const dir = path.join(__dirname, "./units");
+        const cases = await loadTests<ParserUnit>(dir);
         const results = await Promise.all(
             cases.map(
                 async unitCase => unitCase.test()
@@ -22,3 +24,10 @@ export async function ParserTest() {
         return TestResult.error(error);
     }
 }
+
+(async () => {
+    const result = await parserGatherer();
+    const jsonResult = JSON.stringify(result, null, 2);
+    console.log(jsonResult);
+}
+)();

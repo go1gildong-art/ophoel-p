@@ -1,6 +1,6 @@
 import { ParserUnit } from "../unit.cjs";
 
-export const HelloWorld = new ParserUnit({
+export const unit = new ParserUnit({
     title: "Hello World",
     description: "Simple ",
     fileName: "test_hello-world.cts",

@@ -38,9 +38,11 @@ export class TestResult {
 
     static errorVerbose(error: unknown) {
         if (error instanceof Error) {
-            const msg = "An error occurred while testing: " + error.message;
-            const msg2 = error.stack ? "\nStack trace:\n" + error.stack : "";
-            return new TestResult(TestState.Error, msg + msg2);
+            const msg = {
+                error: "An error occurred while testing: " + error.message,
+                stack: error.stack?.split("\n").map(line => line.trim()) ?? []
+            };
+            return new TestResult(TestState.Error, msg);
         } else {
             const msg = "An unexpected object thrown while testing: " + error;
             return new TestResult(TestState.Error, msg);

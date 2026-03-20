@@ -2,13 +2,10 @@ Ophoel {
   // The entry point
   Program = Statement* end
 
-  Statement = InjectStmt | ExecExpr | McCommand
+  Statement = McCommand | ExecExpr | McCommand
 
   McCommand = ident "!!" Expr ";"
-  
-  // "inject" followed by a string and a semicolon
-  InjectStmt = "inject" Expr ";"
-  
+
   ExecExpr = Expr ";"
 
   // A simple expression statement

@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { Location } from './metadata.cjs'; // Your existing class
 import { ASTs, ASTTypes } from '../ast/ast-collection.cjs'; // Your nodes
-import { BinaryOperator } from '../ast/expressions/operations.cjs';
+import { BinaryOperator, UnaryOperator } from '../ast/expressions/operations.cjs';
 import { McCommand } from '../ast/statements/mc-command.cjs';
 import { ExecuteExpression } from '../ast/statements/execute-expr.cjs';
 import { Expression } from '../ast/ast.cjs';
@@ -82,6 +82,10 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
         return new ASTs.BoolLiteral(bool.sourceString, getLoc(bool, __filename));
     },
 
+    ident(_first, _rest) {
+        return new ASTs.Identifier(this.sourceString, getLoc(this, __filename));
+    },
+
     VectorLiteral(_open, components, _close) {
         const comps = components.toAST(__filename);
         return new ASTs.VectorLiteral(comps, getLoc(this, __filename));
@@ -107,6 +111,24 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
                 , { keys: [], values: [] });
 
         return new ASTs.CompoundLiteral(kvAcc.keys, kvAcc.values, getLoc(this, __filename));
+    },
+
+    FunctionCall(name, _open, args, _close) {
+        const argsList = args.toAST(__filename);
+        return new ASTs.FunctionCall(
+            name.sourceString,
+            argsList,
+            getLoc(this, __filename)
+        );
+    },
+
+    MacroCall(name, _bang, _open, args, _close) {
+        const argsList = args.toAST(__filename);
+        return new ASTs.MacroCall(
+            name.sourceString,
+            argsList,
+            getLoc(this, __filename)
+        );
     },
 
     OrExp_or(left, _op, right) {
@@ -243,6 +265,54 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     },
 
     MulExp(left) {
+        return left.toAST(__filename);
+    },
+
+    UnaryExp_preIncrement(op, right) {
+        return new ASTs.PreUnary(
+            UnaryOperator.INCREMENT,
+            right.toAST(__filename),
+            getLoc(op, __filename)
+        );
+    },
+
+    UnaryExp_preDecrement(op, right) {
+        return new ASTs.PreUnary(
+            UnaryOperator.DECREMENT,
+            right.toAST(__filename),
+            getLoc(op, __filename)
+        );
+    },
+
+    UnaryExp_preNot(op, right) {
+        return new ASTs.PreUnary(
+            UnaryOperator.LOGIC_NOT,
+            right.toAST(__filename),
+            getLoc(op, __filename)
+        );
+    },
+
+    UnaryExp(left) {
+        return left.toAST(__filename);
+    },
+
+    PostUnaryExp_postIncrement(left, op) {
+        return new ASTs.PostUnary(
+            UnaryOperator.INCREMENT,
+            left.toAST(__filename),
+            getLoc(op, __filename)
+        );
+    },
+
+    PostUnaryExp_postDecrement(left, op) {
+        return new ASTs.PostUnary(
+            UnaryOperator.DECREMENT,
+            left.toAST(__filename),
+            getLoc(op, __filename)
+        );
+    },
+
+    PostUnaryExp(left) {
         return left.toAST(__filename);
     },
 

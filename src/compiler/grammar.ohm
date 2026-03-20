@@ -33,10 +33,19 @@ Ophoel {
          | AddExp "-" MulExp  -- minus
          | MulExp
 
-  MulExp = MulExp "*" Primary  -- multiply
-         | MulExp "/" Primary  -- divide
-         | MulExp "%" Primary  -- remainder
-         | Primary
+  MulExp = MulExp "*" UnaryExp  -- multiply
+         | MulExp "/" UnaryExp  -- divide
+         | MulExp "%" UnaryExp  -- remainder
+         | UnaryExp
+
+  UnaryExp = "++" UnaryExp  -- preIncrement
+           | "--" UnaryExp  -- preDecrement
+           | "!" UnaryExp  -- preNot
+           | PostUnaryExp
+
+  PostUnaryExp = PostUnaryExp "++"  -- postIncrement
+               | PostUnaryExp "--"  -- postDecrement
+               | Primary
 
   bool = "true" | "false"
   VectorLiteral = "[" ListOf<Expr, ","> "]"
@@ -44,7 +53,17 @@ Ophoel {
   Pair = ident ":" Expr
   CompoundLiteral = "{" ListOf<Pair, ","> "}"
 
-  Primary = number | string | bool | VectorLiteral | CompoundLiteral
+  Primary = number 
+          | string 
+          | bool 
+          | FunctionCall
+          | MacroCall
+          | ident 
+          | VectorLiteral 
+          | CompoundLiteral
+
+  FunctionCall = ident "(" ListOf<Expr, ","> ")"
+  MacroCall = ident "!" "(" ListOf<Expr, ","> ")"
 
   // Terminals
   string = ("\"" (~"\"" any)* "\"")

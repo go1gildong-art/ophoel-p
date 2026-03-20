@@ -99,7 +99,7 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
         type KVPair = { key: string, value: Expression };
 
         const kvAcc: KVAccumulator
-            = pairs.toAST().reduce((acc: KVAccumulator, kvPair: KVPair) => {
+            = pairs.toAST(__filename).reduce((acc: KVAccumulator, kvPair: KVPair) => {
                 acc.keys.push(kvPair.key);
                 acc.values.push(kvPair.value);
                 return acc
@@ -141,7 +141,18 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     // Built-in Ohm iteration handler (for the * in Statement*)
     _iter(...children) {
         return children.map(c => c.toAST(__filename));
-    }
+    },
+
+    ListOf(list) {
+        return list.toAST(__filename);
+    },
+    NonemptyListOf(first, _sep, rest) {
+        // 'first' is one node, 'rest' is an IterationNode of the remaining nodes
+        return [first.toAST(__filename), ...rest.toAST(__filename)];
+    },
+    EmptyListOf() {
+        return [];
+    },
 });
 
 export function parse({ source, __filename }: { source: string; __filename: string }): ASTTypes["Program"] {

@@ -106,8 +106,6 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
             }
                 , { keys: [], values: [] });
 
-
-
         return new ASTs.CompoundLiteral(kvAcc.keys, kvAcc.values, getLoc(this, __filename));
     },
 

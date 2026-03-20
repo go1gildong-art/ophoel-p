@@ -33,7 +33,11 @@ export class Lispifier {
     }
 
     CompoundLiteral(ast: ASTTypes["CompoundLiteral"]) {
-        const pairs = ast.keys.map((key, i, compound) => `(${key} ${compound[i]})`).join(" ");
+        type valueKey = keyof typeof ast.keys;
+        const pairs = ast.keys
+            .map((key, i) => `(${key} ${this.lispify(ast.values[i])})`)
+            .join(" ");
+            
         return `(${pairs})`;
     }
 

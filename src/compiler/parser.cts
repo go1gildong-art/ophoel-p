@@ -6,6 +6,7 @@ import { ASTs, ASTTypes } from '../ast/ast-collection.cjs'; // Your nodes
 import { BinaryOperator } from '../ast/expressions/operations.cjs';
 import { McCommand } from '../ast/statements/mc-command.cjs';
 import { ExecuteExpression } from '../ast/statements/execute-expr.cjs';
+import { Expression } from '../ast/ast.cjs';
 
 // 1. Load the grammar
 // This builds an absolute path regardless of where you run the command from
@@ -24,26 +25,17 @@ function getLoc(node: ohm.Node, fileName: string): Location {
 
 // 3. Define Semantics
 const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
-    
+
     Program(statements, _end) {
         const statementList = statements.toAST(__filename);
-        
+
         return new ASTs.Program(
             statementList,
             getLoc(this, __filename)
         )
-        
+
 
         return statements.toAST(__filename);
-    },
-
-    
-    InjectStmt(kw, str, _semi) {
-        return new McCommand(
-            "foo",
-            str.toAST(__filename),
-            getLoc(kw, __filename)
-        );
     },
 
     McCommand(cmd, _dbang, arg, _semi) {
@@ -53,7 +45,7 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
             getLoc(cmd, __filename)
         );
     },
-    
+
     string(_openQuote, chars, _closeQuote) {
         // .sourceString gives you the raw text of the characters rule
         return new ASTs.StringLiteral(
@@ -62,7 +54,6 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
         );
     },
 
-    // If you have a 'number' rule, you'll need this too:
     number(digits) {
         return new ASTs.IntLiteral(
             parseInt(digits.sourceString).toString(),
@@ -70,10 +61,54 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
         );
     },
 
+    bool(bool) {
+        return new ASTs.BoolLiteral(bool.sourceString, getLoc(bool, __filename));
+    },
+
+    VectorLiteral(_open, components, _close) {
+        const comps = components.toAST(__filename);
+        return new ASTs.VectorLiteral(comps, getLoc(this, __filename));
+    },
+
+    Pair(key, _colon, value) {
+        return {
+            key: key.sourceString,
+            value: value.toAST(__filename)
+        };
+    },
+
+    CompoundLiteral(_open, pairs, _close) {
+        type KVAccumulator = { keys: string[]; values: Expression[] };
+        type KVPair = { key: string, value: Expression };
+
+        const kvAcc: KVAccumulator
+            = pairs.toAST().reduce((acc: KVAccumulator, kvPair: KVPair) => {
+                acc.keys.push(kvPair.key);
+                acc.values.push(kvPair.value);
+                return acc
+            }
+                , { keys: [], values: [] });
+
+
+
+        return new ASTs.CompoundLiteral(kvAcc.keys, kvAcc.values, getLoc(this, __filename));
+    },
+
+
+
     AddExp_plus(left, op, right) {
         return new ASTs.BinaryOperation(
             left.toAST(__filename),
             BinaryOperator.ADD,
+            right.toAST(__filename),
+            getLoc(op, __filename)
+        );
+    },
+
+    AddExp_minus(left, op, right) {
+        return new ASTs.BinaryOperation(
+            left.toAST(__filename),
+            BinaryOperator.SUBTRACT,
             right.toAST(__filename),
             getLoc(op, __filename)
         );
@@ -92,7 +127,7 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     }
 });
 
-export function parse({source, __filename}: { source: string; __filename: string }): ASTTypes["Program"] {
+export function parse({ source, __filename }: { source: string; __filename: string }): ASTTypes["Program"] {
     const match = myGrammar.match(source);
     if (match.failed()) {
         // Ohm provides a detailed error string with line/col automatically

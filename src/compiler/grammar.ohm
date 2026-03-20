@@ -15,9 +15,17 @@ Ophoel {
   AddExp = AddExp "+" MulExp  -- plus
          | AddExp "-" MulExp  -- minus
          | MulExp
-         
-  MulExp = number | string
   
+  MulExp = Primary
+
+  bool = "true" | "false"
+  VectorLiteral = "[" ListOf<Expr, ","> "]"
+
+  Pair = ident ":" Expr
+  CompoundLiteral = "{" ListOf<Pair, ","> "}"
+
+  Primary = number | string | bool | VectorLiteral | CompoundLiteral
+
   // Terminals
   string = ("\"" (~"\"" any)* "\"")
         | ("'" (~"'" any)* "'")

@@ -5,6 +5,6 @@ export const unit = new ParserUnit({
     description: "Vector literal, similar with array. will contain multiple expressions inside",
     fileName: "test_vector-literal.oph",
 
-    source: `const v = [1, "foo", true, 1 + 3];`,
-    expectation: `(program (const v (1 "foo" true (+ 1 3))))`
+    source: `const v = [1, 'foo', true, 1 + 3];`,
+    expectation: `(program (const v (1 'foo' true (+ 1 3))))`
 });

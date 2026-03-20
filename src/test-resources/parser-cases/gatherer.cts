@@ -29,5 +29,6 @@ export async function parserGatherer() {
     const result = await parserGatherer();
     const jsonResult = JSON.stringify(result, null, 2);
     console.log(jsonResult);
+    console.log("\n" + result.message)
 }
 )();

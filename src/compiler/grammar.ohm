@@ -12,14 +12,31 @@ Ophoel {
   ExecExpr = Expr ";"
 
   // A simple expression statement
-  Expr = AddExp
-  
+  Expr = OrExp
+
   // Binary Expression (Left-associative)
+  OrExp = OrExp "||" AndExp  -- or
+        | AndExp
+
+  AndExp = AndExp "&&" CompareExp  -- and
+         | CompareExp
+
+  CompareExp = AddExp "==" AddExp  -- eq
+             | AddExp "!=" AddExp  -- neq
+             | AddExp ">=" AddExp  -- gte
+             | AddExp "<=" AddExp  -- lte
+             | AddExp ">" AddExp  -- gt
+             | AddExp "<" AddExp  -- lt
+             | AddExp
+
   AddExp = AddExp "+" MulExp  -- plus
          | AddExp "-" MulExp  -- minus
          | MulExp
-  
-  MulExp = Primary
+
+  MulExp = MulExp "*" Primary  -- multiply
+         | MulExp "/" Primary  -- divide
+         | MulExp "%" Primary  -- remainder
+         | Primary
 
   bool = "true" | "false"
   VectorLiteral = "[" ListOf<Expr, ","> "]"

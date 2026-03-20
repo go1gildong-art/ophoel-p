@@ -2,7 +2,10 @@ Ophoel {
   // The entry point
   Program = Statement* end
 
-  Statement = McCommand | ExecExpr | McCommand
+  Statement = McCommand | ExecExpr | McCommand | ConstDecl | VariableDecl
+
+  VariableDecl = "let" ident ("=" Expr) ";"
+  ConstDecl = "const" ident "=" Expr ";"
 
   McCommand = ident "!!" Expr ";"
 

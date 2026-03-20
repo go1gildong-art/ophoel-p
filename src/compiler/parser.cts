@@ -46,6 +46,23 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
         );
     },
 
+    VariableDecl(kw, name, _eq, expr, _semi) {
+        return new ASTs.VariableDecl(
+            name.sourceString,
+            expr.toAST(__filename),
+            getLoc(kw, __filename)
+        );
+    },
+
+    ConstDecl(kw, name, _eq, expr, _semi) {
+        return new ASTs.ConstDecl(
+            name.sourceString,
+            expr.toAST(__filename),
+            getLoc(kw, __filename)
+        );
+    },
+
+
     string(_openQuote, chars, _closeQuote) {
         // .sourceString gives you the raw text of the characters rule
         return new ASTs.StringLiteral(

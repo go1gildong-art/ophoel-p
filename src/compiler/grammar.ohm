@@ -55,6 +55,7 @@ Ophoel {
 
   Primary = number 
           | string 
+          | TemplateString
           | bool 
           | FunctionCall
           | MacroCall
@@ -68,6 +69,10 @@ Ophoel {
   // Terminals
   string = ("\"" (~"\"" any)* "\"")
         | ("'" (~"'" any)* "'")
+
+  TemplateString = "`" (TemplatePart)* "`"
+  TemplatePart = "${" Expr "}" -- exprPart
+    | ~("`" | "${") any -- stringPart
 
   number = digit+
   // space += "//" (~"\n" any)* // This adds support for // comments

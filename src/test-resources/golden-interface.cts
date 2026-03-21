@@ -39,6 +39,8 @@ export abstract class GoldenCase<source_T, result_T> {
 
             const msg = {
                 result: isMatch ? "Test result matched." : "Test result did not match.",
+                title: this.title,
+                description: this.description,
                 expected: this.expectation,
                 __actual: actual
             };

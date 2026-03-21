@@ -71,6 +71,16 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
         );
     },
 
+    TemplateString(_open, parts, _close) {
+        const content = parts.sourceString;
+        return new ASTs.TemplateStringLiteral(
+            parts.filter((_: any, i: number) => i % 2 === 0), // even index = quasis
+            parts.filter((_: any, i: number) => i % 2 !== 0), // odd index = expressions
+            content,
+            getLoc(_open, __filename)
+        );
+    },
+
     number(digits) {
         return new ASTs.IntLiteral(
             parseInt(digits.sourceString).toString(),

@@ -72,11 +72,11 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     },
 
     TemplateString(_open, parts, _close) {
-        const content = parts.sourceString;
+        const content = parts.toAST(__filename);
         return new ASTs.TemplateStringLiteral(
             parts.filter((_: any, i: number) => i % 2 === 0), // even index = quasis
             parts.filter((_: any, i: number) => i % 2 !== 0), // odd index = expressions
-            content,
+            parts.sourceString,
             getLoc(_open, __filename)
         );
     },
@@ -348,6 +348,13 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     EmptyListOf() {
         return [];
     },
+
+    _terminal() {
+        return this.sourceString;
+    },
+    _nonterminal(...children) {
+        return children.map(c => c.toAST(__filename));
+    }
 });
 
 export function parse({ source, __filename }: { source: string; __filename: string }): ASTTypes["Program"] {

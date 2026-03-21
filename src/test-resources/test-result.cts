@@ -26,9 +26,12 @@ export class TestResult {
         return new TestResult(TestState.Failure, message, children);
     }
 
-    static error(error: unknown) {
+    static error(error: unknown, message?: any) {
         if (error instanceof Error) {
-            const msg = "An error occurred while testing: " + error.message;
+            const msg = {
+                result: "An error occurred while testing: " + error.message,
+                ...(message ?? {})
+            };
             return new TestResult(TestState.Error, msg);
         } else {
             const msg = "An unexpected object thrown while testing: " + error;
@@ -36,10 +39,11 @@ export class TestResult {
         }
     }
 
-    static errorVerbose(error: unknown) {
+    static errorVerbose(error: unknown, message?: any) {
         if (error instanceof Error) {
             const msg = {
                 error: "An error occurred while testing",
+                ...(message ?? {}),
                 stack: error.stack?.split("\n") ?? [],
                 errorObject: error // property for inspecting inside code
             };

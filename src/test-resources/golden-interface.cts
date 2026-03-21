@@ -50,7 +50,8 @@ export abstract class GoldenCase<source_T, result_T> {
                 msg
             );
         } catch (err) {
-            return TestResult.errorVerbose(err);
+            const msg = { title: this.title, description: this.description };
+            return TestResult.errorVerbose(err, msg);
         }
     }
 }

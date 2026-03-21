@@ -25,7 +25,7 @@ export class Lispifier {
 
     StringLiteral(ast: ASTTypes["StringLiteral"]) { return `'${ast.raw}'`; }
 
-    TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) { return `\`${ast.raw}\``; }
+    TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) {return `\`${ast.raw}\``; }
 
     VectorLiteral(ast: ASTTypes["VectorLiteral"]) {
         const entries = ast.entries.map(e => this.lispify(e)).join(" ");

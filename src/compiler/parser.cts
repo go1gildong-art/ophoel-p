@@ -72,13 +72,21 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
     },
 
     TemplateString(_open, parts, _close) {
-        const content = parts.toAST(__filename);
+        const contents = parts.toAST(__filename);
         return new ASTs.TemplateStringLiteral(
-            parts.filter((_: any, i: number) => i % 2 === 0), // even index = quasis
-            parts.filter((_: any, i: number) => i % 2 !== 0), // odd index = expressions
+            contents.filter((_: any, i: number) => i % 2 === 0), // even index = quasis
+            contents.filter((_: any, i: number) => i % 2 !== 0), // odd index = expressions
             parts.sourceString,
             getLoc(_open, __filename)
         );
+    },
+
+    TemplatePart_exprPart(_open, expr, _close) {
+        return expr.toAST(__filename);
+    },
+
+    TemplatePart_stringPart(chars) {
+        return chars.sourceString;
     },
 
     number(digits) {
@@ -349,11 +357,9 @@ const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', {
         return [];
     },
 
+
     _terminal() {
         return this.sourceString;
-    },
-    _nonterminal(...children) {
-        return children.map(c => c.toAST(__filename));
     }
 });
 

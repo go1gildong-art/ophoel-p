@@ -1,9 +1,9 @@
-import { parse } from './parser.cjs';
+import { parse } from './parser/parser.cjs';
 
 const code = `say!! "Hello world!";`;
 
 try {
-    const ast = parse({ source: code, __filename: "test_hello-world.cts" });
+    const ast = parse({ source: code, __filename: "test_BRRRRRRRRRRRRRRRR.cts" });
     console.log("AST successfully generated:");
     console.log(JSON.stringify(ast, null, 2));
 } catch (e) {

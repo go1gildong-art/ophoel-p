@@ -159,7 +159,7 @@ export class Lispifier {
 
     IfStatement(ast: ASTTypes["IfStatement"]) {
         const lispifySignature =
-            (sign: CondBodySet) => `(${this.lispify(sign.condition)} ${this.lispify(sign.body)})`;
+            (sign: CondBodySet) => `${this.lispify(sign.condition)} ${this.lispify(sign.body)})`;
 
         const mainBranch = `(if ${lispifySignature(ast.ifSignature)}`;
         const elifBranches = ast.elifSignatures

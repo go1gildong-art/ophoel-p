@@ -5,7 +5,7 @@ export const unit = new ParserUnit({
     description: "While loop should parse correctly.",
     fileName: "test_while_statement.cts",
 
-    source: `while (i < 10) i++;`,
+    source: `while i < 10 i++;`,
 
-    expectation: `(program (while (< i 10) (++ i)))`
+    expectation: `(program (while (< i 10) (execute (i ++))))`
 });

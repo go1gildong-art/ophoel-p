@@ -5,20 +5,18 @@ import * as ohm from 'ohm-js';
 
 export const functionDeclarations: ActionMap<Statement> = {
     FunctionDecl(_fn, name, _open, params, _close, body) {
-        const paramList = params.toAST(__filename);
         return new ASTs.FunctionDecl(
             name.sourceString,
-            paramList,
+            params.sourceString.split(", "),
             body.toAST(__filename),
             getLoc(_fn, __filename)
         );
     },
 
     MacroDecl(_macro, name, _open, params, _close, body) {
-        const paramList = params.toAST(__filename);
         return new ASTs.MacroDecl(
             name.sourceString,
-            paramList,
+            params.sourceString.split(", "),
             body.toAST(__filename),
             getLoc(_macro, __filename)
         );

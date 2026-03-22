@@ -5,7 +5,7 @@ export const unit = new ParserUnit({
     description: "Simple if statement should parse correctly.",
     fileName: "test_if_statement.cts",
 
-    source: `if (true) say!! "hello";`,
+    source: `if true say!! "hello";`,
 
     expectation: `(program (if true (say!! 'hello')))`
 });

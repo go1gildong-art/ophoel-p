@@ -5,6 +5,8 @@ import * as ohm from 'ohm-js';
 
 export const identifier: ActionMap<Expression> = {
     ident(_first, _rest) {
-        return new ASTs.Identifier(_first.sourceString, getLoc(_first, __filename));
+        return new ASTs.Identifier(
+            _first.sourceString + _rest.sourceString
+            , getLoc(_first, __filename));
     }
 }

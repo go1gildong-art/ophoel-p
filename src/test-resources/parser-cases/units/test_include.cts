@@ -7,5 +7,5 @@ export const unit = new ParserUnit({
 
     source: `include "utils.oph";`,
 
-    expectation: `(program (include "utils.oph"))`
+    expectation: `(program (include utils.oph))`
 });

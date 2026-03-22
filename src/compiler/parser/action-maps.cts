@@ -12,10 +12,12 @@ import { program } from './statements/program.cjs';
 import { utilities } from './utilities.cjs';
 import { mcCommand } from './statements/mc-command.cjs';
 import { block } from './statements/block.cjs';
+import { paren } from './expressions/paren.cjs';
 
 export const actionMaps = {
     binaryOps,
     calls,
+    paren,
     identifier,
     literals,
     unaryOps,

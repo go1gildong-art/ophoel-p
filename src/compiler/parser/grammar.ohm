@@ -80,7 +80,11 @@ Ophoel {
 
   PostUnaryExp = PostUnaryExp "++"  -- postIncrement
                | PostUnaryExp "--"  -- postDecrement
-               | Primary
+               | ParenExpr
+
+  ParenExpr = 
+    "(" Expr ")" -- paren
+    | Primary
 
   bool = "true" | "false"
   VectorLiteral = "[" ListOf<Expr, ","> "]"

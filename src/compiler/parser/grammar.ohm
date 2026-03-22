@@ -16,6 +16,7 @@ Ophoel {
            | ExecExpr
            | ConstDecl
            | VariableDecl
+           | ReturnStatement
            | Block
 
   Include = "include" string ";"
@@ -39,6 +40,8 @@ Ophoel {
 
   VariableDecl = "let" ident ("=" Expr)? ";"
   ConstDecl = "const" ident "=" Expr ";"
+
+  ReturnStatement = "return" Expr? ";"
 
   McCommand = ident "!!" Expr ";"
 

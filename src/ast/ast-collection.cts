@@ -11,6 +11,7 @@ import { IfStatement } from "./statements/if.cjs";
 import { McCommand } from "./statements/mc-command.cjs";
 import { McExecStatement } from "./statements/mc-exec.cjs";
 import { RepeatStatement } from "./statements/repeat.cjs";
+import { ReturnStatement } from "./statements/return.cjs";
 import { WhileStatement } from "./statements/while.cjs";
 
 import { ExecuteExpression } from "./statements/execute-expr.cjs";
@@ -64,6 +65,7 @@ export const ASTs = {
     McCommand,
     McExecStatement,
     RepeatStatement,
+    ReturnStatement,
     WhileStatement,
     ExecuteExpression,
 

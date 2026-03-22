@@ -201,10 +201,16 @@ export class Lispifier {
         return `(execute ${expr})`;
     }
 
+    ReturnStatement(ast: ASTTypes["ReturnStatement"]) {
+        const value = ast.value != undefined ? this.lispify(ast.value) : "";
+        return value ? `(return ${value})` : "(return)";
+    }
+
     Block(ast: ASTTypes["Block"]) {
         const statements = ast.statements.map(s => this.lispify(s)).join(" ");
         return `(block (${statements}))`;
     }
 
+    
 
 }

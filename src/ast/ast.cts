@@ -31,6 +31,7 @@ export enum ASTKind {
     PreUnary = "PreUnary",
     Program = "Program",
     RepeatStatement = "RepeatStatement",
+    ReturnStatement = "ReturnStatement",
     StringLiteral = "StringLiteral",
     StructDecl = "StructDecl",
     TemplateStringLiteral = "TemplateStringLiteral",

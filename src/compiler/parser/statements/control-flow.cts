@@ -80,5 +80,18 @@ export const controlFlow: ActionMap<Statement | any> = {
             block.toAST(__filename),
             getLoc(_mcExec, __filename)
         );
+    },
+
+    ReturnStatement(_return, expr, _semi) {
+        const value = expr?.toAST(__filename)[0];
+        console.log(value);
+        const node = new ASTs.ReturnStatement(
+            value,
+            getLoc(_return, __filename)
+        );
+        console.log(node);
+        return node;
     }
+
+    
 }

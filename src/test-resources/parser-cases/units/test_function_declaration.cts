@@ -7,12 +7,12 @@ export const unit = new ParserUnit({
 
     source: [
         `fn add(a, b) {`,
-        `  a + b;`,
+        `  return a + b;`,
         `}`,
         `macro log(msg) {`,
         `  say!! msg;`,
         `}`
     ].join("\n"),
 
-    expectation: `(program (fn add (a b) (block ((execute (+ a b))))) (macro log (msg) (block ((say!! msg)))))`
+    expectation: `(program (fn add (a b) (block ((return (+ a b))))) (macro log (msg) (block ((say!! msg)))))`
 });

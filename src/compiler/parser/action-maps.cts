@@ -11,8 +11,9 @@ import { preprocesses } from './statements/preprocesses.cjs';
 import { program } from './statements/program.cjs';
 import { utilities } from './utilities.cjs';
 import { mcCommand } from './statements/mc-command.cjs';
-import { block } from './statements/block.cjs';
-import { paren } from './expressions/paren.cjs';
+import {block } from "./statements/block.cjs";
+import { paren} from "./expressions/paren.cjs";
+import { statements } from './statements/statements.cjs';
 
 export const actionMaps = {
     binaryOps,

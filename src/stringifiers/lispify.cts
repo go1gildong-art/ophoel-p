@@ -13,8 +13,21 @@ export class Lispifier {
         public depth: number = 0) { }
 
     lispify(ast: ASTNode | undefined): string {
-        if (typeof ast === "undefined") return "undefined";
-        return (this[ast.kind as keyof this] as (node: ASTNode) => string)(ast);
+        try {
+            if (typeof ast === "undefined") return "undefined";
+            return (this[ast.kind as keyof this] as (node: ASTNode) => string)(ast);
+
+        } catch (err: Error | unknown) {
+            if (err instanceof Error) {
+                throw new Error(`lispifying ${ast?.kind}: ${err.message}`);
+            }
+            throw err;
+        }
+    }
+
+    Program(ast: ASTTypes["Program"]) {
+        const body = ast.body.map(s => this.lispify(s)).join(" ");
+        return `(program ${body})`;
     }
 
     IntLiteral(ast: ASTTypes["IntLiteral"]) { return ast.raw; }
@@ -25,7 +38,7 @@ export class Lispifier {
 
     StringLiteral(ast: ASTTypes["StringLiteral"]) { return `'${ast.raw}'`; }
 
-    TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) {return `\`${ast.raw}\``; }
+    TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) { return `\`${ast.raw}\``; }
 
     VectorLiteral(ast: ASTTypes["VectorLiteral"]) {
         const entries = ast.entries.map(e => this.lispify(e)).join(" ");
@@ -37,7 +50,7 @@ export class Lispifier {
         const pairs = ast.keys
             .map((key, i) => `(${key} ${this.lispify(ast.values[i])})`)
             .join(" ");
-            
+
         return `(${pairs})`;
     }
 
@@ -184,11 +197,8 @@ export class Lispifier {
 
     Block(ast: ASTTypes["Block"]) {
         const statements = ast.statements.map(s => this.lispify(s)).join(" ");
-        return `(block ${statements})`;
+        return `(block (${statements}))`;
     }
 
-    Program(ast: ASTTypes["Program"]) {
-        const body = ast.body.map(s => this.lispify(s)).join(" ");
-        return `(program ${body})`;
-    }
+
 }

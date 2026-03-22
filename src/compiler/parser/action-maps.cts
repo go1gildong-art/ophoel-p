@@ -5,9 +5,13 @@ import { literals } from './expressions/literals.cjs';
 import { unaryOps } from './expressions/unary-ops.cjs';
 import { execExpr } from './statements/exec-expr.cjs';
 import { declarations } from './statements/declarations.cjs';
+import { functionDeclarations } from './statements/function-declarations.cjs';
+import { controlFlow } from './statements/control-flow.cjs';
+import { preprocesses } from './statements/preprocesses.cjs';
 import { program } from './statements/program.cjs';
 import { utilities } from './utilities.cjs';
 import { mcCommand } from './statements/mc-command.cjs';
+import { block } from './statements/block.cjs';
 
 export const actionMaps = {
     binaryOps,
@@ -17,7 +21,11 @@ export const actionMaps = {
     unaryOps,
     execExpr,
     declarations,
+    functionDeclarations,
+    controlFlow,
+    preprocesses,
     program,
     utilities,
-    mcCommand
+    mcCommand,
+    block
 };

@@ -2,14 +2,49 @@ Ophoel {
   // The entry point
   Program = Statement* end
 
-  Statement = McCommand | ExecExpr | McCommand | ConstDecl | VariableDecl
+  Statement = Include
+           | FunctionDecl
+           | MacroDecl
+           | IfStatement
+           | WhileStatement
+           | ForStatement
+           | ForOfStatement
+           | RepeatStatement
+           | ChooseStatement
+           | McExecStatement
+           | McCommand
+           | ExecExpr
+           | ConstDecl
+           | VariableDecl
+           | Block
 
-  VariableDecl = "let" ident ("=" Expr) ";"
+  Include = "include" string ";"
+
+  FunctionDecl = "fn" ident "(" ListOf<ident, ","> ")" Block
+  MacroDecl = "macro" ident "(" ListOf<ident, ","> ")" Block
+
+  IfStatement = "if" Expr Statement Elif* Else?
+  Elif = "elif" Expr Statement
+  Else = "else" Statement
+
+  WhileStatement = "while" Expr Statement
+  ForStatement = "for" "(" (VariableDecl | ConstDecl | ExecExpr) Expr ";" ExecExpr ")" Statement
+  ForOfStatement = "for" "(" (VariableDecl | ConstDecl) "of" Expr ")" Statement
+  RepeatStatement = "repeat" Expr Statement
+
+  ChooseStatement = "choose" Expr Statement ChooseOr*
+  ChooseOr = "or" Expr Statement
+
+  McExecStatement = Expr "!!" Statement
+
+  VariableDecl = "let" ident ("=" Expr)? ";"
   ConstDecl = "const" ident "=" Expr ";"
 
   McCommand = ident "!!" Expr ";"
 
   ExecExpr = Expr ";"
+
+  Block = "{" Statement* "}"
 
   // A simple expression statement
   Expr = OrExp
@@ -67,6 +102,7 @@ Ophoel {
   MacroCall = ident "!" "(" ListOf<Expr, ","> ")"
 
   // Terminals
+  ident = letter (letter | digit | "_")*
   string 
     = ("\"" (~"\"" any)* "\"")
     | ("'" (~"'" any)* "'")
@@ -78,5 +114,5 @@ Ophoel {
   number = digit+
   // space += "//" (~"\n" any)* // This adds support for // comments
 
-  ident = (letter | "_") (alnum | "_")*
+  TypeAnnotation = ident
 }

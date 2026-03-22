@@ -178,6 +178,12 @@ export class Lispifier {
         return `(${ast.command}!! ${arg})`;
     }
 
+    McExecStatement(ast: ASTTypes["McExecStatement"]) {
+        const prefix = this.lispify(ast.prefix);
+        const body = this.lispify(ast.body);
+        return `(mc_exec ${prefix}!! ${body})`;
+    }
+
     RepeatStatement(ast: ASTTypes["RepeatStatement"]) {
         const count = this.lispify(ast.count);
         const body = this.lispify(ast.body);

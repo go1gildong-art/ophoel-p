@@ -1,0 +1,26 @@
+import { Location } from "../../compiler/metadata.cjs";
+import { IRKind, IRNode } from "../ir.cjs";
+
+export class Command implements IRNode {
+    kind: IRKind = IRKind.Command;
+
+    constructor(
+        public message: string,
+        public location: Location) { }
+
+    toString() {
+        return `/${this.message} | ${this.location.toString()}`;
+    }
+}
+
+export class Comment implements IRNode {
+    kind: IRKind = IRKind.Comment;
+
+    constructor(
+        public message: string,
+        public location: Location) { }
+
+    toString() {
+        return `/# ( ${this.message} | ${this.location.toString()} )`;
+    }
+}

@@ -73,12 +73,12 @@ export const controlFlow: ActionMap<Statement | any> = {
             [body.toAST(__filename), ...branchList.body],
             getLoc(_choose, __filename));
     },
-    
-    McExecStatement(prefix, _dbang, block) {
+
+    McExecStatement(_mcExec, prefix, _dbang, block) {
         return new ASTs.McExecStatement(
             prefix.toAST(__filename),
             block.toAST(__filename),
-            getLoc(prefix, __filename)
+            getLoc(_mcExec, __filename)
         );
     }
 }

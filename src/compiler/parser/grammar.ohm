@@ -35,7 +35,7 @@ Ophoel {
   ChooseStatement = "choose" Expr Statement ChooseOr*
   ChooseOr = "or" Expr Statement
 
-  McExecStatement = Expr "!!" Statement
+  McExecStatement = "mc_exec" Expr "!!" Statement
 
   VariableDecl = "let" ident ("=" Expr)? ";"
   ConstDecl = "const" ident "=" Expr ";"

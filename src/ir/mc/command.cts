@@ -6,10 +6,10 @@ export class Command implements IRNode {
 
     constructor(
         public message: string,
-        public location: Location) { }
+        public location?: Location) { }
 
     toString() {
-        return `/${this.message} | ${this.location.toString()}`;
+        return `cmd ${this.message} | ${this.location?.toString() ?? 'unknown location'}`;
     }
 }
 
@@ -18,9 +18,9 @@ export class Comment implements IRNode {
 
     constructor(
         public message: string,
-        public location: Location) { }
+        public location?: Location) { }
 
     toString() {
-        return `/# ( ${this.message} | ${this.location.toString()} )`;
+        return `/# ${this.message} | ${this.location?.toString() ?? 'unknown location'}`;
     }
 }

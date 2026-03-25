@@ -7,7 +7,7 @@ export enum IRKind {
 
 export interface IRNode {
     kind: IRKind;
-    location: Location;
+    location?: Location;
 }
 
 export class IRInstructions {

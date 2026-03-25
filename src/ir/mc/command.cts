@@ -9,7 +9,7 @@ export class Command implements IRNode {
         public location?: Location) { }
 
     toString() {
-        return `cmd ${this.message} | ${this.location?.toString() ?? 'unknown location'}`;
+        return `cmd /${this.message} | ${this.location?.toString() ?? 'u'}`;
     }
 }
 
@@ -21,6 +21,6 @@ export class Comment implements IRNode {
         public location?: Location) { }
 
     toString() {
-        return `/# ${this.message} | ${this.location?.toString() ?? 'unknown location'}`;
+        return `/#  ${this.message} | ${this.location?.toString() ?? 'unknown location'}`;
     }
 }

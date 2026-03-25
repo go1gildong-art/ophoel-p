@@ -1,12 +1,14 @@
 import { ASTTypes } from "../../ast/ast-collection.cjs";
-import { lispify as baseLispify } from "../../stringifiers/lispify.cjs";
 
 export function Block(ast: ASTTypes["Block"]) {
-    const statements = ast.statements.map(s => baseLispify(s)).join(" ");
-    return `{ ${statements} }`;
+    const statements = ast.statements
+    .map(s => s.lispify())
+    .map(s => `(${s})`);
+
+    return `( ${statements.join(" ")} )`;
 }
 
 export function Program(ast: ASTTypes["Program"]) {
-    const body = ast.body.map(s => baseLispify(s)).join(" ");
+    const body = ast.body.map(s => s.lispify()).join(" ");
     return `(program ${body})`;
 }

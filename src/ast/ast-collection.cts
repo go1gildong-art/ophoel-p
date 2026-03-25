@@ -1,19 +1,17 @@
 import * as Literals from "../packs/_core.literals/nodes.cjs";
 import * as Operations from "../packs/_core.operations/nodes.cjs";
-import { Identifier } from "./expressions/identifier.cjs";
-import { VariableAssign } from "./expressions/var-assign.cjs";
-import { CompoundAssign } from "./expressions/compound-assign.cjs";
+import * as ExprMisc from "../packs/_core.expr-misc/nodes.cjs";
+
+import * as Declarations from "../packs/_core.declarations/nodes.cjs";
 
 import * as ControlFlow from "../packs/_core.control-flow/nodes.cjs";
 import { McCommand, McExecStatement } from "../packs/_core.mc/nodes.cjs";
 import { Include } from "../packs/_core.preprocesses/nodes.cjs";
-import { Block, Program } from "../packs/_core.backbone/nodes.cjs";
+import * as Backbone from "../packs/_core.backbone/nodes.cjs";
 
-
-/*
 export const ASTs = {
-    Block,
-    Program,
+    Block: Backbone.Block,
+    Program: Backbone.Program,
 
     BoolLiteral: Literals.BoolLiteral,
     CompoundLiteral: Literals.CompoundLiteral,
@@ -29,14 +27,15 @@ export const ASTs = {
     IndexAccess: Operations.IndexAccess,
     MemberAccess: Operations.MemberAccess,
 
-    VariableAssign,
-    CompoundAssign,
+    VariableAssign: ExprMisc.VariableAssign,
+    CompoundAssign: ExprMisc.CompoundAssign,
 
-    FunctionCall,
-    MacroCall,
+    FunctionCall: Operations.FunctionCall,
+    MacroCall: Operations.MacroCall,
 
-    ParenExpression,
-    Identifier,
+    ParenExpression: ExprMisc.ParenExpression,
+    Identifier: ExprMisc.Identifier,
+    // ExecuteExpression: ExprMisc.ExecuteExpression,
 
     ChooseStatement: ControlFlow.ChooseStatement,
     ForStatement: ControlFlow.ForStatement,
@@ -47,24 +46,17 @@ export const ASTs = {
     RepeatStatement: ControlFlow.RepeatStatement,
     ReturnStatement: ControlFlow.ReturnStatement,
     WhileStatement: ControlFlow.WhileStatement,
-    ExecuteExpression,
 
-    FunctionDecl,
-    MacroDecl,
-    VariableDecl,
-    ConstDecl,
+    FunctionDecl: Declarations.FunctionDecl,
+    MacroDecl: Declarations.MacroDecl,
+    VariableDecl: Declarations.VariableDecl,
+    ConstDecl: Declarations.ConstDecl,
 
-    Include,
-
-    Block,
-    Program
+    Include
 }
-
-
 
 type Constructors = typeof ASTs
 
 export type ASTTypes = {
   [K in keyof Constructors]: InstanceType<Constructors[K]>
 };
-*/

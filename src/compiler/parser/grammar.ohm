@@ -20,7 +20,7 @@
   Expr = OrExp
 
   // Terminals exposed for parser bootstrap
-  ident = letter (letter | digit | "_")*
+  
 
   // More rules loaded from pack grammars
 // }

@@ -1,17 +1,22 @@
 import { ASTTypes } from "../../ast/ast-collection.cjs";
-import { lispify as baseLispify } from "../../stringifiers/lispify.cjs";
 
 export function Identifier(ast: ASTTypes["Identifier"]) {
     return ast.name;
 }
 
 export function ParenExpression(ast: ASTTypes["ParenExpression"]) {
-    const expr = baseLispify(ast.expression as any);
+    const expr = ast.expression.lispify();
     return `(${expr})`;
 }
 
 export function VariableAssign(ast: ASTTypes["VariableAssign"]) {
-    const address = baseLispify(ast.address as any);
-    const value = baseLispify(ast.setValue as any);
+    const address = ast.address.lispify();
+    const value = ast.setValue.lispify();
     return `(= ${address} ${value})`;
+}
+
+export function CompoundAssign(ast: ASTTypes["CompoundAssign"]) {
+    const address = ast.address.lispify();
+    const value = ast.setValue.lispify();
+    return `(=${ast.operation} ${address} ${value})`;
 }

@@ -1,13 +1,18 @@
-import { Expression, ASTKind } from "../../ast/ast.cjs";
-import { Location } from "../../compiler/metadata.cjs";
+import { Statement, Expression, ASTKind, StandardNode } from "../../ast/ast.cjs";
+import { Block } from "../../packs/_core.backbone/nodes.cjs";
 import { BinaryOperator } from "../_core.operations/nodes.cjs";
-
+import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
+import { Location } from "../../compiler/metadata.cjs";
+import * as lispify from "./lispify.cjs";
 export class Identifier implements Expression {
     kind = ASTKind.Identifier;
 
     constructor(
         public name: string,
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.Identifier(this); }
 }
 
 export class ParenExpression implements Expression {
@@ -16,6 +21,9 @@ export class ParenExpression implements Expression {
     constructor(
         public expression: Expression,
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.ParenExpression(this); }
 }
 
 export class VariableAssign implements Expression {
@@ -25,6 +33,9 @@ export class VariableAssign implements Expression {
         public address: Expression,
         public setValue: Expression,
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.VariableAssign(this); }
 }
 
 export class CompoundAssign implements Expression {
@@ -35,4 +46,7 @@ export class CompoundAssign implements Expression {
         public operation: BinaryOperator,
         public setValue: Expression,
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.CompoundAssign(this); }
 }

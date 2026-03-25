@@ -3,7 +3,7 @@ import { Statement } from "../../../ast/ast.cjs";
 import { getLoc, ActionMap } from "../../../compiler/parser/parser.cjs";
 import * as ohm from 'ohm-js';
 
-export const controlFlow: ActionMap<Statement | any> = {
+export const actionMap: ActionMap<Statement | any> = {
     IfStatement(_if, cond, body, elifs, elseClause) {
         const ifSignature = { condition: cond.toAST(__filename), body: body.toAST(__filename) };
         const elifSignatures = elifs.toAST(__filename).map((elif: any) => ({ condition: elif.condition.toAST(__filename), body: elif.body.toAST(__filename) }));
@@ -29,8 +29,14 @@ export const controlFlow: ActionMap<Statement | any> = {
         return new ASTs.RepeatStatement(count.toAST(__filename), body.toAST(__filename), getLoc(_repeat, __filename));
     },
     ChooseStatement(_choose, weight, body, branches) {
-        const branchList = branches.toAST(__filename).map((c: any) => ({ weight: c.value.toAST(__filename), body: c.body.toAST(__filename) }));
-        return new ASTs.ChooseStatement([weight.toAST(__filename), ...branchList.map(c => c.weight)], [body.toAST(__filename), ...branchList.map(c => c.body)], getLoc(_choose, __filename));
+        const branchList = branches.toAST(__filename).map((c: any) => ({
+            weight: c.value.toAST(__filename),
+            body: c.body.toAST(__filename)
+        }));
+        return new ASTs.ChooseStatement(
+            [weight.toAST(__filename), ...branchList.weight],
+            [body.toAST(__filename), ...branchList.body],
+            getLoc(_choose, __filename));
     },
     ReturnStatement(_return, expr, _semi) {
         const value = expr?.toAST(__filename)[0];

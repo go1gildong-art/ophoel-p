@@ -1,9 +1,8 @@
 import { ASTTypes } from "../../ast/ast-collection.cjs";
-import { lispify as baseLispify } from "../../stringifiers/lispify.cjs";
 import { CondBodySet } from "../../packs/_core.control-flow/nodes.cjs";
 
 export function IfStatement(ast: ASTTypes["IfStatement"]) {
-    const lispifySignature = (sign: CondBodySet) => `${baseLispify(sign.condition)} ${baseLispify(sign.body)})`;
+    const lispifySignature = (sign: CondBodySet) => `${sign.condition.lispify()} ${sign.body.lispify()})`;
     const mainBranch = `(if ${lispifySignature(ast.ifSignature)}`;
     const elifBranches = ast.elifSignatures
         .map(sign => lispifySignature(sign))
@@ -19,29 +18,29 @@ export function IfStatement(ast: ASTTypes["IfStatement"]) {
 }
 
 export function WhileStatement(ast: ASTTypes["WhileStatement"]) {
-    return `(while ${baseLispify(ast.condition)} ${baseLispify(ast.body)})`;
+    return `(while ${ast.condition.lispify()} ${ast.body.lispify()})`;
 }
 
 export function ForStatement(ast: ASTTypes["ForStatement"]) {
-    return `(for ${baseLispify(ast.declaration)} ${baseLispify(ast.condition)} ${baseLispify(ast.increment)} ${baseLispify(ast.body)})`;
+    return `(for ${ast.declaration.lispify()} ${ast.condition.lispify()} ${ast.increment.lispify()} ${ast.body.lispify()})`;
 }
 
 export function ForOfStatement(ast: ASTTypes["ForOfStatement"]) {
-    return `(for ${baseLispify(ast.declaration)} of ${baseLispify(ast.iterable)} ${baseLispify(ast.body)})`;
+    return `(for ${ast.declaration.lispify()} of ${ast.iterable.lispify()} ${ast.body.lispify()})`;
 }
 
 export function RepeatStatement(ast: ASTTypes["RepeatStatement"]) {
-    return `(repeat ${baseLispify(ast.count)} ${baseLispify(ast.body)})`;
+    return `(repeat ${ast.count.lispify()} ${ast.body.lispify()})`;
 }
 
 export function ChooseStatement(ast: ASTTypes["ChooseStatement"]) {
     const cases = ast.weights
-        .map((weight, i) => `(${baseLispify(weight)} ${baseLispify(ast.bodies[i])})`)
+        .map((weight, i) => `(${weight.lispify()} ${ast.bodies[i]?.lispify()})`)
         .join(" ");
     return `(choose ${cases})`;
 }
 
 export function ReturnStatement(ast: ASTTypes["ReturnStatement"]) {
-    const value = ast.value ? baseLispify(ast.value) : "";
+    const value = ast.value ? ast.value.lispify() : "";
     return `(return ${value})`;
 }

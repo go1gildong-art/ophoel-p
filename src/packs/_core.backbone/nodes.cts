@@ -1,17 +1,23 @@
-import { Block } from "../../ast/block.cjs";
-import { Program } from "../../ast/program.cjs";
-import { Statement, ASTKind } from "../../ast/ast.cjs";
+import { Statement, Expression, ASTKind, StandardNode } from "../../ast/ast.cjs";
+import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../compiler/metadata.cjs";
+import * as lispify from "./lispify.cjs";
 
 // Expand existing nodes to a pack.
-export class Block implements Statement {
+export class Block implements Statement, StandardNode {
     kind = ASTKind.Block;
 
     constructor(public statements: Statement[], public location: Location) {}
+
+    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+        lispify(): string { return lispify.Block(this); }
 }
 
-export class Program implements Statement {
+export class Program implements Statement, StandardNode {
     kind = ASTKind.Program;
 
     constructor(public body: Statement[], public location: Location) {}
+
+    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+        lispify(): string { return lispify.Program(this); }
 }

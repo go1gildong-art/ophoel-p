@@ -1,5 +1,8 @@
-import { Expression, LValue, ASTKind } from "../../ast/ast.cjs";
+import { Statement, Expression, ASTKind, StandardNode } from "../../ast/ast.cjs";
+import { Block } from "../../packs/_core.backbone/nodes.cjs";
+import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../compiler/metadata.cjs";
+import * as lispify from "./lispify.cjs";
 
 export enum BinaryOperator {
     ADD = "+",
@@ -27,6 +30,9 @@ export class BinaryOperation implements Expression {
         public operator: BinaryOperator,
         public right: Expression,
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.BinaryOperation(this); }
 }
 
 export enum UnaryOperator {
@@ -42,6 +48,9 @@ export class PreUnary implements Expression {
         public operator: UnaryOperator,
         public right: Expression,
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    lispify(): string { return lispify.PreUnary(this); }
 }
 
 export class PostUnary implements Expression {
@@ -51,24 +60,33 @@ export class PostUnary implements Expression {
         public operator: UnaryOperator,
         public left: Expression,
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    lispify(): string { return lispify.PostUnary(this); }
 }
 
-export class IndexAccess implements LValue {
+export class IndexAccess implements Expression {
     kind = ASTKind.IndexAccess;
 
     constructor(
         public left: Expression,
         public index: Expression,
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    lispify(): string { return lispify.IndexAccess(this); }
 }
 
-export class MemberAccess implements LValue {
+export class MemberAccess implements Expression {
     kind = ASTKind.MemberAccess;
 
     constructor(
         public left: Expression,
         public member: string,
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    lispify(): string { return lispify.MemberAccess(this); }
 }
 
 export class FunctionCall implements Expression {
@@ -78,6 +96,9 @@ export class FunctionCall implements Expression {
         public callee: string,
         public args: Expression[],
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    lispify(): string { return lispify.FunctionCall(this); }
 }
 
 export class MacroCall implements Expression {
@@ -87,4 +108,7 @@ export class MacroCall implements Expression {
         public callee: string,
         public args: Expression[],
         public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    lispify(): string { return lispify.MacroCall(this); }
 }

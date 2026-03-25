@@ -16,6 +16,7 @@ export async function loadTests<T>(folder: string): Promise<T[]> {
   });
 }
 
+/*
 const folder = "eee";
 const nodes: Record<string, any> = {};
 
@@ -31,3 +32,4 @@ const result = packs.forEach(packFolder => {
     const nodeFile = require(join(pack, "nodes.cjs"));
     Object.assign(nodes, nodeFile);
 })
+    */

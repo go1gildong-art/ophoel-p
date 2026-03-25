@@ -1,5 +1,4 @@
 import { GoldenCase } from "../golden-interface.cjs";
-import { lispify } from "../../stringifiers/lispify.cjs";
 import { parse } from "../../compiler/parser/parser.cjs";
 import * as fp from "../../utils/functional.cjs";
 

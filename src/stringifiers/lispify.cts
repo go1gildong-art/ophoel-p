@@ -1,3 +1,4 @@
+/*
 import { ASTTypes } from "../ast/ast-collection.cjs";
 import * as literalLispify from "../packs/_core.literals/lispify.cjs";
 import * as operationsLispify from "../packs/_core.operations/lispify.cjs";
@@ -116,13 +117,11 @@ export class Lispifier {
     McExecStatement(ast: ASTTypes["McExecStatement"]) { return mcLispify.McExecStatement(ast); }
     RepeatStatement(ast: ASTTypes["RepeatStatement"]) { return controlFlowLispify.RepeatStatement(ast); }
     WhileStatement(ast: ASTTypes["WhileStatement"]) { return controlFlowLispify.WhileStatement(ast); }
-    ExecuteExpression(ast: ASTTypes["ExecuteExpression"]) {
-        const expr = this.lispify(ast.expression);
-        return `(execute ${expr})`;
-    }
     ReturnStatement(ast: ASTTypes["ReturnStatement"]) { return controlFlowLispify.ReturnStatement(ast); }
     Block(ast: ASTTypes["Block"]) { return backboneLispify.Block(ast); }
 
     
 
 }
+
+*/

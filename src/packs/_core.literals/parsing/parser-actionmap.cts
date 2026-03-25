@@ -4,7 +4,7 @@ import { getLoc, ActionMap } from "../../../compiler/parser/parser.cjs";
 import * as ohm from 'ohm-js';
 
 type literalActionTypes = Expression | string | { key: string; value: any; };
-export const literals: ActionMap<literalActionTypes> = {
+export const actionMap: ActionMap<literalActionTypes> = {
     string(_openQuote, chars, _closeQuote) {
         return new ASTs.StringLiteral(
             chars.sourceString,

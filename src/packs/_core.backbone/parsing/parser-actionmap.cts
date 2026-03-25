@@ -3,7 +3,7 @@ import { Statement } from "../../../ast/ast.cjs";
 import { getLoc, ActionMap } from "../../../compiler/parser/parser.cjs";
 import * as ohm from 'ohm-js';
 
-export const backbone: ActionMap<Statement> = {
+export const actionMap: ActionMap<Statement> = {
     Program(statements, _end) {
         const statementList = statements.toAST(__filename);
         return new ASTs.Program(statementList, getLoc(statements, __filename));

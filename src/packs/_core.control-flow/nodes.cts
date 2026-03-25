@@ -1,5 +1,9 @@
-import { Statement, Expression, ASTKind } from "../../ast/ast.cjs";
+import { Statement, Expression, ASTKind, StandardNode } from "../../ast/ast.cjs";
+import { Block } from "../../packs/_core.backbone/nodes.cjs";
+import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../compiler/metadata.cjs";
+import * as lispify from "./lispify.cjs";
+
 
 export type CondBodySet = { condition: Expression, body: Statement };
 
@@ -11,6 +15,9 @@ export class IfStatement implements Statement {
         public elifSignatures: CondBodySet[],
         public elseSignature: CondBodySet | undefined,
         public location: Location) { }
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.IfStatement(this); }
 }
 
 export class WhileStatement implements Statement {
@@ -20,6 +27,9 @@ export class WhileStatement implements Statement {
         public condition: Expression,
         public body: Statement,
         public location: Location) { }
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.WhileStatement(this); }
 }
 
 export class ForStatement implements Statement {
@@ -31,6 +41,9 @@ export class ForStatement implements Statement {
         public increment: Expression,
         public body: Statement,
         public location: Location) { }
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.ForStatement(this); }
 }
 
 export class ForOfStatement implements Statement {
@@ -41,6 +54,9 @@ export class ForOfStatement implements Statement {
         public iterable: Expression,
         public body: Statement,
         public location: Location) { }
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.ForOfStatement(this); }
 }
 
 export class RepeatStatement implements Statement {
@@ -50,6 +66,9 @@ export class RepeatStatement implements Statement {
         public count: Expression,
         public body: Statement,
         public location: Location) { }
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.RepeatStatement(this); }
 }
 
 export class ChooseStatement implements Statement {
@@ -59,6 +78,9 @@ export class ChooseStatement implements Statement {
         public weights: Expression[],
         public bodies: Statement[],
         public location: Location) { }
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.ChooseStatement(this); }
 }
 
 export class ReturnStatement implements Statement {
@@ -67,4 +89,7 @@ export class ReturnStatement implements Statement {
     constructor(
         public value: Expression | undefined,
         public location: Location) { }
+
+        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+            lispify(): string { return lispify.ReturnStatement(this); }
 }

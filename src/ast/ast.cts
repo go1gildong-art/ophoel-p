@@ -55,13 +55,13 @@ export interface StandardNode extends ASTNode {
 
 export interface Preprocess extends ASTNode {}
 
-export interface Expression extends ASTNode {
+export interface Expression extends StandardNode {
     value?: OphoelValue;
 }
 
 export interface LValue extends Expression {}
 
-export interface Statement extends ASTNode {}
+export interface Statement extends StandardNode {}
 
 export interface Call extends ASTNode {
     args: Expression[];

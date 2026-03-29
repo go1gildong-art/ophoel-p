@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import { Location } from '../metadata.cjs'; // Your existing class
 import { ASTs, ASTTypes } from '../../ast/ast-collection.cjs'; // Your nodes
 import { actionMaps } from './action-maps.cjs';
+import { grammar as declGrammar } from '../../packs/_core.declarations/parsing/ohm-grammar.cjs';
 
 // 1. Load the grammar
 // This builds an absolute path regardless of where you run the command from
@@ -11,7 +12,17 @@ import { actionMaps } from './action-maps.cjs';
 const grammarPath = path.join(__dirname, 'grammar.ohm');
 
 const grammarSource = fs.readFileSync('./src/compiler/parser/grammar.ohm', 'utf-8');
-const myGrammar = ohm.grammar(grammarSource);
+
+
+const indent = (str: string) => str.split("\n").map(line => "  " + line).join("\n");
+const grammarFull = [
+  "Ophoel {",
+  indent(grammarSource),
+  indent(declGrammar),
+  "}"
+].join("\n");
+
+const myGrammar = ohm.grammar(grammarFull);
 
 export type ActionMap<T = unknown> = { [key: string]: (...args: ohm.Node[]) => T };
 

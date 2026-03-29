@@ -1,4 +1,4 @@
-Ophoel {
+// Ophoel {
   // The entry point
   Program = Statement* end
 
@@ -116,4 +116,4 @@ Ophoel {
   // space += "//" (~"\n" any)* // This adds support for // comments
 
   TypeAnnotation = ident
-}
+// }

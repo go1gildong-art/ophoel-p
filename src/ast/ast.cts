@@ -1,6 +1,7 @@
 
 import { Location } from "../compiler/metadata.cjs";
 import { OphoelValue } from "./types.cjs";
+import { Context as EvalContext, InterpretReturn } from "../compiler/interpreter/utilities.cjs";
 
 export enum ASTKind {
     BinaryOperation = "BinaryOperation",
@@ -44,6 +45,12 @@ export enum ASTKind {
 export interface ASTNode {
     kind: ASTKind;
     location: Location;
+}
+
+export interface StandardNode extends ASTNode {
+    evaluate(ctx: EvalContext): InterpretReturn;
+    lispify(): string;
+    // format(): string;
 }
 
 export interface Preprocess extends ASTNode {}

@@ -1,6 +1,6 @@
 import { IRInstructions, IRNode } from "../../ir/ir.cjs";
 
-type InterpretReturn = {
+export type InterpretReturn = {
     ok: true;
     ctx: Context;
     value?: OphoelType;
@@ -9,7 +9,7 @@ type InterpretReturn = {
     err: unknown
 }
 
-class Context {
+export class Context {
     readonly frames: Frame[] = [];
     instructions: IRNode[] = [];
 }

@@ -21,9 +21,6 @@ Ophoel {
 
   Include = "include" string ";"
 
-  FunctionDecl = "fn" ident "(" ListOf<ident, ","> ")" Block
-  MacroDecl = "macro" ident "(" ListOf<ident, ","> ")" Block
-
   IfStatement = "if" Expr Statement Elif* Else?
   Elif = "elif" Expr Statement
   Else = "else" Statement
@@ -37,9 +34,6 @@ Ophoel {
   ChooseOr = "or" Expr Statement
 
   McExecStatement = "mc_exec" Expr "!!" Statement
-
-  VariableDecl = "let" ident ("=" Expr)? ";"
-  ConstDecl = "const" ident "=" Expr ";"
 
   ReturnStatement = "return" Expr? ";"
 

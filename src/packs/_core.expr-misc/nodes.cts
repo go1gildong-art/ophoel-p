@@ -1,5 +1,6 @@
 import { Expression, ASTKind } from "../../ast/ast.cjs";
 import { Location } from "../../compiler/metadata.cjs";
+import { BinaryOperator } from "../_core.operations/nodes.cjs";
 
 export class Identifier implements Expression {
     kind = ASTKind.Identifier;
@@ -22,6 +23,16 @@ export class VariableAssign implements Expression {
 
     constructor(
         public address: Expression,
+        public setValue: Expression,
+        public location: Location) {}
+}
+
+export class CompoundAssign implements Expression {
+    kind = ASTKind.CompoundAssign;
+
+    constructor(
+        public address: Expression,
+        public operation: BinaryOperator,
         public setValue: Expression,
         public location: Location) {}
 }

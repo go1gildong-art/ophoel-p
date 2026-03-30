@@ -2,6 +2,9 @@ import { ASTs } from "../../../ast/ast-collection.cjs";
 import { Expression } from "../../../ast/ast.cjs";
 import { getLoc, ActionMap } from "../../../compiler/parser/parser.cjs";
 import * as ohm from 'ohm-js';
+import { CompoundAssign } from "../nodes.cjs";
+import { BinaryOperator } from "../../_core.operations/nodes.cjs";
+import { fail } from "../../../utils/fail.cjs";
 
 const toAST = (node: any) => typeof node?.toAST === 'function' ? node.toAST(__filename) : node;
 
@@ -19,5 +22,20 @@ export const actionMap: ActionMap<Expression> = {
 
     VariableAssign(address, _eq, value) {
         return new ASTs.VariableAssign(toAST(address), toAST(value), getLoc(_eq, __filename));
+    },
+
+    CompoundAssign(address, op, value) {
+        const operatorMap: Record<string, BinaryOperator> = {
+            "+=": BinaryOperator.ADD,
+            "-=": BinaryOperator.SUBTRACT,
+            "*=": BinaryOperator.MULTIPLY,
+            "/=": BinaryOperator.DIVIDE,
+            "%=": BinaryOperator.REMAINDER
+        };
+        return new ASTs.CompoundAssign(
+            toAST(address), 
+            operatorMap[op.sourceString] ?? fail(new Error(`Unknown compound operator: ${op.sourceString}`)),  
+            toAST(value), 
+            getLoc(op, __filename));
     }
 };

@@ -6,6 +6,7 @@ import { ASTs, ASTTypes } from '../../ast/ast-collection.cjs'; // Your nodes
 import { actionMaps } from './action-maps.cjs';
 import { grammar as declGrammar } from '../../packs/_core.declarations/parsing/ohm-grammar.cjs';
 import { grammar as literalsGrammar } from '../../packs/_core.literals/parsing/ohm-grammar.cjs';
+import { grammar as exprMiscGrammar } from '../../packs/_core.expr-misc/parsing/ohm-grammar.cjs';
 import { grammar as operationsGrammar } from '../../packs/_core.operations/parsing/ohm-grammar.cjs';
 import { grammar as controlFlowGrammar } from '../../packs/_core.control-flow/parsing/ohm-grammar.cjs';
 import { grammar as preprocessesGrammar } from '../../packs/_core.preprocesses/parsing/ohm-grammar.cjs';
@@ -26,6 +27,7 @@ const grammarFull = [
   indent(grammarSource),
   indent(declGrammar),
   indent(literalsGrammar),
+  indent(exprMiscGrammar),
   indent(operationsGrammar),
   indent(controlFlowGrammar),
   indent(preprocessesGrammar),

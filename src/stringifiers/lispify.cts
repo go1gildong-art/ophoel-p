@@ -5,6 +5,7 @@ import * as controlFlowLispify from "../packs/_core.control-flow/lispify.cjs";
 import * as preprocessesLispify from "../packs/_core.preprocesses/lispify.cjs";
 import * as backboneLispify from "../packs/_core.backbone/lispify.cjs";
 import * as mcLispify from "../packs/_core.mc/lispify.cjs";
+import * as exprMiscLispify from "../packs/_core.expr-misc/lispify.cjs";
 import { ASTNode } from "../ast/ast.cjs";
 import { CondBodySet } from "../packs/_core.control-flow/nodes.cjs";
 
@@ -57,16 +58,14 @@ export class Lispifier {
 
     MemberAccess(ast: ASTTypes["MemberAccess"]) { return operationsLispify.MemberAccess(ast); }
 
-    Identifier(ast: ASTTypes["Identifier"]) { return ast.name; }
+    Identifier(ast: ASTTypes["Identifier"]) { return exprMiscLispify.Identifier(ast); }
 
     ParenExpression(ast: ASTTypes["ParenExpression"]) {
-        const expr = this.lispify(ast.expression);
-        return `(${expr})`;
+        return exprMiscLispify.ParenExpression(ast);
     }
 
     VariableAssign(ast: ASTTypes["VariableAssign"]) {
-        const value = this.lispify(ast.setValue);
-        return `(= ${ast.address} ${value})`;
+        return exprMiscLispify.VariableAssign(ast);
     }
 
     CompoundAssign(ast: ASTTypes["CompoundAssign"]) {

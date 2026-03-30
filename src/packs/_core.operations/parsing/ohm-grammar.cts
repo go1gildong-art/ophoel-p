@@ -46,4 +46,5 @@ Primary = number
         | ident
         | VectorLiteral
         | CompoundLiteral
+        | VariableAssign
 `;

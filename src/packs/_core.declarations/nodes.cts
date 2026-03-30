@@ -1,5 +1,5 @@
 import { Statement, Expression, ASTKind, StandardNode } from "../../ast/ast.cjs";
-import { Block } from "../../ast/block.cjs";
+import { Block } from "../../packs/_core.backbone/nodes.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../compiler/metadata.cjs";
 import * as lispify from "./lispify.cjs";

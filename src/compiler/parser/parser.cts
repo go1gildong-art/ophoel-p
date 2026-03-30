@@ -6,6 +6,11 @@ import { ASTs, ASTTypes } from '../../ast/ast-collection.cjs'; // Your nodes
 import { actionMaps } from './action-maps.cjs';
 import { grammar as declGrammar } from '../../packs/_core.declarations/parsing/ohm-grammar.cjs';
 import { grammar as literalsGrammar } from '../../packs/_core.literals/parsing/ohm-grammar.cjs';
+import { grammar as operationsGrammar } from '../../packs/_core.operations/parsing/ohm-grammar.cjs';
+import { grammar as controlFlowGrammar } from '../../packs/_core.control-flow/parsing/ohm-grammar.cjs';
+import { grammar as preprocessesGrammar } from '../../packs/_core.preprocesses/parsing/ohm-grammar.cjs';
+import { grammar as backboneGrammar } from '../../packs/_core.backbone/parsing/ohm-grammar.cjs';
+import { grammar as mcGrammar } from '../../packs/_core.mc/parsing/ohm-grammar.cjs';
 
 // 1. Load the grammar
 // This builds an absolute path regardless of where you run the command from
@@ -21,6 +26,11 @@ const grammarFull = [
   indent(grammarSource),
   indent(declGrammar),
   indent(literalsGrammar),
+  indent(operationsGrammar),
+  indent(controlFlowGrammar),
+  indent(preprocessesGrammar),
+  indent(backboneGrammar),
+  indent(mcGrammar),
   "}"
 ].join("\n");
 

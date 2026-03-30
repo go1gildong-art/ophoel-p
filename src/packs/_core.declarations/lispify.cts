@@ -1,6 +1,6 @@
 import { ASTs, ASTTypes } from "../../ast/ast-collection.cjs";
 import { ASTNode } from "../../ast/ast.cjs";
-import { CondBodySet } from "../../ast/statements/if.cjs";
+import { CondBodySet } from "../../packs/_core.control-flow/nodes.cjs";
 
 export function FunctionDecl(ast: ASTTypes["FunctionDecl"]) {
     const params = ast.parameters.join(" ");

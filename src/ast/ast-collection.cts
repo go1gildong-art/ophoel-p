@@ -1,36 +1,16 @@
 import * as Literals from "../packs/_core.literals/nodes.cjs";
-import * as Operations from "./expressions/operations.cjs";
+import * as Operations from "../packs/_core.operations/nodes.cjs";
 import { Identifier } from "./expressions/identifier.cjs";
 import { VariableAssign } from "./expressions/var-assign.cjs";
 import { CompoundAssign } from "./expressions/compound-assign.cjs";
 
-import { ChooseStatement } from "./statements/choose.cjs";
-import { ForOfStatement } from "./statements/for-of.cjs";
-import { ForStatement } from "./statements/for.cjs";
-import { IfStatement } from "./statements/if.cjs";
-import { McCommand } from "./statements/mc-command.cjs";
-import { McExecStatement } from "./statements/mc-exec.cjs";
-import { RepeatStatement } from "./statements/repeat.cjs";
-import { ReturnStatement } from "./statements/return.cjs";
-import { WhileStatement } from "./statements/while.cjs";
-
-import { ExecuteExpression } from "./statements/execute-expr.cjs";
-
-import { FunctionDecl } from "./statements/declarations/fn-decl.cjs";
-import { MacroDecl } from "./statements/declarations/macro-decl.cjs";
-import { VariableDecl } from "./statements/declarations/var-decl.cjs";
-
-import { FunctionCall } from "./expressions/calls/fn-call.cjs";
-import { MacroCall } from "./expressions/calls/macro-call.cjs";
-
-import { Include } from "./preprocesses/include.cjs";
-
-import { Block } from "./block.cjs";
-import { Program } from "./program.cjs";
-import { ParenExpression } from "./expressions/paren-expr.cjs";
-import { ConstDecl } from "./statements/declarations/const-decl.cjs";
+import * as ControlFlow from "../packs/_core.control-flow/nodes.cjs";
+import { McCommand, McExecStatement } from "../packs/_core.mc/nodes.cjs";
+import { Include } from "../packs/_core.preprocesses/nodes.cjs";
+import { Block, Program } from "../packs/_core.backbone/nodes.cjs";
 
 
+/*
 export const ASTs = {
     Block,
     Program,
@@ -58,15 +38,15 @@ export const ASTs = {
     ParenExpression,
     Identifier,
 
-    ChooseStatement,
-    ForStatement,
-    ForOfStatement,
-    IfStatement,
+    ChooseStatement: ControlFlow.ChooseStatement,
+    ForStatement: ControlFlow.ForStatement,
+    ForOfStatement: ControlFlow.ForOfStatement,
+    IfStatement: ControlFlow.IfStatement,
     McCommand,
     McExecStatement,
-    RepeatStatement,
-    ReturnStatement,
-    WhileStatement,
+    RepeatStatement: ControlFlow.RepeatStatement,
+    ReturnStatement: ControlFlow.ReturnStatement,
+    WhileStatement: ControlFlow.WhileStatement,
     ExecuteExpression,
 
     FunctionDecl,
@@ -74,11 +54,17 @@ export const ASTs = {
     VariableDecl,
     ConstDecl,
 
-    Include
+    Include,
+
+    Block,
+    Program
 }
+
+
 
 type Constructors = typeof ASTs
 
 export type ASTTypes = {
   [K in keyof Constructors]: InstanceType<Constructors[K]>
 };
+*/

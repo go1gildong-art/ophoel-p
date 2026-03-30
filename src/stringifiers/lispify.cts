@@ -1,7 +1,12 @@
 import { ASTTypes } from "../ast/ast-collection.cjs";
 import * as literalLispify from "../packs/_core.literals/lispify.cjs";
+import * as operationsLispify from "../packs/_core.operations/lispify.cjs";
+import * as controlFlowLispify from "../packs/_core.control-flow/lispify.cjs";
+import * as preprocessesLispify from "../packs/_core.preprocesses/lispify.cjs";
+import * as backboneLispify from "../packs/_core.backbone/lispify.cjs";
+import * as mcLispify from "../packs/_core.mc/lispify.cjs";
 import { ASTNode } from "../ast/ast.cjs";
-import { CondBodySet } from "../ast/statements/if.cjs";
+import { CondBodySet } from "../packs/_core.control-flow/nodes.cjs";
 
 export function lispify(ast: ASTNode | undefined) {
     return new Lispifier().lispify(ast);
@@ -26,10 +31,7 @@ export class Lispifier {
         }
     }
 
-    Program(ast: ASTTypes["Program"]) {
-        const body = ast.body.map(s => this.lispify(s)).join(" ");
-        return `(program ${body})`;
-    }
+    Program(ast: ASTTypes["Program"]) { return backboneLispify.Program(ast); }
 
     IntLiteral(ast: ASTTypes["IntLiteral"]) { return literalLispify.IntLiteral(ast); }
 
@@ -41,40 +43,19 @@ export class Lispifier {
 
     TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) { return literalLispify.TemplateStringLiteral(ast); }
 
-    VectorLiteral(ast: ASTTypes["VectorLiteral"]) {
-        return literalLispify.VectorLiteral(ast);
-    }
+    VectorLiteral(ast: ASTTypes["VectorLiteral"]) { return literalLispify.VectorLiteral(ast); }
 
-    CompoundLiteral(ast: ASTTypes["CompoundLiteral"]) {
-        return literalLispify.CompoundLiteral(ast);
-    }
+    CompoundLiteral(ast: ASTTypes["CompoundLiteral"]) { return literalLispify.CompoundLiteral(ast); }
 
-    BinaryOperation(ast: ASTTypes["BinaryOperation"]) {
-        const left = this.lispify(ast.left);
-        const right = this.lispify(ast.right);
-        return `(${ast.operator} ${left} ${right})`;
-    }
+    BinaryOperation(ast: ASTTypes["BinaryOperation"]) { return operationsLispify.BinaryOperation(ast); }
 
-    PreUnary(ast: ASTTypes["PreUnary"]) {
-        const right = this.lispify(ast.right);
-        return `(${ast.operator} ${right})`;
-    }
+    PreUnary(ast: ASTTypes["PreUnary"]) { return operationsLispify.PreUnary(ast); }
 
-    PostUnary(ast: ASTTypes["PostUnary"]) {
-        const left = this.lispify(ast.left);
-        return `(${left} ${ast.operator})`;
-    }
+    PostUnary(ast: ASTTypes["PostUnary"]) { return operationsLispify.PostUnary(ast); }
 
-    IndexAccess(ast: ASTTypes["IndexAccess"]) {
-        const left = this.lispify(ast.left);
-        const index = this.lispify(ast.index);
-        return `(index ${left} ${index})`;
-    }
+    IndexAccess(ast: ASTTypes["IndexAccess"]) { return operationsLispify.IndexAccess(ast); }
 
-    MemberAccess(ast: ASTTypes["MemberAccess"]) {
-        const left = this.lispify(ast.left);
-        return `(member ${left} ${ast.member})`;
-    }
+    MemberAccess(ast: ASTTypes["MemberAccess"]) { return operationsLispify.MemberAccess(ast); }
 
     Identifier(ast: ASTTypes["Identifier"]) { return ast.name; }
 
@@ -104,9 +85,7 @@ export class Lispifier {
         return `(${ast.callee}! ${args})`;
     }
 
-    Include(ast: ASTTypes["Include"]) {
-        return `(include ${ast.path})`;
-    }
+    Include(ast: ASTTypes["Include"]) { return preprocessesLispify.Include(ast); }
 
     FunctionDecl(ast: ASTTypes["FunctionDecl"]) {
         const params = ast.parameters.join(" ");
@@ -130,81 +109,20 @@ export class Lispifier {
         return `(const ${ast.name} ${value})`;
     }
 
-    ChooseStatement(ast: ASTTypes["ChooseStatement"]) {
-        const cases = ast.weights
-            .map((weight, index) => ({ weight, body: ast.bodies[index] }))
-            .map(({ weight, body }) => `(${this.lispify(weight)} ${this.lispify(body)})`);
-
-        return `(choose ${cases})`;
-    }
-
-    ForOfStatement(ast: ASTTypes["ForOfStatement"]) {
-        const target = this.lispify(ast.target);
-        const body = this.lispify(ast.body);
-        return `(for ${ast.iterator} of ${target} ${body})`;
-    }
-
-    ForStatement(ast: ASTTypes["ForStatement"]) {
-        const init = this.lispify(ast.declaration);
-        const condition = this.lispify(ast.condition);
-        const increment = this.lispify(ast.increment);
-        const body = this.lispify(ast.body);
-        return `(for ${init} ${condition} ${increment} ${body})`;
-    }
-
-    IfStatement(ast: ASTTypes["IfStatement"]) {
-        const lispifySignature =
-            (sign: CondBodySet) => `${this.lispify(sign.condition)} ${this.lispify(sign.body)})`;
-
-        const mainBranch = `(if ${lispifySignature(ast.ifSignature)}`;
-        const elifBranches = ast.elifSignatures
-            .map(sign => lispifySignature(sign))
-            .map(sign => `(elif ${sign})`)
-            .join(" ");
-        const elseBranch = typeof ast.elseSignature !== "undefined"
-            ? `(else ${lispifySignature(ast.elseSignature)})`
-            : "";
-
-        return [mainBranch, ...elifBranches, elseBranch].join("");
-    }
-
-    McCommand(ast: ASTTypes["McCommand"]) {
-        const arg = this.lispify(ast.argument);
-        return `(${ast.command}!! ${arg})`;
-    }
-
-    McExecStatement(ast: ASTTypes["McExecStatement"]) {
-        const prefix = this.lispify(ast.prefix);
-        const body = this.lispify(ast.body);
-        return `(mc_exec ${prefix}!! ${body})`;
-    }
-
-    RepeatStatement(ast: ASTTypes["RepeatStatement"]) {
-        const count = this.lispify(ast.count);
-        const body = this.lispify(ast.body);
-        return `(repeat ${count} ${body})`;
-    }
-
-    WhileStatement(ast: ASTTypes["WhileStatement"]) {
-        const condition = this.lispify(ast.condition);
-        const body = this.lispify(ast.body);
-        return `(while ${condition} ${body})`;
-    }
-
+    ChooseStatement(ast: ASTTypes["ChooseStatement"]) { return controlFlowLispify.ChooseStatement(ast); }
+    ForOfStatement(ast: ASTTypes["ForOfStatement"]) { return controlFlowLispify.ForOfStatement(ast); }
+    ForStatement(ast: ASTTypes["ForStatement"]) { return controlFlowLispify.ForStatement(ast); }
+    IfStatement(ast: ASTTypes["IfStatement"]) { return controlFlowLispify.IfStatement(ast); }
+    McCommand(ast: ASTTypes["McCommand"]) { return mcLispify.McCommand(ast); }
+    McExecStatement(ast: ASTTypes["McExecStatement"]) { return mcLispify.McExecStatement(ast); }
+    RepeatStatement(ast: ASTTypes["RepeatStatement"]) { return controlFlowLispify.RepeatStatement(ast); }
+    WhileStatement(ast: ASTTypes["WhileStatement"]) { return controlFlowLispify.WhileStatement(ast); }
     ExecuteExpression(ast: ASTTypes["ExecuteExpression"]) {
         const expr = this.lispify(ast.expression);
         return `(execute ${expr})`;
     }
-
-    ReturnStatement(ast: ASTTypes["ReturnStatement"]) {
-        const value = ast.value != undefined ? this.lispify(ast.value) : "";
-        return value ? `(return ${value})` : "(return)";
-    }
-
-    Block(ast: ASTTypes["Block"]) {
-        const statements = ast.statements.map(s => this.lispify(s)).join(" ");
-        return `(block (${statements}))`;
-    }
+    ReturnStatement(ast: ASTTypes["ReturnStatement"]) { return controlFlowLispify.ReturnStatement(ast); }
+    Block(ast: ASTTypes["Block"]) { return backboneLispify.Block(ast); }
 
     
 

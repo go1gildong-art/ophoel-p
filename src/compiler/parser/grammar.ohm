@@ -1,6 +1,4 @@
 // Ophoel {
-  // The entry point
-  Program = Statement* end
 
   Statement = Include
            | FunctionDecl
@@ -19,87 +17,10 @@
            | ReturnStatement
            | Block
 
-  Include = "include" string ";"
-
-  IfStatement = "if" Expr Statement Elif* Else?
-  Elif = "elif" Expr Statement
-  Else = "else" Statement
-
-  WhileStatement = "while" Expr Statement
-  ForStatement = "for" "(" (VariableDecl | ConstDecl | ExecExpr) Expr ";" ExecExpr ")" Statement
-  ForOfStatement = "for" "(" (VariableDecl | ConstDecl) "of" Expr ")" Statement
-  RepeatStatement = "repeat" Expr Statement
-
-  ChooseStatement = "choose" Expr Statement ChooseOr*
-  ChooseOr = "or" Expr Statement
-
-  McExecStatement = "mc_exec" Expr "!!" Statement
-
-  ReturnStatement = "return" Expr? ";"
-
-  McCommand = ident "!!" Expr ";"
-
-  ExecExpr = Expr ";"
-
-  Block = "{" Statement* "}"
-
-  // A simple expression statement
   Expr = OrExp
 
-  // Binary Expression (Left-associative)
-  OrExp = OrExp "||" AndExp  -- or
-        | AndExp
-
-  AndExp = AndExp "&&" CompareExp  -- and
-         | CompareExp
-
-  CompareExp = AddExp "==" AddExp  -- eq
-             | AddExp "!=" AddExp  -- neq
-             | AddExp ">=" AddExp  -- gte
-             | AddExp "<=" AddExp  -- lte
-             | AddExp ">" AddExp  -- gt
-             | AddExp "<" AddExp  -- lt
-             | AddExp
-
-  AddExp = AddExp "+" MulExp  -- plus
-         | AddExp "-" MulExp  -- minus
-         | MulExp
-
-  MulExp = MulExp "*" UnaryExp  -- multiply
-         | MulExp "/" UnaryExp  -- divide
-         | MulExp "%" UnaryExp  -- remainder
-         | UnaryExp
-
-  UnaryExp = "++" UnaryExp  -- preIncrement
-           | "--" UnaryExp  -- preDecrement
-           | "!" UnaryExp  -- preNot
-           | PostUnaryExp
-
-  PostUnaryExp = PostUnaryExp "++"  -- postIncrement
-               | PostUnaryExp "--"  -- postDecrement
-               | ParenExpr
-
-  ParenExpr = 
-    "(" Expr ")" -- paren
-    | Primary
-
-  Primary = number 
-          | string 
-          | TemplateString
-          | bool 
-          | FunctionCall
-          | MacroCall
-          | ident 
-          | VectorLiteral 
-          | CompoundLiteral
-
-  FunctionCall = ident "(" ListOf<Expr, ","> ")"
-  MacroCall = ident "!" "(" ListOf<Expr, ","> ")"
-
-  // Terminals
+  // Terminals exposed for parser bootstrap
   ident = letter (letter | digit | "_")*
 
-  // space += "//" (~"\n" any)* // This adds support for // comments
-
-  TypeAnnotation = ident
+  // More rules loaded from pack grammars
 // }

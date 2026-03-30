@@ -92,6 +92,12 @@ export function print<T>(x: T) {
     return x;
 }
 
+export function method<T, K extends keyof T>(
+  methodName: K
+): T[K] extends (...args: any[]) => infer R ? (x: T) => R : never {
+  return ((x: T) => (x[methodName] as unknown as (...args: any[]) => any)()) as any;
+}
+
 
 /*
 type source = string;

@@ -83,12 +83,6 @@
     "(" Expr ")" -- paren
     | Primary
 
-  bool = "true" | "false"
-  VectorLiteral = "[" ListOf<Expr, ","> "]"
-
-  Pair = ident ":" Expr
-  CompoundLiteral = "{" ListOf<Pair, ","> "}"
-
   Primary = number 
           | string 
           | TemplateString
@@ -104,15 +98,7 @@
 
   // Terminals
   ident = letter (letter | digit | "_")*
-  string 
-    = ("\"" (~"\"" any)* "\"")
-    | ("'" (~"'" any)* "'")
 
-  TemplateString = "`" (TemplatePart)* "`"
-  TemplatePart = "${" Expr "}" -- exprPart
-    | (~("`" | "${") any)+ -- stringPart
-
-  number = digit+
   // space += "//" (~"\n" any)* // This adds support for // comments
 
   TypeAnnotation = ident

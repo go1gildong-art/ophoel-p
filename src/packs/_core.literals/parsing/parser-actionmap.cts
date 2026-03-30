@@ -1,9 +1,9 @@
 import { ASTs } from "../../../ast/ast-collection.cjs";
 import { Expression } from "../../../ast/ast.cjs";
-import { getLoc, ActionMap } from "../parser.cjs";
+import { getLoc, ActionMap } from "../../../compiler/parser/parser.cjs";
 import * as ohm from 'ohm-js';
 
-type literalActionTypes = Expression | string | { key: string; value: any; }
+type literalActionTypes = Expression | string | { key: string; value: any; };
 export const literals: ActionMap<literalActionTypes> = {
     string(_openQuote, chars, _closeQuote) {
         return new ASTs.StringLiteral(
@@ -15,8 +15,8 @@ export const literals: ActionMap<literalActionTypes> = {
     TemplateString(_open, parts, _close) {
         const contents = parts.toAST(__filename);
         return new ASTs.TemplateStringLiteral(
-            contents.filter((_: any, i: number) => i % 2 === 0), // even index = quasis
-            contents.filter((_: any, i: number) => i % 2 !== 0), // odd index = expressions
+            contents.filter((_: any, i: number) => i % 2 === 0),
+            contents.filter((_: any, i: number) => i % 2 !== 0),
             parts.sourceString,
             getLoc(_open, __filename)
         );
@@ -67,4 +67,4 @@ export const literals: ActionMap<literalActionTypes> = {
 
         return new ASTs.CompoundLiteral(kvAcc.keys, kvAcc.values, getLoc(_open, __filename));
     }
-}
+};

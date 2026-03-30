@@ -1,7 +1,7 @@
 import { binaryOps } from './expressions/binary-ops.cjs';
 import { calls } from './expressions/calls.cjs';
 import { identifier } from './expressions/identifier.cjs';
-import { literals } from './expressions/literals.cjs';
+import { literals } from '../../packs/_core.literals/parsing/parser-actionmap.cjs';
 import { unaryOps } from './expressions/unary-ops.cjs';
 import { execExpr } from './statements/exec-expr.cjs';
 import { declarations } from './statements/declarations.cjs';

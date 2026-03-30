@@ -1,4 +1,5 @@
-import { ASTs, ASTTypes } from "../ast/ast-collection.cjs";
+import { ASTTypes } from "../ast/ast-collection.cjs";
+import * as literalLispify from "../packs/_core.literals/lispify.cjs";
 import { ASTNode } from "../ast/ast.cjs";
 import { CondBodySet } from "../ast/statements/if.cjs";
 
@@ -30,28 +31,22 @@ export class Lispifier {
         return `(program ${body})`;
     }
 
-    IntLiteral(ast: ASTTypes["IntLiteral"]) { return ast.raw; }
+    IntLiteral(ast: ASTTypes["IntLiteral"]) { return literalLispify.IntLiteral(ast); }
 
-    FloatLiteral(ast: ASTTypes["FloatLiteral"]) { return ast.raw; }
+    FloatLiteral(ast: ASTTypes["FloatLiteral"]) { return literalLispify.FloatLiteral(ast); }
 
-    BoolLiteral(ast: ASTTypes["BoolLiteral"]) { return ast.raw; }
+    BoolLiteral(ast: ASTTypes["BoolLiteral"]) { return literalLispify.BoolLiteral(ast); }
 
-    StringLiteral(ast: ASTTypes["StringLiteral"]) { return `'${ast.raw}'`; }
+    StringLiteral(ast: ASTTypes["StringLiteral"]) { return literalLispify.StringLiteral(ast); }
 
-    TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) { return `\`${ast.raw}\``; }
+    TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"]) { return literalLispify.TemplateStringLiteral(ast); }
 
     VectorLiteral(ast: ASTTypes["VectorLiteral"]) {
-        const entries = ast.entries.map(e => this.lispify(e)).join(" ");
-        return `(${entries})`;
+        return literalLispify.VectorLiteral(ast);
     }
 
     CompoundLiteral(ast: ASTTypes["CompoundLiteral"]) {
-        type valueKey = keyof typeof ast.keys;
-        const pairs = ast.keys
-            .map((key, i) => `(${key} ${this.lispify(ast.values[i])})`)
-            .join(" ");
-
-        return `(${pairs})`;
+        return literalLispify.CompoundLiteral(ast);
     }
 
     BinaryOperation(ast: ASTTypes["BinaryOperation"]) {

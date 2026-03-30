@@ -1,4 +1,4 @@
-import * as Literals from "./expressions/literals.cjs";
+import * as Literals from "../packs/_core.literals/nodes.cjs";
 import * as Operations from "./expressions/operations.cjs";
 import { Identifier } from "./expressions/identifier.cjs";
 import { VariableAssign } from "./expressions/var-assign.cjs";

@@ -5,6 +5,7 @@ import { Location } from '../metadata.cjs'; // Your existing class
 import { ASTs, ASTTypes } from '../../ast/ast-collection.cjs'; // Your nodes
 import { actionMaps } from './action-maps.cjs';
 import { grammar as declGrammar } from '../../packs/_core.declarations/parsing/ohm-grammar.cjs';
+import { grammar as literalsGrammar } from '../../packs/_core.literals/parsing/ohm-grammar.cjs';
 
 // 1. Load the grammar
 // This builds an absolute path regardless of where you run the command from
@@ -19,6 +20,7 @@ const grammarFull = [
   "Ophoel {",
   indent(grammarSource),
   indent(declGrammar),
+  indent(literalsGrammar),
   "}"
 ].join("\n");
 

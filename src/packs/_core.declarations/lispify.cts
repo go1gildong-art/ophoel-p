@@ -15,13 +15,11 @@ export function MacroDecl(ast: ASTTypes["MacroDecl"]) {
 }
 
 export function VariableDecl(ast: ASTTypes["VariableDecl"]) {
-    // const value = ast.initValue.lispify();
-    const value = "DURING PACK MODULIZATION. NOT IMPLEMENTED YET"
+    const value = ast.initValue.lispify();
     return `(let ${ast.name} ${value})`;
 }
 
 export function ConstDecl(ast: ASTTypes["ConstDecl"]) {
-    // const value = ast.initValue.lispify();
-    const value = "DURING PACK MODULIZATION. NOT IMPLEMENTED YET"
+    const value = ast.initValue.lispify();
     return `(const ${ast.name} ${value})`;
 }

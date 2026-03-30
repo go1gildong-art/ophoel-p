@@ -31,9 +31,6 @@ PostUnaryExp = PostUnaryExp "++"  -- postIncrement
              | PostUnaryExp "--"  -- postDecrement
              | ParenExpr
 
-ParenExpr = "(" Expr ")" -- paren
-          | Primary
-
 FunctionCall = ident "(" ListOf<Expr, ","> ")"
 MacroCall = ident "!" "(" ListOf<Expr, ","> ")"
 

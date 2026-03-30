@@ -19,7 +19,7 @@ export class ParserUnit extends GoldenCase<{ source: string; __filename: string 
 
             expectation: args.expectation,
             source: { source: args.source, __filename: args.fileName },
-            process: fp.pipe(parse, lispify)
+            process: fp.pipe(parse, fp.method("lispify"))
         });
     }
 }

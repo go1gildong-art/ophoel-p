@@ -4,7 +4,7 @@ import { BinaryOperator, UnaryOperator } from "../../../packs/_core.operations/n
 import { getLoc, ActionMap } from "../../../compiler/parser/parser.cjs";
 import * as ohm from 'ohm-js';
 
-export const operations: ActionMap<Expression> = {
+export const actionMap: ActionMap<Expression> = {
     OrExp_or(left, _op, right) {
         return new ASTs.BinaryOperation(left.toAST(__filename), BinaryOperator.LOGIC_OR, right.toAST(__filename), getLoc(_op, __filename));
     },

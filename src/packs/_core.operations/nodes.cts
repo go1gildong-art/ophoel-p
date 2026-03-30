@@ -70,3 +70,21 @@ export class MemberAccess implements LValue {
         public member: string,
         public location: Location) {}
 }
+
+export class FunctionCall implements Expression {
+    kind = ASTKind.FunctionCall;
+
+    constructor(
+        public callee: string,
+        public args: Expression[],
+        public location: Location) {}
+}
+
+export class MacroCall implements Expression {
+    kind = ASTKind.MacroCall;
+
+    constructor(
+        public callee: string,
+        public args: Expression[],
+        public location: Location) {}
+}

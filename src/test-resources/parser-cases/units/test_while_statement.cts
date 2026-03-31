@@ -7,5 +7,5 @@ export const unit = new ParserUnit({
 
     source: `while i < 10 i++;`,
 
-    expectation: `(program (while (< i 10) (execute (i ++))))`
+    expectation: `(program (while (< i 10) (ex (i ++))))`
 });

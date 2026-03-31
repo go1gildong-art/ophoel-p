@@ -4,6 +4,7 @@ import { getLoc, ActionMap } from "../../../compiler/parser/parser.cjs";
 import * as ohm from 'ohm-js';
 
 export const actionMap: ActionMap<Statement> = {
+            
     VariableDecl(kw, name, _eq, expr, _semi) {
         return new ASTs.VariableDecl(
             name.sourceString,
@@ -29,7 +30,7 @@ export const actionMap: ActionMap<Statement> = {
         );
     },
 
-    MacroDecl(_macro, name, _open, params, _close, body) {
+    MacroDecl(_macro, _bang, name, _open, params, _close, body) {
         return new ASTs.MacroDecl(
             name.sourceString,
             params.sourceString.split(", "),

@@ -2,10 +2,9 @@ import { ASTTypes } from "../../ast/ast-collection.cjs";
 
 export function Block(ast: ASTTypes["Block"]) {
     const statements = ast.statements
-    .map(s => s.lispify())
-    .map(s => `(${s})`);
+    .map(s => s.lispify());
 
-    return `(block ${statements.join(" ")})`;
+    return `(block (${statements.join(" ")}))`;
 }
 
 export function ExecExpr(ast: ASTTypes["ExecExpr"]) {

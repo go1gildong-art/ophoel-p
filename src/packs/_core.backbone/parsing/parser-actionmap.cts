@@ -19,7 +19,7 @@ export const actionMap: ActionMap<Statement | any[]> = {
     ExecExpr(expr, _semi) {
         return new ASTs.ExecExpr(expr.toAST(__filename), getLoc(expr, __filename))
     },
-    
+
     // Built-in Ohm iteration handler (for the * in Statement*)
     _iter(...children) {
         return children.map(c => c.toAST(__filename));

@@ -24,19 +24,18 @@ const grammarSource = fs.readFileSync('./src/compiler/parser/grammar.ohm', 'utf-
 const indent = (str: string) => str.split("\n").map(line => "  " + line).join("\n");
 const grammarFull = [
   "Ophoel {",
-
     indent(backboneGrammar),
-  indent(grammarSource),
-  indent(declGrammar),
-  indent(literalsGrammar),
-  indent(exprMiscGrammar),
-  indent(operationsGrammar),
-  indent(controlFlowGrammar),
-  indent(preprocessesGrammar),
-  indent(mcGrammar),
+    indent(grammarSource),
+    indent(declGrammar),
+    indent(literalsGrammar),
+    indent(operationsGrammar),
+    indent(controlFlowGrammar),
+    indent(preprocessesGrammar),
+    indent(mcGrammar),
+    indent(exprMiscGrammar),
   "}"
 ].join("\n");
-console.log(grammarFull);
+// console.log(grammarFull);
 
 const myGrammar = ohm.grammar(grammarFull);
 
@@ -59,6 +58,8 @@ function flatten<T extends Record<string, Record<string, any>>>(obj: T): Flatten
 }
 // 3. Define Semantics
 const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', flatten(actionMaps));
+
+console.log(flatten(actionMaps));
 
 export function parse({ source, __filename }: { source: string; __filename: string }): ASTTypes["Program"] {
     const match = myGrammar.match(source, "Program");

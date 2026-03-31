@@ -2,7 +2,7 @@ import { actionMap as operations } from '../../packs/_core.operations/parsing/pa
 import { actionMap as exprMisc } from '../../packs/_core.expr-misc/parsing/parser-actionmap.cjs';
 import { actionMap as literals } from '../../packs/_core.literals/parsing/parser-actionmap.cjs';
 // import { execExpr } from './statements/exec-expr.cjs';
-import { declarations } from './statements/declarations.cjs';
+import { actionMap as declarations } from '../../packs/_core.declarations/parsing/parser-actionmap.cjs';
 import { actionMap as controlFlow } from '../../packs/_core.control-flow/parsing/parser-actionmap.cjs';
 import { actionMap as preprocesses } from '../../packs/_core.preprocesses/parsing/parser-actionmap.cjs';
 import { actionMap as backbone } from '../../packs/_core.backbone/parsing/parser-actionmap.cjs';

@@ -5,7 +5,12 @@ export function Block(ast: ASTTypes["Block"]) {
     .map(s => s.lispify())
     .map(s => `(${s})`);
 
-    return `( ${statements.join(" ")} )`;
+    return `(block ${statements.join(" ")})`;
+}
+
+export function ExecExpr(ast: ASTTypes["ExecExpr"]) {
+
+    return `(ex ${ast.expression.lispify()})`;
 }
 
 export function Program(ast: ASTTypes["Program"]) {

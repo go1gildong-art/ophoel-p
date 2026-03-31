@@ -16,6 +16,9 @@ export const actionMap: ActionMap<Statement | any[]> = {
         const statementList = statements.toAST(__filename);
         return new ASTs.Block(statementList, getLoc(_open, __filename));
     },
+    ExecExpr(expr, _semi) {
+        return new ASTs.ExecExpr(expr.toAST(__filename), getLoc(expr, __filename))
+    },
     
     // Built-in Ohm iteration handler (for the * in Statement*)
     _iter(...children) {

@@ -35,7 +35,7 @@ export const ASTs = {
 
     ParenExpression: ExprMisc.ParenExpression,
     Identifier: ExprMisc.Identifier,
-    // ExecuteExpression: ExprMisc.ExecuteExpression,
+    ExecExpr: Backbone.ExecExpr,
 
     ChooseStatement: ControlFlow.ChooseStatement,
     ForStatement: ControlFlow.ForStatement,

@@ -13,6 +13,16 @@ export class Block implements Statement, StandardNode {
         lispify(): string { return lispify.Block(this); }
 }
 
+export class ExecExpr implements Statement, StandardNode {
+    kind = ASTKind.Block;
+
+    constructor(public expression: Expression, public location: Location) {}
+
+    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+        lispify(): string { return lispify.ExecExpr(this); }
+}
+
+
 export class Program implements Statement, StandardNode {
     kind = ASTKind.Program;
 

@@ -14,7 +14,7 @@ export class Block implements Statement, StandardNode {
 }
 
 export class ExecExpr implements Statement, StandardNode {
-    kind = ASTKind.Block;
+    kind = ASTKind.ExecExpr;
 
     constructor(public expression: Expression, public location: Location) {}
 

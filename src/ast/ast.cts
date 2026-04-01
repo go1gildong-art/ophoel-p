@@ -11,7 +11,7 @@ export enum ASTKind {
     CompoundAssign = "CompoundAssign",
     CompoundLiteral = "CompoundLiteral",
     ConstDecl = "ConstDecl",
-    ExecuteExpression = "ExecuteExpression",
+    ExecExpr = "ExecExpr",
     FloatLiteral = "FloatLiteral",
     ForOfStatement = "ForOfStatement",
     ForStatement = "ForStatement",

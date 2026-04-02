@@ -1,4 +1,4 @@
-import { Location } from "../../compiler/metadata.cjs";
+import { Location } from "../../location.cjs";
 import { IRKind, IRNode } from "../ir.cjs";
 
 export class Command implements IRNode {

@@ -1,5 +1,5 @@
-import { ASTs } from "../../../ast/ast-collection.cjs";
-import { Expression } from "../../../ast/ast.cjs";
+import { ASTs } from "../../../pack-combinator.cjs";
+import { Expression } from "../../../ast.cjs";
 import { getLoc, ActionMap } from "../../../compiler/parser.cjs";
 import * as ohm from 'ohm-js';
 import { CompoundAssign } from "../nodes.cjs";

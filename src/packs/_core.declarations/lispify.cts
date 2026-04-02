@@ -1,5 +1,5 @@
-import { ASTs, ASTTypes } from "../../ast/ast-collection.cjs";
-import { ASTNode } from "../../ast/ast.cjs";
+import { ASTs, ASTTypes } from "../../pack-combinator.cjs";
+import { ASTNode } from "../../ast.cjs";
 import { CondBodySet } from "../../packs/_core.control-flow/nodes.cjs";
 
 export function FunctionDecl(ast: ASTTypes["FunctionDecl"]) {

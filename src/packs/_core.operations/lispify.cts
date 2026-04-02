@@ -1,4 +1,4 @@
-import { ASTTypes } from "../../ast/ast-collection.cjs";
+import { ASTTypes } from "../../pack-combinator.cjs";
 
 
 export function BinaryOperation(ast: ASTTypes["BinaryOperation"]) {

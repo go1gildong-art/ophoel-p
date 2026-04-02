@@ -1,9 +1,3 @@
-import { ASTTypes } from "./ast/ast-collection.cjs"
-import { ASTNode, StandardNode } from "./ast/ast.cjs"
-
-import { Block } from "./packs/_core.backbone/nodes.cjs"
-import * as fp from "./utils/functional.cjs";
-
 import { pack as _core_backbone } from "./packs/_core.backbone/module.cjs"
 import { pack as _core_control_flow } from "./packs/_core.control-flow/module.cjs"
 import { pack as _core_declarations } from "./packs/_core.declarations/module.cjs"
@@ -48,13 +42,15 @@ type ActionMaps =
   );
 
 
-
-
-
 export const ASTs = Object.assign(
   {},
   ...Object.values(packs).map(p => p.nodes)
 ) as Nodes
+
+type Constructors = typeof ASTs;
+export type ASTTypes = {
+  [K in keyof Constructors]: InstanceType<Constructors[K]>
+};
 
 type Nodes =
   typeof _core_backbone.nodes

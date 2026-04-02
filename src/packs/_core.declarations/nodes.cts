@@ -1,7 +1,7 @@
-import { Statement, Expression, ASTKind, StandardNode } from "../../ast/ast.cjs";
+import { Statement, Expression, ASTKind, StandardNode } from "../../ast.cjs";
 import { Block } from "../../packs/_core.backbone/nodes.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
-import { Location } from "../../compiler/metadata.cjs";
+import { Location } from "../../location.cjs";
 import * as lispify from "./lispify.cjs";
 
 export class ConstDecl implements Statement, StandardNode {

@@ -1,4 +1,4 @@
-import { Location } from "../compiler/metadata.cjs";
+import { Location } from "../location.cjs";
 
 export enum IRKind {
     Command = "COMMAND",

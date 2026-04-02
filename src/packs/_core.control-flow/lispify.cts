@@ -1,4 +1,4 @@
-import { ASTTypes } from "../../ast/ast-collection.cjs";
+import { ASTTypes } from "../../pack-combinator.cjs";
 import { CondBodySet } from "../../packs/_core.control-flow/nodes.cjs";
 
 export function IfStatement(ast: ASTTypes["IfStatement"]) {

@@ -1,8 +1,7 @@
 import * as ohm from 'ohm-js';
 import * as path from 'path';
 import * as fs from 'fs';
-import { Location } from '../metadata.cjs'; // Your existing class
-import { ASTs, ASTTypes } from '../ast/ast-collection.cjs'; // Your nodes
+import { Location } from '../location.cjs'; // Your existing class
 import * as p from "../pack-combinator.cjs";
 
 
@@ -25,7 +24,7 @@ export function getLoc(node: ohm.Node, fileName: string): Location {
 }
 
 const semantics = myGrammar.createSemantics().addOperation('toAST(fileName)', p.actionMaps);
-export function parse({ source, __filename }: { source: string; __filename: string }): ASTTypes["Program"] {
+export function parse({ source, __filename }: { source: string; __filename: string }): p.ASTTypes["Program"] {
     const match = myGrammar.match(source, "Program");
     if (match.failed()) {
         // Ohm provides a detailed error string with line/col automatically

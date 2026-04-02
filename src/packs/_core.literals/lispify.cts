@@ -1,4 +1,4 @@
-import { ASTTypes } from "../../ast/ast-collection.cjs";
+import { ASTTypes } from "../../pack-combinator.cjs";
 
 export function IntLiteral(ast: ASTTypes["IntLiteral"]) { return ast.raw; }
 

@@ -1,5 +1,4 @@
 import { IRInstructions, IRNode } from "../../ir/ir.cjs";
-import { OphoelValue } from "../../ast/types.cjs";
 
 export type InterpretReturn = {
     ok: true;
@@ -9,6 +8,13 @@ export type InterpretReturn = {
     ok: false;
     err: unknown
 }
+
+export type OphoelValue =
+  | { type: "bool"; value: boolean }
+  | { type: "num"; value: number }
+  | { type: "string"; value: string }
+  | { type: "vector"; value: OphoelValue[] }
+  | { type: "compound"; value: Record<string, OphoelValue> };
 
 export class Context {
     readonly frames: Frame[] = [];

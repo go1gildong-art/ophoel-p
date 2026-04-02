@@ -1,7 +1,7 @@
 
-import { Location } from "../compiler/metadata.cjs";
-import { OphoelValue } from "./types.cjs";
-import { Context as EvalContext, InterpretReturn } from "../compiler/interpreter/utilities.cjs";
+import { Location } from "./location.cjs";
+import { OphoelValue } from "./compiler/interpreter/utilities.cjs";
+import { Context as EvalContext, InterpretReturn } from "./compiler/interpreter/utilities.cjs";
 
 export enum ASTKind {
     BinaryOperation = "BinaryOperation",

@@ -1,6 +1,6 @@
 import { ASTs } from "../../../ast/ast-collection.cjs";
 import { Expression } from "../../../ast/ast.cjs";
-import { getLoc, ActionMap } from "../../../compiler/parser/parser.cjs";
+import { getLoc, ActionMap } from "../../../compiler/parser.cjs";
 import * as ohm from 'ohm-js';
 import { CompoundAssign } from "../nodes.cjs";
 import { BinaryOperator } from "../../_core.operations/nodes.cjs";

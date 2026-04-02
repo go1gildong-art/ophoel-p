@@ -1,4 +1,4 @@
-import { parse } from "../compiler/parser/parser.cjs";
+import { parse } from "../compiler/parser.cjs";
 import { TestResult, TestState } from "./test-result.cjs";
 
 export abstract class GoldenCase<source_T, result_T> {

@@ -1,5 +1,5 @@
 import { GoldenCase } from "../golden-interface.cjs";
-import { parse } from "../../compiler/parser/parser.cjs";
+import { parse } from "../../compiler/parser.cjs";
 import * as fp from "../../utils/functional.cjs";
 
 export class ParserUnit extends GoldenCase<{ source: string; __filename: string }, string> {

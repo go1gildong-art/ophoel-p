@@ -1,7 +1,7 @@
 import { Node } from "ohm-js";
 import { ASTs } from "../../../ast/ast-collection.cjs";
 import { Statement } from "../../../ast/ast.cjs";
-import { getLoc, ActionMap } from "../../../compiler/parser/parser.cjs";
+import { getLoc, ActionMap } from "../../../compiler/parser.cjs";
 import * as ohm from 'ohm-js';
 
 

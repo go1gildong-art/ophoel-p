@@ -2,8 +2,8 @@ import * as ohm from 'ohm-js';
 import * as path from 'path';
 import * as fs from 'fs';
 import { Location } from '../metadata.cjs'; // Your existing class
-import { ASTs, ASTTypes } from '../../ast/ast-collection.cjs'; // Your nodes
-import * as p from "../../pack-combinator.cjs";
+import { ASTs, ASTTypes } from '../ast/ast-collection.cjs'; // Your nodes
+import * as p from "../pack-combinator.cjs";
 
 
 const grammarFull = [

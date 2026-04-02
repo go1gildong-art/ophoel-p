@@ -1,4 +1,4 @@
-import { parse } from './parser/parser.cjs';
+import { parse } from './parser.cjs';
 
 const code = `say!! "Hello world!";`;
 

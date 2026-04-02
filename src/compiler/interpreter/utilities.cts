@@ -1,9 +1,10 @@
 import { IRInstructions, IRNode } from "../../ir/ir.cjs";
+import { OphoelValue } from "../../ast/types.cjs";
 
 export type InterpretReturn = {
     ok: true;
     ctx: Context;
-    value?: OphoelType;
+    value?: OphoelValue;
 } | {
     ok: false;
     err: unknown
@@ -15,15 +16,9 @@ export class Context {
 }
 
 type Frame = {
-    variables: Record<string, OphoelType>;
+    variables: Record<string, OphoelValue>;
     mcPrefix?: string
 }
 
 
 
-type OphoelType =
-  | { type: "bool"; value: boolean }
-  | { type: "num"; value: number }
-  | { type: "string"; value: string }
-  | { type: "vector"; value: OphoelType[] }
-  | { type: "compound"; value: Record<string, OphoelType> };

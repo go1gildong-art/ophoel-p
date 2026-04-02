@@ -11,6 +11,10 @@ export class Command implements IRNode {
     toString() {
         return `/${this.message} | ${this.location?.toString() || "unknown location"}`;
     }
+
+    nonLocString() {
+        return `/${this.message}`;
+    }
 }
 
 export class Comment implements IRNode {
@@ -22,5 +26,9 @@ export class Comment implements IRNode {
 
     toString() {
         return `/# ( ${this.message} | ${this.location?.toString() || "unknown location"} )`;
+    }
+
+    nonLocString() {
+        return `/# ( ${this.message} )`;
     }
 }

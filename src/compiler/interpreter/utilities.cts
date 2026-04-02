@@ -1,3 +1,4 @@
+import { Statement } from "../../ast.cjs";
 import { IRInstructions, IRNode } from "../../ir/ir.cjs";
 
 export type InterpretReturn = {
@@ -14,7 +15,8 @@ export type OphoelValue =
   | { type: "num"; value: number }
   | { type: "string"; value: string }
   | { type: "vector"; value: OphoelValue[] }
-  | { type: "compound"; value: Record<string, OphoelValue> };
+  | { type: "compound"; value: Record<string, OphoelValue> }
+  | { type: "void"};
 
 export class Context {
     readonly frames: Frame[] = [];

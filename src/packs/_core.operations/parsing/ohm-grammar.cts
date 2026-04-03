@@ -1,4 +1,8 @@
 export const grammar = `
+Expr = OrExp
+
+
+
 OrExp = OrExp "||" AndExp  -- or
       | AndExp
 
@@ -29,10 +33,21 @@ UnaryExp = "++" UnaryExp  -- preIncrement
 
 PostUnaryExp = PostUnaryExp "++"  -- postIncrement
              | PostUnaryExp "--"  -- postDecrement
-             | ParenExpr
+             | IndexAccess
 
-FunctionCall = ident "(" ListOf<Expr, ","> ")"
-MacroCall = ident "!" "(" ListOf<Expr, ","> ")"
+
+IndexAccess = IndexAccess "[" Expr "]" -- index
+              | MemberAccess
+
+MemberAccess = IndexAccess "." ident -- mem
+              | FunctionCall
+
+FunctionCall = ident "(" ListOf<Expr, ","> ")" -- fn
+              | MacroCall
+
+MacroCall = ident "!" "(" ListOf<Expr, ","> ")" -- macro
+              | ParenExpr
+
 
 Primary = number
         | string

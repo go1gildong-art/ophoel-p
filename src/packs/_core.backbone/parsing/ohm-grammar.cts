@@ -21,6 +21,4 @@ Statement = Include
            | ReturnStatement
            | ExecExpr
            | Block
-
-  Expr = OrExp
 `;

@@ -20,12 +20,12 @@ export function PostUnary(ast: ASTTypes["PostUnary"]) {
 export function IndexAccess(ast: ASTTypes["IndexAccess"]) {
     const left = ast.left.lispify();
     const index = ast.index.lispify();
-    return `(index ${left} ${index})`;
+    return `([] ${left} ${index})`;
 }
 
 export function MemberAccess(ast: ASTTypes["MemberAccess"]) {
     const left = ast.left.lispify();
-    return `(member ${left} ${ast.member})`;
+    return `(. ${left} ${ast.member})`;
 }
 
 export function FunctionCall(ast: ASTTypes["FunctionCall"]) {

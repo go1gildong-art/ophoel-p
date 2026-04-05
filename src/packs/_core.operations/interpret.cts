@@ -2,29 +2,29 @@ import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.c
 import { ASTTypes } from "../../pack-combinator.cjs";
 
 export function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "not implemented yet" };
+    return { ok: false, err: "BinaryOperation: not implemented yet" };
 }
 
 export function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "not implemented yet" };
+    return { ok: false, err: "PreUnary: not implemented yet" };
 }
 
 export function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "not implemented yet" };
+    return { ok: false, err: "PostUnary: not implemented yet" };
 }
 
 export function IndexAccess(ast: ASTTypes["IndexAccess"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "not implemented yet" };
+    return { ok: false, err: "IndexAccess: not implemented yet" };
 }
 
 export function MemberAccess(ast: ASTTypes["MemberAccess"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "not implemented yet" };
+    return { ok: false, err: "MemberAccess: not implemented yet" };
 }
 
 export function FunctionCall(ast: ASTTypes["FunctionCall"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "not implemented yet" };
+    return { ok: false, err: "FunctionCall: not implemented yet" };
 }
 
 export function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "not implemented yet" };
+    return { ok: false, err: "MacroCall: not implemented yet" };
 }

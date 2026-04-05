@@ -19,9 +19,9 @@ export function Block(ast: ASTTypes["Block"], _ctx: Context): InterpretReturn {
 }
 
 export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "not implemented yet" };
+    return { ok: false, err: "McCommand: not implemented yet" };
 }
 
 export function McExecStatement(ast: ASTTypes["McExecStatement"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "not implemented yet" };
+    return { ok: false, err: "McExecStatement: not implemented yet" };
 }

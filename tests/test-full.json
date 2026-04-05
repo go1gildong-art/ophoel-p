@@ -223,7 +223,7 @@
       "children": [
         {
           "state": "ERROR",
-          "message": "An unexpected object thrown while testing: not implemented yet",
+          "message": "An unexpected object thrown while testing: McCommand: not implemented yet",
           "children": []
         }
       ]

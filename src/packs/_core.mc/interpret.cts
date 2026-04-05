@@ -2,24 +2,24 @@ import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.c
 import { ASTTypes } from "../../pack-combinator.cjs";
 
 
-export function Block(ast: ASTTypes["Block"], _ctx: Context): InterpretReturn {
+export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
 
-    for (const stmt of ast.statements) {
-        const res = stmt.evaluate(ctx);
-        if (!res.ok) throw res.err;
-        ctx = res.ctx.branch();
-    }
-    
-    return {
-        ok: true,
-        ctx: ctx.wrap(),
-        value: { type: "void" }
-    }
-}
+    const argResult = ast.argument.evaluate(_ctx);
+    if (!argResult.ok) throw argResult.err;
 
-export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "McCommand: not implemented yet" };
+    const arg = argResult.value;
+    if (arg.type !== "string") {
+        const msg = `command argument must be a string, but got ${arg.value ?? arg} (${arg.type})`;
+        return { ok: false, err: new Error(msg) }
+    }
+
+    ctx.emitCmd(`${ast.command} ${arg.value}`, ast.location);
+
+    return { ok: true, 
+        ctx: ctx.wrap(),
+        value: { type: "void", value: null }
+    };
 }
 
 export function McExecStatement(ast: ASTTypes["McExecStatement"], _ctx: Context): InterpretReturn {

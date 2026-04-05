@@ -18,7 +18,10 @@ export function IntLiteral(ast: ASTTypes["IntLiteral"], _ctx: Context): Interpre
 }
 
 export function StringLiteral(ast: ASTTypes["StringLiteral"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "StringLiteral: not implemented yet" };
+    return { ok: true,
+        ctx: _ctx,
+        value: { type: "string", value: ast.raw }
+    };
 }
 
 export function TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"], _ctx: Context): InterpretReturn {

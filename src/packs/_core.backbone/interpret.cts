@@ -17,7 +17,7 @@ export function Block(ast: ASTTypes["Block"], _ctx: Context): InterpretReturn {
     return {
         ok: true,
         ctx: ctx.wrap(),
-        value: { type: "void" }
+        value: { type: "void", value: null }
     }
 }
 
@@ -30,7 +30,7 @@ export function ExecExpr(ast: ASTTypes["ExecExpr"], _ctx: Context): InterpretRet
     return {
         ok: true,
         ctx: result.ctx,
-        value: { type: "void" }
+        value: { type: "void", value: null }
     }
 }
 
@@ -46,6 +46,6 @@ export function Program(ast: ASTTypes["Program"], _ctx: Context): InterpretRetur
     return {
         ok: true,
         ctx: ctx.wrap(),
-        value: { type: "void" }
+        value: { type: "void", value: null }
     }
 }

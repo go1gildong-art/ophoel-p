@@ -101,6 +101,10 @@ export class ContextMut extends Context {
             new IRs.Command(prefix ? `execute ${prefix} run ${cmd}` : cmd, location)
         );
     }
+
+    export() {
+        return new IRInstructions(this.instructions);
+    }
 }
 
 type Frame = {

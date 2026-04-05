@@ -2,6 +2,7 @@ import { Statement, Expression, ASTKind, StandardNode } from "../../ast.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../location.cjs";
 import * as lispify from "./lispify.cjs";
+import * as interpret from "./interpret.cjs";
 
 // Expand existing nodes to a pack.
 export class Block implements Statement, StandardNode {
@@ -9,7 +10,7 @@ export class Block implements Statement, StandardNode {
 
     constructor(public statements: Statement[], public location: Location) {}
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.Block(this, ctx); }
         lispify(): string { return lispify.Block(this); }
 }
 
@@ -18,7 +19,7 @@ export class ExecExpr implements Statement, StandardNode {
 
     constructor(public expression: Expression, public location: Location) {}
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.ExecExpr(this, ctx); }
         lispify(): string { return lispify.ExecExpr(this); }
 }
 
@@ -28,6 +29,6 @@ export class Program implements Statement, StandardNode {
 
     constructor(public body: Statement[], public location: Location) {}
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.Program(this, ctx); }
         lispify(): string { return lispify.Program(this); }
 }

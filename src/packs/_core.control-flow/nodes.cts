@@ -3,6 +3,7 @@ import { Block } from "../../packs/_core.backbone/nodes.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../location.cjs";
 import * as lispify from "./lispify.cjs";
+import * as interpret from "./interpret.cjs";
 
 
 export type CondBodySet = { condition: Expression, body: Statement };
@@ -16,8 +17,8 @@ export class IfStatement implements Statement {
         public elseSignature: CondBodySet | undefined,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.IfStatement(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.IfStatement(this, ctx); }
+    lispify(): string { return lispify.IfStatement(this); }
 }
 
 export class WhileStatement implements Statement {
@@ -28,8 +29,8 @@ export class WhileStatement implements Statement {
         public body: Statement,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.WhileStatement(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.WhileStatement(this, ctx); }
+    lispify(): string { return lispify.WhileStatement(this); }
 }
 
 export class ForStatement implements Statement {
@@ -42,8 +43,8 @@ export class ForStatement implements Statement {
         public body: Statement,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.ForStatement(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.ForStatement(this, ctx); }
+    lispify(): string { return lispify.ForStatement(this); }
 }
 
 export class ForOfStatement implements Statement {
@@ -55,8 +56,8 @@ export class ForOfStatement implements Statement {
         public body: Statement,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.ForOfStatement(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.ForOfStatement(this, ctx); }
+    lispify(): string { return lispify.ForOfStatement(this); }
 }
 
 export class RepeatStatement implements Statement {
@@ -67,8 +68,8 @@ export class RepeatStatement implements Statement {
         public body: Statement,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.RepeatStatement(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.RepeatStatement(this, ctx); }
+    lispify(): string { return lispify.RepeatStatement(this); }
 }
 
 export class ChooseStatement implements Statement {
@@ -79,8 +80,8 @@ export class ChooseStatement implements Statement {
         public bodies: Statement[],
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.ChooseStatement(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.ChooseStatement(this, ctx); }
+    lispify(): string { return lispify.ChooseStatement(this); }
 }
 
 export class ReturnStatement implements Statement {
@@ -90,6 +91,6 @@ export class ReturnStatement implements Statement {
         public value: Expression | undefined,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.ReturnStatement(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.ReturnStatement(this, ctx); }
+    lispify(): string { return lispify.ReturnStatement(this); }
 }

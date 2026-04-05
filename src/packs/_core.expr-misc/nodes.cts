@@ -4,6 +4,7 @@ import { BinaryOperator } from "../_core.operations/nodes.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../location.cjs";
 import * as lispify from "./lispify.cjs";
+import * as interpret from "./interpret.cjs";
 export class Identifier implements Expression {
     kind = ASTKind.Identifier;
 
@@ -11,8 +12,8 @@ export class Identifier implements Expression {
         public name: string,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.Identifier(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.Identifier(this, ctx); }
+    lispify(): string { return lispify.Identifier(this); }
 }
 
 export class ParenExpression implements Expression {
@@ -22,8 +23,8 @@ export class ParenExpression implements Expression {
         public expression: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.ParenExpression(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.ParenExpression(this, ctx); }
+    lispify(): string { return lispify.ParenExpression(this); }
 }
 
 export class VariableAssign implements Expression {
@@ -34,8 +35,8 @@ export class VariableAssign implements Expression {
         public setValue: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.VariableAssign(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.VariableAssign(this, ctx); }
+    lispify(): string { return lispify.VariableAssign(this); }
 }
 
 export class CompoundAssign implements Expression {
@@ -47,6 +48,6 @@ export class CompoundAssign implements Expression {
         public setValue: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.CompoundAssign(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.CompoundAssign(this, ctx); }
+    lispify(): string { return lispify.CompoundAssign(this); }
 }

@@ -4,6 +4,7 @@ import { BinaryOperator } from "../_core.operations/nodes.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../location.cjs";
 import * as lispify from "./lispify.cjs";
+import * as interpret from "./interpret.cjs";
 
 export class BoolLiteral implements Expression {
     kind = ASTKind.BoolLiteral;
@@ -12,7 +13,7 @@ export class BoolLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.BoolLiteral(this, ctx); }
     lispify(): string { return lispify.BoolLiteral(this); }
 }
 
@@ -24,7 +25,7 @@ export class CompoundLiteral implements Expression {
         public values: Expression[],
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.CompoundLiteral(this, ctx); }
     lispify(): string { return lispify.CompoundLiteral(this); }
 }
 
@@ -35,7 +36,7 @@ export class FloatLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.FloatLiteral(this, ctx); }
     lispify(): string { return lispify.FloatLiteral(this); }
 }
 
@@ -46,7 +47,7 @@ export class IntLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.IntLiteral(this, ctx); }
     lispify(): string { return lispify.IntLiteral(this); }
 }
 
@@ -57,7 +58,7 @@ export class StringLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.StringLiteral(this, ctx); }
     lispify(): string { return lispify.StringLiteral(this); }
 }
 
@@ -70,7 +71,7 @@ export class TemplateStringLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.TemplateStringLiteral(this, ctx); }
     lispify(): string { return lispify.TemplateStringLiteral(this); }
 }
 
@@ -81,6 +82,6 @@ export class VectorLiteral implements Expression {
         public entries: Expression[],
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.VectorLiteral(this, ctx); }
     lispify(): string { return lispify.VectorLiteral(this); }
 }

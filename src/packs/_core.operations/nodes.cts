@@ -3,6 +3,7 @@ import { Block } from "../../packs/_core.backbone/nodes.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../location.cjs";
 import * as lispify from "./lispify.cjs";
+import * as interpret from "./interpret.cjs";
 
 export enum BinaryOperator {
     ADD = "+",
@@ -31,8 +32,8 @@ export class BinaryOperation implements Expression {
         public right: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
-            lispify(): string { return lispify.BinaryOperation(this); }
+        evaluate(ctx: Context): InterpretReturn { return interpret.BinaryOperation(this, ctx); }
+    lispify(): string { return lispify.BinaryOperation(this); }
 }
 
 export enum UnaryOperator {
@@ -49,7 +50,7 @@ export class PreUnary implements Expression {
         public right: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+        evaluate(ctx: Context): InterpretReturn { return interpret.PreUnary(this, ctx); }
     lispify(): string { return lispify.PreUnary(this); }
 }
 
@@ -61,7 +62,7 @@ export class PostUnary implements Expression {
         public left: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+        evaluate(ctx: Context): InterpretReturn { return interpret.PostUnary(this, ctx); }
     lispify(): string { return lispify.PostUnary(this); }
 }
 
@@ -73,7 +74,7 @@ export class IndexAccess implements Expression {
         public index: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+        evaluate(ctx: Context): InterpretReturn { return interpret.IndexAccess(this, ctx); }
     lispify(): string { return lispify.IndexAccess(this); }
 }
 
@@ -85,7 +86,7 @@ export class MemberAccess implements Expression {
         public member: string,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+        evaluate(ctx: Context): InterpretReturn { return interpret.MemberAccess(this, ctx); }
     lispify(): string { return lispify.MemberAccess(this); }
 }
 
@@ -97,7 +98,7 @@ export class FunctionCall implements Expression {
         public args: Expression[],
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+        evaluate(ctx: Context): InterpretReturn { return interpret.FunctionCall(this, ctx); }
     lispify(): string { return lispify.FunctionCall(this); }
 }
 
@@ -109,6 +110,6 @@ export class MacroCall implements Expression {
         public args: Expression[],
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+        evaluate(ctx: Context): InterpretReturn { return interpret.MacroCall(this, ctx); }
     lispify(): string { return lispify.MacroCall(this); }
 }

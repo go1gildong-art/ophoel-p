@@ -3,6 +3,7 @@ import { Block } from "../../packs/_core.backbone/nodes.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { Location } from "../../location.cjs";
 import * as lispify from "./lispify.cjs";
+import * as interpret from "./interpret.cjs";
 
 export class ConstDecl implements Statement, StandardNode {
     kind = ASTKind.ConstDecl;
@@ -12,7 +13,7 @@ export class ConstDecl implements Statement, StandardNode {
         public initValue: Expression,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.ConstDecl(this, ctx); }
     lispify(): string { return lispify.ConstDecl(this); }
 }
 
@@ -25,7 +26,7 @@ export class FunctionDecl implements Statement, StandardNode {
         public body: Block,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.FunctionDecl(this, ctx); }
     lispify(): string { return lispify.FunctionDecl(this); }
 }
 
@@ -38,7 +39,7 @@ export class MacroDecl implements Statement, StandardNode {
         public body: Block,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.MacroDecl(this, ctx); }
     lispify(): string { return lispify.MacroDecl(this); }
 }
 
@@ -50,6 +51,6 @@ export class VariableDecl implements Statement, StandardNode {
         public initValue: Expression,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return { ok: false, err: "not implemented yet" }; }
+    evaluate(ctx: Context): InterpretReturn { return interpret.VariableDecl(this, ctx); }
     lispify(): string { return lispify.VariableDecl(this); }
 }

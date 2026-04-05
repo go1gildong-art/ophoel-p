@@ -8,27 +8,27 @@ import * as interpret from "./interpret.cjs";
 export class Block implements Statement, StandardNode {
     kind = ASTKind.Block;
 
-    constructor(public statements: Statement[], public location: Location) {}
+    constructor(public statements: Statement[], public location: Location) { }
 
     evaluate(ctx: Context): InterpretReturn { return interpret.Block(this, ctx); }
-        lispify(): string { return lispify.Block(this); }
+    lispify(): string { return lispify.Block(this); }
 }
 
 export class ExecExpr implements Statement, StandardNode {
     kind = ASTKind.ExecExpr;
 
-    constructor(public expression: Expression, public location: Location) {}
+    constructor(public expression: Expression, public location: Location) { }
 
     evaluate(ctx: Context): InterpretReturn { return interpret.ExecExpr(this, ctx); }
-        lispify(): string { return lispify.ExecExpr(this); }
+    lispify(): string { return lispify.ExecExpr(this); }
 }
 
 
 export class Program implements Statement, StandardNode {
     kind = ASTKind.Program;
 
-    constructor(public body: Statement[], public location: Location) {}
+    constructor(public body: Statement[], public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.Program(this, ctx); }
-        lispify(): string { return lispify.Program(this); }
+    evaluate(ctx: Context = new Context()): InterpretReturn { return interpret.Program(this, ctx); }
+    lispify(): string { return lispify.Program(this); }
 }

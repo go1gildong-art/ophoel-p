@@ -26,6 +26,13 @@ export type OphoelValue =
 export class Context {
     readonly frames: Frame[] = [];
     readonly instructions: IRNode[] = [];
+
+    branch(): ContextMut {
+        const newCtx = new ContextMut();
+        newCtx.frames.push(...this.frames);
+        newCtx.instructions.push(...this.instructions);
+        return newCtx;
+    }
 }
 
 export class ContextMut extends Context {
@@ -100,6 +107,13 @@ export class ContextMut extends Context {
         this.instructions.push(
             new IRs.Command(prefix ? `execute ${prefix} run ${cmd}` : cmd, location)
         );
+    }
+
+    wrap(): Context {
+        const newCtx = new Context();
+        newCtx.frames.push(...this.frames);
+        newCtx.instructions.push(...this.instructions);
+        return newCtx;
     }
 
     export() {

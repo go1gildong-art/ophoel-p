@@ -1,0 +1,232 @@
+{
+  "state": "FAILURE",
+  "message": "Some golden tests failed. ( 1 / 2 )",
+  "children": [
+    {
+      "state": "SUCCESS",
+      "message": "Parser golden test succeed! ( 19 / 19 )",
+      "children": [
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Arithmetic Operators",
+            "description": "All arithmetic ops + - * / % should parse with precedence.",
+            "expected": "(program (const a (- (+ 1 2) (% (/ (* 3 4) 5) 6))))",
+            "__actual": "(program (const a (- (+ 1 2) (% (/ (* 3 4) 5) 6))))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Block Statement",
+            "description": "Block with multiple statements should parse correctly.",
+            "expected": "(program (block ((const x 1) (say!! 'hello'))))",
+            "__actual": "(program (block ((const x 1) (say!! 'hello'))))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Comparison Operators",
+            "description": "All comparison ops == != > < >= <= should parse correctly.",
+            "expected": "(program (const a (== 1 2)) (const b (!= 3 4)) (const c (> 5 6)) (const d (< 7 8)) (const e (>= 9 10)) (const f (<= 11 12)))",
+            "__actual": "(program (const a (== 1 2)) (const b (!= 3 4)) (const c (> 5 6)) (const d (< 7 8)) (const e (>= 9 10)) (const f (<= 11 12)))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Compound Literal",
+            "description": "Parser should recognize compound (object-like) literals.",
+            "expected": "(program (const c ((x 1) (y 2))))",
+            "__actual": "(program (const c ((x 1) (y 2))))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Function Calls",
+            "description": "Function calls with various argument counts should parse correctly.",
+            "expected": "(program (const a (foo )) (const b (bar 1)) (const c (baz 1 2 3)))",
+            "__actual": "(program (const a (foo )) (const b (bar 1)) (const c (baz 1 2 3)))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Function  & Macro Declaration",
+            "description": "Function & Macro declaration with parameters and body should parse correctly.",
+            "expected": "(program (fn add (a b) (block ((return (+ a b))))) (macro! log (msg) (block ((say!! msg)))))",
+            "__actual": "(program (fn add (a b) (block ((return (+ a b))))) (macro! log (msg) (block ((say!! msg)))))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Hello World",
+            "description": "Simple ",
+            "expected": "(program (say!! 'Hello world!'))",
+            "__actual": "(program (say!! 'Hello world!'))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "If Statement",
+            "description": "Simple if statement should parse correctly.",
+            "expected": "(program (if true (say!! 'hello')))",
+            "__actual": "(program (if true (say!! 'hello')))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Include Statement",
+            "description": "Include preprocess statement should parse correctly.",
+            "expected": "(program (include utils.oph))",
+            "__actual": "(program (include utils.oph))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Logic Operators",
+            "description": "Logical pipeline with && and || should parse with correct precedence.",
+            "expected": "(program (const a (|| (&& true false) true)))",
+            "__actual": "(program (const a (|| (&& true false) true)))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Macro Calls",
+            "description": "Macro calls with ! syntax and various argument counts should parse correctly.",
+            "expected": "(program (const a (foo! )) (const b (bar! 1)) (const c (baz! 1 2 3)))",
+            "__actual": "(program (const a (foo! )) (const b (bar! 1)) (const c (baz! 1 2 3)))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "McExec Statement",
+            "description": "mc_exec statement having prefix and block.",
+            "expected": "(program (mc_exec 'as @e'!! (block ((say!! 'hello') (mc_exec 'at @s'!! (block ((say!! 'nested'))))))))",
+            "__actual": "(program (mc_exec 'as @e'!! (block ((say!! 'hello') (mc_exec 'at @s'!! (block ((say!! 'nested'))))))))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Multi chaining",
+            "description": "complicated multi chaining of . and []",
+            "expected": "(program (const x (. ([] ([] (. (. config a) b) 0) (+ 1 2)) c)))",
+            "__actual": "(program (const x (. ([] ([] (. (. config a) b) 0) (+ 1 2)) c)))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Multiline",
+            "description": "Program with multiple statements.",
+            "expected": "(program (say!! 'Line 1') (w!! 'Line 2') (msg!! 'Line 3'))",
+            "__actual": "(program (say!! 'Line 1') (w!! 'Line 2') (msg!! 'Line 3'))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Post-Unary Operators",
+            "description": "Post-unary operators ++ -- should parse correctly as postfix.",
+            "expected": "(program (const a (x ++)) (const b (y --)))",
+            "__actual": "(program (const a (x ++)) (const b (y --)))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Pre-Unary Operators",
+            "description": "Pre-unary operators ++ -- ! should parse correctly as prefix.",
+            "expected": "(program (const a (++ x)) (const b (-- y)) (const c (! true)))",
+            "__actual": "(program (const a (++ x)) (const b (-- y)) (const c (! true)))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Template Strings",
+            "description": "Template string literals with backticks should parse correctly.",
+            "expected": "(program (const a `hello world`) (const b `multiline\ntemplate`) (const c `John has ${1 + 2} apples`))",
+            "__actual": "(program (const a `hello world`) (const b `multiline\ntemplate`) (const c `John has ${1 + 2} apples`))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "Vector Literal",
+            "description": "Vector literal, similar with array. will contain multiple expressions inside",
+            "expected": "(program (const v (1 'foo' true (+ 1 3))))",
+            "__actual": "(program (const v (1 'foo' true (+ 1 3))))"
+          },
+          "children": []
+        },
+        {
+          "state": "SUCCESS",
+          "message": {
+            "result": "Test result matched.",
+            "title": "While Statement",
+            "description": "While loop should parse correctly.",
+            "expected": "(program (while (< i 10) (ex (i ++))))",
+            "__actual": "(program (while (< i 10) (ex (i ++))))"
+          },
+          "children": []
+        }
+      ]
+    },
+    {
+      "state": "FAILURE",
+      "message": "Interpret golden test failed. ( 0 / 1 )",
+      "children": [
+        {
+          "state": "ERROR",
+          "message": "An unexpected object thrown while testing: not implemented yet",
+          "children": []
+        }
+      ]
+    }
+  ]
+}

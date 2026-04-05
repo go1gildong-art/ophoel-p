@@ -18,9 +18,9 @@ export type OphoelValue =
     | { type: "num"; value: number }
     | { type: "string"; value: string }
     | { type: "vector"; value: OphoelValue[] }
-    | { type: "compound"; value: Record<string, OphoelValue> }
+    | { type: "compound"; value: KVPair[] }
     | { type: "void"; value: null };
-
+type KVPair = { field: string, value: OphoelValue };
 
 
 export class Context {
@@ -40,7 +40,7 @@ export class ContextMut extends Context {
         return {
             ok: true,
             ctx: this,
-            value: value ?? { type: "void" }
+            value: value ?? { type: "void", value: null }
         };
     }
 
@@ -57,7 +57,7 @@ export class ContextMut extends Context {
         return frame;
     }
 
-    pushFrame(frame: Frame = { variables: {}, mcPrefix: undefined }) {
+    pushFrame(frame: Frame = { variables: [], mcPrefix: undefined }) {
         if (this.peek().queuedPrefix != null) {
             frame.mcPrefix = this.peek().queuedPrefix;
         }
@@ -69,8 +69,8 @@ export class ContextMut extends Context {
 
     getVariable(ident: string): InterpretReturn {
         for (const frame of [...this.frames].reverse()) {
-            if (frame.variables[ident] != null) {
-                return this.makeOK(frame.variables[ident]);
+            for (const variable of frame.variables) {
+                if (variable.field === ident) return this.makeOK(variable.value);
             }
         }
 
@@ -80,10 +80,10 @@ export class ContextMut extends Context {
         };
     }
 
-    getAddressObj(ident: string): Record<string, OphoelValue> | { ok: false; err: Error } {
+    getAddressObj(ident: string): KVPair | { ok: false, err: Error } {
         for (const frame of [...this.frames].reverse()) {
-            if (frame.variables[ident] != null) {
-                return frame.variables;
+            for (const variable of frame.variables) {
+                if (variable.field === ident) return variable;
             }
         }
 
@@ -122,7 +122,7 @@ export class ContextMut extends Context {
 }
 
 type Frame = {
-    variables: Record<string, OphoelValue>;
+    variables: KVPair[];
     mcPrefix?: string
     queuedPrefix?: string;
 }

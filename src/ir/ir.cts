@@ -8,13 +8,16 @@ export enum IRKind {
 export interface IRNode {
     kind: IRKind;
     location?: Location;
+
+    toString(): string;
+    nonLocString(): string;
 }
 
 export class IRInstructions {
     constructor(
         public instructions: IRNode[]) { }
 
-    toString() {
-        return this.instructions.map(i => i.toString()).join("\n");
-    }
+    toString() { return this.instructions.map(i => i.toString()).join("\n"); }
+
+    nonLocString() { return this.instructions.map(i => i.nonLocString()).join("\n"); }
 }

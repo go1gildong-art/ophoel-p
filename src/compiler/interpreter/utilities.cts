@@ -19,7 +19,7 @@ export type OphoelValue =
     | { type: "string"; value: string }
     | { type: "vector"; value: OphoelValue[] }
     | { type: "compound"; value: Record<string, OphoelValue> }
-    | { type: "void" };
+    | { type: "void"; value: null };
 
 
 

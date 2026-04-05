@@ -3,3 +3,4 @@ dist
 node_modules
 .vscode-test/
 out/
+tests/test-full.json

@@ -23,5 +23,5 @@ export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretR
 }
 
 export function McExecStatement(ast: ASTTypes["McExecStatement"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: "McExecStatement: not implemented yet" };
+    return { ok: false, err: new Error("McExecStatement: not implemented yet") };
 }

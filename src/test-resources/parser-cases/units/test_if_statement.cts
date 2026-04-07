@@ -4,6 +4,7 @@ export const unit = new ParserUnit({
     title: "If Statement",
     description: "Simple if statement should parse correctly.",
     fileName: "test_if_statement.cts",
+    link: __dirname,
 
     source: `if true say!! "hello";`,
 

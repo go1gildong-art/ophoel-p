@@ -4,6 +4,7 @@ export const unit = new ParserUnit({
     title: "Multiline",
     description: "Program with multiple statements.",
     fileName: "test_multiline.oph",
+    link: __dirname,
 
     source: [
         `say!! 'Line 1';`,

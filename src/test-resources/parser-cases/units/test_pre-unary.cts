@@ -4,6 +4,7 @@ export const unit = new ParserUnit({
     title: "Pre-Unary Operators",
     description: "Pre-unary operators ++ -- ! should parse correctly as prefix.",
     fileName: "test_pre-unary.cts",
+    link: __dirname,
 
     source: [
         `const a = ++x;`,

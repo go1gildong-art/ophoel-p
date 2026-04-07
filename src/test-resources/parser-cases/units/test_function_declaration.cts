@@ -4,6 +4,7 @@ export const unit = new ParserUnit({
     title: "Function  & Macro Declaration",
     description: "Function & Macro declaration with parameters and body should parse correctly.",
     fileName: "test_function_declaration.cts",
+    link: __dirname,
 
     source: [
         `fn add(a, b) {`,

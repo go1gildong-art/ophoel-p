@@ -4,6 +4,7 @@ export const unit = new ParserUnit({
     title: "Multi chaining",
     description: "complicated multi chaining of . and []",
     fileName: "test_multi-chaining.cts",
+    link: __dirname,
 
     source: [
         `const x = config.a.b[0][1 + 2].c;`

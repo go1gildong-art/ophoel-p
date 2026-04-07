@@ -8,6 +8,7 @@ export class InterpretUnit extends GoldenCase<{ source: string; __filename: stri
         title: string;
         description: string;
         skip?: boolean;
+        link: string;
         source: string;
         fileName: string;
         expectation: string;
@@ -17,6 +18,7 @@ export class InterpretUnit extends GoldenCase<{ source: string; __filename: stri
             title: args.title,
             description: args.description,
             skip: args.skip ?? false,
+            link: args.link,
 
             expectation: args.expectation,
             source: { source: args.source, __filename: args.fileName },

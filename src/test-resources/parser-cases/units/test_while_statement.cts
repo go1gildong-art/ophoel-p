@@ -4,6 +4,7 @@ export const unit = new ParserUnit({
     title: "While Statement",
     description: "While loop should parse correctly.",
     fileName: "test_while_statement.cts",
+    link: __dirname,
 
     source: `while i < 10 i++;`,
 

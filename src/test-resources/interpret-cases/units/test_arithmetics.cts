@@ -4,6 +4,7 @@ export const unit = new InterpretUnit({
     title: "Arithmetics",
     description: "simple arithmetics test, with parenthesis and operator precedence",
     fileName: "test-arithmetics.oph",
+    link: __dirname,
 
     source: [
         `const a = 1;`,

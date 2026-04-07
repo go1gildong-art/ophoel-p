@@ -4,6 +4,7 @@ export const unit = new ParserUnit({
     title: "Function Calls",
     description: "Function calls with various argument counts should parse correctly.",
     fileName: "test_function_call.cts",
+    link: __dirname,
 
     source: [
         `const a = foo();`,

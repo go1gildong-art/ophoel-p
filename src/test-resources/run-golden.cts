@@ -21,6 +21,7 @@ import fs from "node:fs";
     );
 
     fs.writeFileSync(filePath, JSON.stringify(result, null, 2), 'utf-8');
-    console.log("\n" + result.message)
+    console.log("\n" + result.message);
+    console.log("Check here to see details: " + filePath);
 }
 )();

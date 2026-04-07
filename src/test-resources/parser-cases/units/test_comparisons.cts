@@ -4,6 +4,7 @@ export const unit = new ParserUnit({
     title: "Comparison Operators",
     description: "All comparison ops == != > < >= <= should parse correctly.",
     fileName: "test-comparisons.cts",
+    link: __dirname,
 
     source: [
         `const a = 1 == 2;`,

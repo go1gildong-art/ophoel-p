@@ -4,6 +4,7 @@ export const unit = new InterpretUnit({
     title: "String Interpolation",
     description: "template string interpolation handling",
     fileName: "test_string-interpolation.oph",
+    link: __dirname,
 
     source: [
         `const mob = "minecraft:zombie";`,

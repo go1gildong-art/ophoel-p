@@ -4,6 +4,7 @@ export const unit = new InterpretUnit({
     title: "Data structures",
     description: "vectors and compounds",
     fileName: "test_data-structs.oph",
+    link: __dirname,
 
     source: [
         `const myVec = [1, 2, 3];`,

@@ -7,6 +7,7 @@ export class ParserUnit extends GoldenCase<{ source: string; __filename: string 
     constructor(args: {
         title: string;
         description: string;
+        link: string;
         skip?: boolean;
         source: string;
         fileName: string;
@@ -17,6 +18,7 @@ export class ParserUnit extends GoldenCase<{ source: string; __filename: string 
             title: args.title,
             description: args.description,
             skip: args.skip ?? false,
+            link: args.link,
 
             expectation: args.expectation,
             source: { source: args.source, __filename: args.fileName },

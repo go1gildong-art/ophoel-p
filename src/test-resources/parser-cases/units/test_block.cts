@@ -4,6 +4,7 @@ export const unit = new ParserUnit({
     title: "Block Statement",
     description: "Block with multiple statements should parse correctly.",
     fileName: "test_block.cts",
+    link: __dirname,
 
     source: [
         `{`,

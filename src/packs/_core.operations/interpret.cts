@@ -25,6 +25,14 @@ export function FunctionCall(ast: ASTTypes["FunctionCall"], _ctx: Context): Inte
     return { ok: false, err: "FunctionCall: not implemented yet" };
 }
 
+export function VariableAssign(ast: ASTTypes["VariableAssign"], _ctx: Context): InterpretReturn {
+    return { ok: false, err: "VariableAssign: not implemented yet" };
+}
+
+export function CompoundAssign(ast: ASTTypes["CompoundAssign"], _ctx: Context): InterpretReturn {
+    return { ok: false, err: "CompoundAssign: not implemented yet" };
+}
+
 export function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): InterpretReturn {
     return { ok: false, err: "MacroCall: not implemented yet" };
 }

@@ -33,6 +33,18 @@ export function FunctionCall(ast: ASTTypes["FunctionCall"]) {
     return `(${ast.callee} ${args})`;
 }
 
+export function VariableAssign(ast: ASTTypes["VariableAssign"]) {
+    const address = ast.address.lispify();
+    const value = ast.setValue.lispify();
+    return `(= ${address} ${value})`;
+}
+
+export function CompoundAssign(ast: ASTTypes["CompoundAssign"]) {
+    const address = ast.address.lispify();
+    const value = ast.setValue.lispify();
+    return `(=${ast.operation} ${address} ${value})`;
+}
+
 export function MacroCall(ast: ASTTypes["MacroCall"]) {
     const args = ast.args.map((arg) => arg.lispify()).join(" ");
     return `(${ast.callee}! ${args})`;

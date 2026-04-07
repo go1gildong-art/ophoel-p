@@ -7,7 +7,9 @@ import { BinaryOperation,
     IndexAccess,
     MemberAccess,
     FunctionCall,
-    MacroCall
+    MacroCall,
+    VariableAssign,
+    CompoundAssign
  } from './nodes.cjs'; 
 
 const nodes = {
@@ -17,7 +19,9 @@ const nodes = {
     IndexAccess,
     MemberAccess,
     FunctionCall,
-    MacroCall
+    MacroCall,
+    VariableAssign,
+    CompoundAssign
 }
 
 export const pack = {

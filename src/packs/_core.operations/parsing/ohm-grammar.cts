@@ -1,7 +1,12 @@
 export const grammar = `
-Expr = OrExp
 
+Expr = VariableAssign
 
+VariableAssign = Expr "=" Expr -- assign
+              | CompoundAssign
+
+CompoundAssign = Expr ("+=" | "-=" | "*=" | "/=" | "%=") Expr -- assign
+              | OrExp
 
 OrExp = OrExp "||" AndExp  -- or
       | AndExp
@@ -47,6 +52,7 @@ FunctionCall = ident "(" ListOf<Expr, ","> ")" -- fn
 
 MacroCall = ident "!" "(" ListOf<Expr, ","> ")" -- macro
               | ParenExpr
+
 
 
 Primary = number

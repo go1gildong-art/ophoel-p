@@ -90,6 +90,31 @@ export class MemberAccess implements Expression {
     lispify(): string { return lispify.MemberAccess(this); }
 }
 
+export class VariableAssign implements Expression {
+    kind = ASTKind.VariableAssign;
+
+    constructor(
+        public address: Expression,
+        public setValue: Expression,
+        public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return interpret.VariableAssign(this, ctx); }
+    lispify(): string { return lispify.VariableAssign(this); }
+}
+
+export class CompoundAssign implements Expression {
+    kind = ASTKind.CompoundAssign;
+
+    constructor(
+        public address: Expression,
+        public operation: BinaryOperator,
+        public setValue: Expression,
+        public location: Location) {}
+
+        evaluate(ctx: Context): InterpretReturn { return interpret.CompoundAssign(this, ctx); }
+    lispify(): string { return lispify.CompoundAssign(this); }
+}
+
 export class FunctionCall implements Expression {
     kind = ASTKind.FunctionCall;
 

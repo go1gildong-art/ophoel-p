@@ -2,8 +2,7 @@ import { ASTs } from "../../../pack-combinator.cjs";
 import { Expression } from "../../../ast.cjs";
 import { BinaryOperator, UnaryOperator } from "../../../packs/_core.operations/nodes.cjs";
 import { getLoc, ActionMap } from "../../../compiler/parser.cjs";
-import * as ohm from 'ohm-js';
-import { MacroCall, MemberAccess } from "../lispify.cjs";
+import { fail } from "../../../utils/fail.cjs";
 
 export const actionMap: ActionMap<Expression> = {
     OrExp_or(left, _op, right) {
@@ -42,5 +41,25 @@ export const actionMap: ActionMap<Expression> = {
     MemberAccess_mem(expr, _dot, ident) { return new ASTs.MemberAccess(expr.toAST(__filename), ident.sourceString, getLoc(_dot, __filename)); },
     MemberAccess(left) { return left.toAST(__filename); },
     IndexAccess_index(expr, _open, index, _close) { return new ASTs.IndexAccess(expr.toAST(__filename), index.toAST(__filename), getLoc(_open, __filename)); },
-    IndexAccess(left) { return left.toAST(__filename); }
+    IndexAccess(left) { return left.toAST(__filename); },
+
+    VariableAssign_assign(address, _eq, value) {
+        return new ASTs.VariableAssign(address.toAST(__filename), value.toAST(__filename), getLoc(_eq, __filename));
+    },
+
+    CompoundAssign_assign(address, op, value) {
+        const operatorMap: Record<string, BinaryOperator> = {
+            "+=": BinaryOperator.ADD,
+            "-=" : BinaryOperator.SUBTRACT,
+            "*=" : BinaryOperator.MULTIPLY,
+            "/=" : BinaryOperator.DIVIDE,
+            "%=" : BinaryOperator.REMAINDER
+        };
+        return new ASTs.CompoundAssign(
+            address.toAST(__filename),
+            operatorMap[op.sourceString] ?? fail(new Error(`Unknown compound operator: ${op.sourceString}`)),
+            value.toAST(__filename),
+            getLoc(op, __filename)
+        );
+    }
 };

@@ -122,7 +122,7 @@ export class ContextMut extends Context {
 }
 
 type Frame = {
-    variables: KVPair[];
+    variables: { field: string, value: OphoelValue, mutable: boolean }[] extends KVPair[] ? KVPair[] : never;
     mcPrefix?: string
     queuedPrefix?: string;
 }

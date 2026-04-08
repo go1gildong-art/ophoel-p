@@ -24,7 +24,7 @@ type KVPair = { field: string, value: OphoelValue };
 
 
 export class Context {
-    readonly frames: Frame[] = [];
+    readonly frames: Frame[] = [ emptyFrame() ];
     readonly instructions: IRNode[] = [];
 
     branch(): ContextMut {
@@ -36,6 +36,9 @@ export class Context {
 }
 
 export class ContextMut extends Context {
+    readonly frames: Frame[] = [ emptyFrame() ];
+    readonly instructions: IRNode[] = [];
+    
     private makeOK(value?: OphoelValue): InterpretReturn {
         return {
             ok: true,
@@ -66,6 +69,10 @@ export class ContextMut extends Context {
     }
 
     popFrame() { this.frames.pop(); }
+
+    addVariable(field: string, value: OphoelValue, mutable: boolean) {
+        this.peek().variables.push({ field, value, mutable });
+    }
 
     getVariable(ident: string): InterpretReturn {
         for (const frame of [...this.frames].reverse()) {
@@ -122,10 +129,10 @@ export class ContextMut extends Context {
 }
 
 type Frame = {
-    variables: { field: string, value: OphoelValue, mutable: boolean }[] extends KVPair[] ? KVPair[] : never;
+    variables: { field: string, value: OphoelValue, mutable: boolean }[];
     mcPrefix?: string
     queuedPrefix?: string;
 }
-
+const emptyFrame: () => Frame = () => ({ variables: [], mcPrefix: undefined, queuedPrefix: undefined });
 
 

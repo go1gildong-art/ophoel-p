@@ -14,7 +14,16 @@ export function FloatLiteral(ast: ASTTypes["FloatLiteral"], _ctx: Context): Inte
 }
 
 export function IntLiteral(ast: ASTTypes["IntLiteral"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: new Error("IntLiteral: not implemented yet") };
+    const numValue = parseInt(ast.raw);
+    
+    if (isNaN(numValue)) {
+        return { ok: false, err: new Error(`IntLiteral: unable to parse '${ast.raw}' as an integer`) };
+    }
+
+    return { ok: true,
+        ctx: _ctx,
+        value: { type: "num", value: numValue }
+    };
 }
 
 export function StringLiteral(ast: ASTTypes["StringLiteral"], _ctx: Context): InterpretReturn {

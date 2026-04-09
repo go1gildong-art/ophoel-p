@@ -2,16 +2,18 @@ import { Context, InterpretReturn, OphoelValue } from "../../compiler/interprete
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { BinaryOperation as BinOperationNode, BinaryOperator, UnaryOperator } from "./nodes.cjs";
 import { IntLiteral } from "../_core.literals/nodes.cjs";
-import * as res from "../../utils/result.cjs";
+import * as res from "../../utils/result.cjs"
 
 export function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
 
     const left = ast.left.evaluate(ctx.wrap());
     if (!left.ok) return left;
+    ctx = left.ctx.branch();
 
     const right = ast.right.evaluate(ctx.wrap());
     if (!right.ok) return right;
+    ctx = left.ctx.branch();
 
     switch (ast.operator) {
         case BinaryOperator.ADD:
@@ -129,6 +131,7 @@ export function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): InterpretR
 
     const operand = ast.left.evaluate(ctx.wrap());
     if (!operand.ok) return operand;
+    ctx = operand.ctx.branch();
 
     new BinOperationNode(
         ast.left,
@@ -174,11 +177,91 @@ export function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): InterpretR
 }
 
 export function IndexAccess(ast: ASTTypes["IndexAccess"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: new Error("IndexAccess: not implemented yet") };
+    let ctx = _ctx.branch();
+
+    const left = ast.left.evaluate(ctx.wrap());
+    if (!left.ok) return left;
+    ctx = left.ctx.branch();
+
+    const index = ast.index.evaluate(ctx.wrap());
+    if (!index.ok) return index;
+    ctx = index.ctx.branch();
+
+
+    switch (left.value.type) {
+        case "vector": {
+            if (index.value.type === "string" && index.value.value === "length") {
+                const address = { type: "num", value: left.value.value.length };
+                return res.makeOK(address, ctx.wrap());
+
+            } else if (index.value.type === "num") {
+                if (index.value.value >= left.value.value.length) {
+                    const msg = `Array out of bound. length: ${left.value.value.length}, got: ${index.value.type}`;
+                    return res.makeErr(new Error(msg));
+                }
+                const address = left.value.value[index.value.value]
+                return res.makeOK(address, ctx.wrap());
+
+            } else {
+                const msg = `Invalid index ${index.value.value}`
+                return res.makeErr(new Error(msg));
+            }
+        }
+
+        case "compound": {
+            if (index.value.type === "string") {
+                const address = left.value.value.find(address => address.field === index.value.value);
+                if (!address) {
+                    const msg = `property ${index.value.value} does not exist in the compound.`;
+                    return res.makeErr(new Error(msg));
+                }
+                return res.makeOK(address.value, ctx.wrap());
+            } else {
+                const msg = `Invalid property access ${index.value.value}`
+                return res.makeErr(new Error(msg));
+            }
+        }
+
+        default: {
+            const msg = `cannot access index ${index.value.value} of type ${left.value.type}`;
+            return res.makeErr(new Error(msg));
+        }
+    }
 }
 
 export function MemberAccess(ast: ASTTypes["MemberAccess"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: new Error("MemberAccess: not implemented yet") };
+    let ctx = _ctx.branch();
+
+    const left = ast.left.evaluate(ctx.wrap());
+    if (!left.ok) return left;
+    ctx = left.ctx.branch();
+
+    switch (left.value.type) {
+        case "vector": {
+            if (ast.member === "length") {
+                const address = { type: "num", value: left.value.value.length };
+                return res.makeOK(address, ctx.wrap());
+
+            } else {
+                const msg = `cannot access property ${ast.member} of a vector`;
+                return res.makeErr(new Error(msg));
+            }
+        }
+
+        case "compound": {
+            const address = left.value.value.find(address => address.field === ast.member);
+            if (!address) {
+                const msg = `property ${ast.member} does not exist in the compound.`;
+                return res.makeErr(new Error(msg));
+            }
+            return res.makeOK(address.value, ctx.wrap());
+        }
+
+        default: {
+            const msg = `cannot access property ${ast.member} of type ${left.value.type}`;
+            return res.makeErr(new Error(msg));
+        }
+    }
 }
 
 export function FunctionCall(ast: ASTTypes["FunctionCall"], _ctx: Context): InterpretReturn {
@@ -186,11 +269,40 @@ export function FunctionCall(ast: ASTTypes["FunctionCall"], _ctx: Context): Inte
 }
 
 export function VariableAssign(ast: ASTTypes["VariableAssign"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: new Error("VariableAssign: not implemented yet") };
+    let ctx = _ctx.branch();
+
+    const address = ast.address.evaluate(ctx.wrap());
+    if (!address.ok) return address;
+    ctx = address.ctx.branch();
+
+    const setValue = ast.setValue.evaluate(ctx.wrap());
+    if (!setValue.ok) return setValue;
+    ctx = setValue.ctx.branch();
+    
+    address.value = setValue.value;
+
+    return res.makeOK(setValue.value, ctx.wrap());
 }
 
 export function CompoundAssign(ast: ASTTypes["CompoundAssign"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: new Error("CompoundAssign: not implemented yet") };
+    let ctx = _ctx.branch();
+
+    const address = ast.address.evaluate(ctx.wrap());
+    if (!address.ok) return address;
+    ctx = address.ctx.branch();
+
+    const result = new BinOperationNode(
+        ast.address, 
+        ast.operation, 
+        ast.setValue, 
+        ast.location
+    ).evaluate(ctx.wrap());
+    if (!result.ok) return result;
+    ctx = result.ctx.branch();
+    
+    address.value = result.value;
+
+    return res.makeOK(result.value, ctx.wrap());
 }
 
 export function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): InterpretReturn {

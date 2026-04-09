@@ -20,15 +20,15 @@ export const unit = new InterpretUnit({
         `msg!! myVec[1]++;`,
         `msg!! myVec[1];`,
 
-        `myVec["y"] += " qux";`,
-        `msg!! myVec["y"];`,
+        `myComp["y"] += " qux";`,
+        `msg!! myComp["y"];`,
 
         `say!! myComp.z[2];`,
     ].join("\n"),
 
     expectation: [
         `/say 1`,
-        `/say "foo"`,
+        `/say foo`,
         `/msg 2`,
         `/msg 3`,
         `/msg bar qux`,

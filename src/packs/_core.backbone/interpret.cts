@@ -26,6 +26,7 @@ export function ExecExpr(ast: ASTTypes["ExecExpr"], _ctx: Context): InterpretRet
 
     const result = ast.expression.evaluate(ctx.wrap());
     if (!result.ok) throw result.err;
+    ctx = result.ctx.branch();
 
     return {
         ok: true,

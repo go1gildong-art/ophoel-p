@@ -7,6 +7,7 @@ export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretR
 
     const argResult = ast.argument.evaluate(_ctx);
     if (!argResult.ok) throw argResult.err;
+    ctx = argResult.ctx.branch();
 
     const arg = argResult.value;
     
@@ -15,6 +16,7 @@ export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretR
         && arg.type !== "bool"
     ) {
         const msg = `command argument must be a string-coercible type, but got ${arg.value ?? arg} (${arg.type})`;
+        console.log(arg);
         return { ok: false, err: new Error(msg) }
     }
 

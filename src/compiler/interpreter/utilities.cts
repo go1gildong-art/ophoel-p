@@ -20,7 +20,7 @@ export type OphoelValue =
     | { type: "vector"; value: OphoelValue[] }
     | { type: "compound"; value: KVPair[] }
     | { type: "void"; value: null };
-type KVPair = { field: string, value: OphoelValue };
+export type KVPair = { field: string, value: OphoelValue };
 
 
 export class Context {

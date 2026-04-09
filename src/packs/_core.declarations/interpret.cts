@@ -6,6 +6,7 @@ export function ConstDecl(ast: ASTTypes["ConstDecl"], _ctx: Context): InterpretR
     
     const initValue = ast.initValue.evaluate(ctx.wrap());
     if (!initValue.ok) return initValue;
+    ctx = initValue.ctx.branch();
 
     ctx.addVariable(ast.name, initValue.value, false);
 
@@ -29,6 +30,7 @@ export function VariableDecl(ast: ASTTypes["VariableDecl"], _ctx: Context): Inte
     
     const initValue = ast.initValue.evaluate(ctx.wrap());
     if (!initValue.ok) return initValue;
+    ctx = initValue.ctx.branch();
 
     ctx.addVariable(ast.name, initValue.value, true);
 

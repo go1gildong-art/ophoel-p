@@ -24,7 +24,7 @@ type KVPair = { field: string, value: OphoelValue };
 
 
 export class Context {
-    readonly frames: Frame[] = [ emptyFrame() ];
+    readonly frames: Frame[] = [];
     readonly instructions: IRNode[] = [];
 
     branch(): ContextMut {
@@ -33,16 +33,30 @@ export class Context {
         newCtx.instructions.push(...this.instructions);
         return newCtx;
     }
+
+    static new() {
+        const ctx = {
+            frames: [emptyFrame()],
+            instructions: [] as IRNode[],
+            branch: function() {
+                const newCtx = new ContextMut();
+                newCtx.frames.push(...this.frames);
+                newCtx.instructions.push(...this.instructions);
+                return newCtx;
+            }
+        } as Context;
+        return ctx;
+    }
 }
 
-export class ContextMut extends Context {
-    readonly frames: Frame[] = [ emptyFrame() ];
+export class ContextMut {
+    readonly frames: Frame[] = [];
     readonly instructions: IRNode[] = [];
-    
+
     private makeOK(value?: OphoelValue): InterpretReturn {
         return {
             ok: true,
-            ctx: this,
+            ctx: this.wrap(),
             value: value ?? { type: "void", value: null }
         };
     }
@@ -60,7 +74,7 @@ export class ContextMut extends Context {
         return frame;
     }
 
-    pushFrame(frame: Frame = { variables: [], mcPrefix: undefined }) {
+    pushFrame(frame: Frame = emptyFrame()) {
         if (this.peek().queuedPrefix != null) {
             frame.mcPrefix = this.peek().queuedPrefix;
         }

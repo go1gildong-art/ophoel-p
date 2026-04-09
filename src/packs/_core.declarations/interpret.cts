@@ -4,14 +4,14 @@ import { ASTTypes } from "../../pack-combinator.cjs";
 export function ConstDecl(ast: ASTTypes["ConstDecl"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
     
-    const initValue = ast.initValue.evaluate(ctx);
+    const initValue = ast.initValue.evaluate(ctx.wrap());
     if (!initValue.ok) return initValue;
 
     ctx.addVariable(ast.name, initValue.value, false);
 
     return {
         ok: true,
-        ctx,
+        ctx: ctx.wrap(),
         value: initValue.value
     };
 }
@@ -27,14 +27,14 @@ export function MacroDecl(ast: ASTTypes["MacroDecl"], _ctx: Context): InterpretR
 export function VariableDecl(ast: ASTTypes["VariableDecl"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
     
-    const initValue = ast.initValue.evaluate(ctx);
+    const initValue = ast.initValue.evaluate(ctx.wrap());
     if (!initValue.ok) return initValue;
 
     ctx.addVariable(ast.name, initValue.value, true);
 
     return {
         ok: true,
-        ctx,
+        ctx: ctx.wrap(),
         value: initValue.value
     };
 }

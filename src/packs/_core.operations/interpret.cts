@@ -7,10 +7,10 @@ import * as res from "../../utils/result.cjs";
 export function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
 
-    const left = ast.left.evaluate(ctx.branch());
+    const left = ast.left.evaluate(ctx.wrap());
     if (!left.ok) return left;
 
-    const right = ast.right.evaluate(ctx.branch());
+    const right = ast.right.evaluate(ctx.wrap());
     if (!right.ok) return right;
 
     switch (ast.operator) {
@@ -73,7 +73,7 @@ export function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Context)
 export function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
 
-    const operand = ast.right.evaluate(ctx.branch());
+    const operand = ast.right.evaluate(ctx.wrap());
     if (!operand.ok) return operand;
 
     new BinOperationNode(
@@ -127,7 +127,7 @@ export function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): InterpretRet
 export function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
 
-    const operand = ast.left.evaluate(ctx.branch());
+    const operand = ast.left.evaluate(ctx.wrap());
     if (!operand.ok) return operand;
 
     new BinOperationNode(

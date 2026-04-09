@@ -7,7 +7,7 @@ export function Block(ast: ASTTypes["Block"], _ctx: Context): InterpretReturn {
     ctx.pushFrame();
 
     for (const stmt of ast.statements) {
-        const res = stmt.evaluate(ctx);
+        const res = stmt.evaluate(ctx.wrap());
         if (!res.ok) throw res.err;
 
         ctx = res.ctx.branch();
@@ -24,7 +24,7 @@ export function Block(ast: ASTTypes["Block"], _ctx: Context): InterpretReturn {
 export function ExecExpr(ast: ASTTypes["ExecExpr"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
 
-    const result = ast.expression.evaluate(ctx);
+    const result = ast.expression.evaluate(ctx.wrap());
     if (!result.ok) throw result.err;
 
     return {
@@ -38,7 +38,7 @@ export function Program(ast: ASTTypes["Program"], _ctx: Context): InterpretRetur
     let ctx = _ctx.branch();
 
     for (const stmt of ast.body) {
-        const res = stmt.evaluate(ctx);
+        const res = stmt.evaluate(ctx.wrap());
         if (!res.ok) throw res.err;
         ctx = res.ctx.branch();
     }

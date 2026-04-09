@@ -4,6 +4,7 @@ import { ASTTypes } from "../../pack-combinator.cjs";
 export function Identifier(ast: ASTTypes["Identifier"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
     const $address = ctx.peek().variables.find(v => v.field === ast.name)?.value;
+    console.log(ctx);
 
     if (!$address) {
         return { ok: false, err: new Error(`Identifier '${ast.name}' not found`) };
@@ -14,7 +15,7 @@ export function Identifier(ast: ASTTypes["Identifier"], _ctx: Context): Interpre
 
 export function ParenExpression(ast: ASTTypes["ParenExpression"], _ctx: Context): InterpretReturn {
     let ctx = _ctx.branch();
-    const value = ast.expression.evaluate(ctx.branch());
+    const value = ast.expression.evaluate(ctx.wrap());
     if (!value.ok) return value;
 
     return { ok: true, ctx: ctx.wrap(), value: value.value };

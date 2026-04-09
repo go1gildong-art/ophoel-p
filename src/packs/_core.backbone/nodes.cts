@@ -29,6 +29,6 @@ export class Program implements Statement, StandardNode {
 
     constructor(public body: Statement[], public location: Location) { }
 
-    evaluate(ctx: Context = new Context()): InterpretReturn { return interpret.Program(this, ctx); }
+    evaluate(ctx: Context = Context.new()): InterpretReturn { return interpret.Program(this, ctx); }
     lispify(): string { return lispify.Program(this); }
 }

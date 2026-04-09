@@ -9,8 +9,12 @@ export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretR
     if (!argResult.ok) throw argResult.err;
 
     const arg = argResult.value;
-    if (arg.type !== "string") {
-        const msg = `command argument must be a string, but got ${arg.value ?? arg} (${arg.type})`;
+    
+    if (arg.type !== "string"
+        && arg.type !== "num"
+        && arg.type !== "bool"
+    ) {
+        const msg = `command argument must be a string-coercible type, but got ${arg.value ?? arg} (${arg.type})`;
         return { ok: false, err: new Error(msg) }
     }
 

@@ -22,6 +22,11 @@ export type OphoelValue =
     | { type: "void"; value: null };
 export type KVPair = { field: string, value: OphoelValue };
 
+export function moveValue(address: OphoelValue, value: OphoelValue): void {
+    address.type = value.type;
+    address.value = value.value;
+}
+
 
 export class Context {
     readonly frames: Frame[] = [];

@@ -1,4 +1,4 @@
-import { Context, InterpretReturn, OphoelValue } from "../../compiler/interpreter/utilities.cjs";
+import { Context, InterpretReturn, OphoelValue, moveValue } from "../../compiler/interpreter/utilities.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { BinaryOperation as BinOperationNode, BinaryOperator, UnaryOperator } from "./nodes.cjs";
 import { IntLiteral } from "../_core.literals/nodes.cjs";
@@ -96,7 +96,7 @@ export function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): InterpretRet
             ).evaluate(ctx.wrap());
             if (!value.ok) return value;
 
-            operand.value = value.value;
+            moveValue(operand.value, value.value);
             return res.makeOK({ type: "num", value: operand.value.value }, ctx.wrap());
         }
 
@@ -109,7 +109,7 @@ export function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): InterpretRet
             ).evaluate(ctx.wrap());
             if (!value.ok) return value;
 
-            operand.value = value.value;
+            moveValue(operand.value, value.value);
             return res.makeOK({ type: "num", value: operand.value.value }, ctx.wrap());
         }
 
@@ -152,7 +152,7 @@ export function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): InterpretR
             if (!value.ok) return value;
 
             const oldValue = { ...operand.value };
-            operand.value = value.value;
+            moveValue(operand.value, value.value);
             return res.makeOK({ type: "num", value: oldValue.value }, ctx.wrap());
         }
 
@@ -166,7 +166,7 @@ export function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): InterpretR
             if (!value.ok) return value;
 
             const oldValue = { ...operand.value };
-            operand.value = value.value;
+            moveValue(operand.value, value.value);
             return res.makeOK({ type: "num", value: oldValue.value }, ctx.wrap());
         }
 
@@ -279,7 +279,7 @@ export function VariableAssign(ast: ASTTypes["VariableAssign"], _ctx: Context): 
     if (!setValue.ok) return setValue;
     ctx = setValue.ctx.branch();
     
-    address.value = setValue.value;
+    moveValue(address.value, setValue.value);
 
     return res.makeOK(setValue.value, ctx.wrap());
 }
@@ -300,7 +300,7 @@ export function CompoundAssign(ast: ASTTypes["CompoundAssign"], _ctx: Context): 
     if (!result.ok) return result;
     ctx = result.ctx.branch();
     
-    address.value = result.value;
+    moveValue(address.value, result.value);
 
     return res.makeOK(result.value, ctx.wrap());
 }

@@ -1,4 +1,4 @@
-import { Context, OphoelValue } from "./utilities.cjs";
+import { Context, InterpretReturn, OphoelValue } from "./utilities.cjs";
 import * as res from "../../utils/result.cjs";
 
 
@@ -16,7 +16,7 @@ const coerceMaps: Record<
 }
 
 
-export function coerce(from: OphoelValue, toType: OphoelValue["type"], ctx: Context) {
+export function coerce(from: OphoelValue, toType: OphoelValue["type"], ctx: Context): InterpretReturn {
     if (from.type === toType) return res.makeOK(from, ctx);
     const transform = coerceMaps[from.type]?.[toType];
 

@@ -1,4 +1,5 @@
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
+import { coerce } from "../../compiler/interpreter/coercions.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 
 
@@ -9,18 +10,11 @@ export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretR
     if (!argResult.ok) throw argResult.err;
     ctx = argResult.ctx.branch();
 
-    const arg = argResult.value;
+    const coerced = coerce(argResult.value, "string", ctx.wrap());
+    if (!coerced.ok) return coerced;
+    ctx = coerced.ctx.branch();
     
-    if (arg.type !== "string"
-        && arg.type !== "num"
-        && arg.type !== "bool"
-    ) {
-        const msg = `command argument must be a string-coercible type, but got ${arg.value ?? arg} (${arg.type})`;
-        console.log(arg);
-        return { ok: false, err: new Error(msg) }
-    }
-
-    ctx.emitCmd(`${ast.command} ${arg.value}`, ast.location);
+    ctx.emitCmd(`${ast.command} ${coerced.value}`, ast.location);
 
     return { ok: true, 
         ctx: ctx.wrap(),

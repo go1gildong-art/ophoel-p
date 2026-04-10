@@ -1,18 +1,29 @@
 import { InterpretUnit } from "../unit.cjs";
 
 export const unit = new InterpretUnit({
-    title: "String Interpolation",
-    description: "template string interpolation handling",
-    fileName: "test_string-interpolation.oph",
+    title: "Repeat",
+    description: "repeat statement test with nested repeat",
+    fileName: "test_repeat.oph",
     link: __dirname,
 
     source: [
-        `const mob = "minecraft:zombie";`,
-        `const coords = "~ ~ ~";`,
-        `summon!! \`\${mob} \${coords}\`;`
+        `const x = 1;`,
+        `repeat(3) {`,
+        `  say!! x;`,
+        `  x++;`,
+        `  repeat(2) say!! "nested!";`,
+        `}`
     ].join("\n"),
 
     expectation: [
-        `/summon minecraft:zombie ~ ~ ~`
+        `/say 1;`,
+        `/say nested!`,
+        `/say nested!`,
+        `/say 2;`,
+        `/say nested!`,
+        `/say nested!`,
+        `/say 3;`,
+        `/say nested!`,
+        `/say nested!`,
     ].join("\n")
 });

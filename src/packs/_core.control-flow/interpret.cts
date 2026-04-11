@@ -1,5 +1,6 @@
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
+import * as res from "../../utils/result.cjs"
 
 export function IfStatement(ast: ASTTypes["IfStatement"], _ctx: Context): InterpretReturn {
     return { ok: false, err: new Error("IfStatement: not implemented yet") };
@@ -18,7 +19,24 @@ export function ForOfStatement(ast: ASTTypes["ForOfStatement"], _ctx: Context): 
 }
 
 export function RepeatStatement(ast: ASTTypes["RepeatStatement"], _ctx: Context): InterpretReturn {
-    return { ok: false, err: new Error("RepeatStatement: not implemented yet") };
+    let ctx = _ctx.branch();
+
+    const times = ast.count.evaluate(ctx.wrap());
+    if (!times.ok) return times;
+    ctx = times.ctx.branch();
+
+    if (times.value.type !== "num") {
+        const msg = `RepeatStatement: expected a number for repeat count, but got ${times.value.value} (${times.value.type})`;
+        return res.makeErr(new Error(msg));
+    }
+
+    for (let i = 0; i < times.value.value; i++) {
+        const body = ast.body.evaluate(ctx.wrap());
+        if (!body.ok) return body;
+        ctx = body.ctx.branch();
+    }
+
+    return res.makeOK({ type: "void", value: null }, ctx.wrap());
 }
 
 export function ChooseStatement(ast: ASTTypes["ChooseStatement"], _ctx: Context): InterpretReturn {

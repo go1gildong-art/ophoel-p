@@ -7,22 +7,22 @@ export const unit = new InterpretUnit({
     link: __dirname,
 
     source: [
-        `const x = 1;`,
+        `const repeat_check = 1;`,
         `repeat(3) {`,
-        `  say!! x;`,
-        `  x++;`,
+        `  say!! repeat_check;`,
+        `  repeat_check++;`,
         `  repeat(2) say!! "nested!";`,
         `}`
     ].join("\n"),
 
     expectation: [
-        `/say 1;`,
+        `/say 1`,
         `/say nested!`,
         `/say nested!`,
-        `/say 2;`,
+        `/say 2`,
         `/say nested!`,
         `/say nested!`,
-        `/say 3;`,
+        `/say 3`,
         `/say nested!`,
         `/say nested!`,
     ].join("\n")

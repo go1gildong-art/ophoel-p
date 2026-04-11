@@ -10,8 +10,8 @@ export const unit = new ParserUnit({
         `const a = \`hello world\`;`,
         `const b = \`multiline`,
         `template\`;`,
-        `const c = \`John has \${1 + 2} apples\`;`
+        `const c = \`John has {1 + 2} apples\`;`
     ].join("\n"),
 
-    expectation: `(program (const a \`hello world\`) (const b \`multiline\ntemplate\`) (const c \`John has \${1 + 2} apples\`))`
+    expectation: `(program (const a \`hello world\`) (const b \`multiline\ntemplate\`) (const c \`John has {1 + 2} apples\`))`
 });

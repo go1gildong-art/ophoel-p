@@ -2,9 +2,13 @@ export const grammar = `
 string = ("\\"" (~"\\"" any)* "\\"")
        | ("'" (~"'" any)* "'")
 
-TemplateString = "\`" (TemplatePart)* "\`"
-TemplatePart = "\${" Expr "}" -- exprPart
-             | (~("\`" | "\${") any)+ -- stringPart
+TemplateString = "\`" quasi InterQuasi* "\`"
+
+InterQuasi = Interpol quasi
+Interpol = "{" Expr "}"
+quasi = (~("\`" | "{") any)*
+
+
 
 number = digit+
 bool = "true" | "false"

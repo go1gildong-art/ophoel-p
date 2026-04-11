@@ -9,7 +9,7 @@ export const unit = new InterpretUnit({
     source: [
         `const mob = "minecraft:zombie";`,
         `const coords = "~ ~ ~";`,
-        `summon!! \`\${mob} \${coords}\`;`
+        `summon!! \`{mob} {coords}\`;`
     ].join("\n"),
 
     expectation: [

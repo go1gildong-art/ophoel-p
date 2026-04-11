@@ -2,8 +2,9 @@ import { ASTs } from "../../../pack-combinator.cjs";
 import { Expression } from "../../../ast.cjs";
 import { getLoc, ActionMap } from "../../../compiler/parser.cjs";
 import * as ohm from 'ohm-js';
+import * as fp from '../../../utils/functional.cjs'
 
-type literalActionTypes = Expression | string | { key: string; value: any; };
+type literalActionTypes = Expression | string | { key: string; value: any; } | { inter: any, qua: string };
 export const actionMap: ActionMap<literalActionTypes> = {
     string(_openQuote, chars, _closeQuote) {
         return new ASTs.StringLiteral(
@@ -12,21 +13,33 @@ export const actionMap: ActionMap<literalActionTypes> = {
         );
     },
 
-    TemplateString(_open, parts, _close) {
-        const contents = parts.toAST(__filename);
+    TemplateString(_open, openQuasi, interQuasis, _close) {
+        const contents = interQuasis.toAST(__filename);
+
+        const inters = contents.map((c: any) => c.inter);
+        const quasis = [ openQuasi.toAST(__filename), ...contents.map((c: any) => c.qua) ];
+
         return new ASTs.TemplateStringLiteral(
-            contents.filter((_: any, i: number) => i % 2 === 0),
-            contents.filter((_: any, i: number) => i % 2 !== 0),
-            parts.sourceString,
+            quasis,
+            inters,
+            [openQuasi, interQuasis].map(n => n.sourceString).join(""),
             getLoc(_open, __filename)
         );
     },
 
-    TemplatePart_exprPart(_open, expr, _close) {
+    InterQuasi(interpol, quasi) {
+        return {
+            inter: interpol.toAST(__filename),
+            //@ts-ignore
+            qua: this.sourceString.slice(interpol.sourceString.length)
+        }
+    },
+
+    Interpol(_open, expr, _close) {
         return expr.toAST(__filename);
     },
 
-    TemplatePart_stringPart(chars) {
+    quasi(chars) {
         return chars.sourceString;
     },
 

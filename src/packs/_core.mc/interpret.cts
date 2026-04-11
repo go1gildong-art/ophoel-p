@@ -1,6 +1,7 @@
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { coerce } from "../../compiler/interpreter/coercions.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
+import * as res from "../../utils/result.cjs"
 
 
 export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretReturn {
@@ -14,12 +15,9 @@ export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretR
     if (!coerced.ok) return coerced;
     ctx = coerced.ctx.branch();
     
-    ctx.emitCmd(`${ast.command} ${coerced.value}`, ast.location);
+    ctx.emitCmd(`${ast.command} ${coerced.value.value}`, ast.location);
 
-    return { ok: true, 
-        ctx: ctx.wrap(),
-        value: { type: "void", value: null }
-    };
+    return res.makeOK({ type: "void", value: null }, ctx.wrap())
 }
 
 export function McExecStatement(ast: ASTTypes["McExecStatement"], _ctx: Context): InterpretReturn {

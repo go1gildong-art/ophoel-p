@@ -94,6 +94,7 @@ export class ContextMut {
     }
 
     getVariable(ident: string): InterpretReturn {
+        if (ident === "repeat_check") console.log(this.frames.map(f => f.variables));
         for (const frame of [...this.frames].reverse()) {
             for (const variable of frame.variables) {
                 if (variable.field === ident) return this.makeOK(variable.value);
@@ -106,25 +107,13 @@ export class ContextMut {
         };
     }
 
-    getAddressObj(ident: string): KVPair | { ok: false, err: Error } {
-        for (const frame of [...this.frames].reverse()) {
-            for (const variable of frame.variables) {
-                if (variable.field === ident) return variable;
-            }
-        }
-
-        return {
-            ok: false,
-            err: new Error(`Variable not found: ${ident}`)
-        };
-    }
-
+ 
     queuePrefix(prefix: string) {
         this.peek().queuedPrefix = prefix;
     }
 
     emitCmd(cmd: string, location: Location) {
-        const prefix = this.frames
+        const prefix = [...this.frames]
             .reverse()
             .filter(frame => frame.mcPrefix != null)
             .map(frame => frame.mcPrefix!)

@@ -15,6 +15,10 @@ export class Command implements IRNode {
     nonLocString() {
         return `/${this.message}`;
     }
+
+    codeGen() {
+        return `${this.message}`;
+    }
 }
 
 export class Comment implements IRNode {
@@ -30,5 +34,9 @@ export class Comment implements IRNode {
 
     nonLocString() {
         return `/# ( ${this.message} )`;
+    }
+
+    codeGen(): string {
+        return `# ${this.message}`;
     }
 }

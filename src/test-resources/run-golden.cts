@@ -1,6 +1,8 @@
 import { parserGatherer } from "./parser-cases/gatherer.cjs";
 import { interpretGatherer } from "./interpret-cases/gatherer.cjs";
+import { codegenGatherer } from "./codegen-cases/gatherer.cjs";
 import { TestResult } from "./test-result.cjs";
+
 
 import path from "node:path";
 import fs from "node:fs";
@@ -10,7 +12,8 @@ import fs from "node:fs";
 
     const tests = [
         parserGatherer,
-        interpretGatherer
+        interpretGatherer,
+        codegenGatherer
     ];
 
 

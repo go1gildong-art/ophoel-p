@@ -11,6 +11,7 @@ export interface IRNode {
 
     toString(): string;
     nonLocString(): string;
+    codeGen(): string;
 }
 
 export class IRInstructions {
@@ -18,6 +19,6 @@ export class IRInstructions {
         public instructions: IRNode[]) { }
 
     toString() { return this.instructions.map(i => i.toString()).join("\n"); }
-
     nonLocString() { return this.instructions.map(i => i.nonLocString()).join("\n"); }
+    codeGen() { return this.instructions.map(i => i.codeGen()).join("\n"); }
 }

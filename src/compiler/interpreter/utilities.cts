@@ -94,7 +94,6 @@ export class ContextMut {
     }
 
     getVariable(ident: string): InterpretReturn {
-        if (ident === "repeat_check") console.log(this.frames.map(f => f.variables));
         for (const frame of [...this.frames].reverse()) {
             for (const variable of frame.variables) {
                 if (variable.field === ident) return this.makeOK(variable.value);

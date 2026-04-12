@@ -9,9 +9,11 @@ export const unit = new CodegenUnit({
     source: [
         `const items = ["diamond", "emerald", "gold_ingot"];`,
         `const counts = [1, 2, 3];`,
+        `let i = 0;`,
         `repeat(items.length) {`,
         `  const processed_count = 1 + counts[i] * 100;`,
         `  give!! \`@p {items[i]} {processed_count}\`;`,
+        `  i++;`,
         `}`
     ].join("\n"),
 

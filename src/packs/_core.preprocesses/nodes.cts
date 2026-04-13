@@ -9,7 +9,7 @@ export class Include implements Statement {
     kind = ASTKind.Include;
     constructor(public path: string, public location: Location) {}
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.Include(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.Include(this, ctx); }
     lispify(): string { return lispify.Include(this); }
 }
 

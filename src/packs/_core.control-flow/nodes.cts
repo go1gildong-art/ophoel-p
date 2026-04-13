@@ -17,7 +17,7 @@ export class IfStatement implements Statement {
         public elseSignature: CondBodySet | undefined,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.IfStatement(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.IfStatement(this, ctx); }
     lispify(): string { return lispify.IfStatement(this); }
 }
 
@@ -29,7 +29,7 @@ export class WhileStatement implements Statement {
         public body: Statement,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.WhileStatement(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.WhileStatement(this, ctx); }
     lispify(): string { return lispify.WhileStatement(this); }
 }
 
@@ -43,7 +43,7 @@ export class ForStatement implements Statement {
         public body: Statement,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.ForStatement(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ForStatement(this, ctx); }
     lispify(): string { return lispify.ForStatement(this); }
 }
 
@@ -56,7 +56,7 @@ export class ForOfStatement implements Statement {
         public body: Statement,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.ForOfStatement(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ForOfStatement(this, ctx); }
     lispify(): string { return lispify.ForOfStatement(this); }
 }
 
@@ -68,7 +68,7 @@ export class RepeatStatement implements Statement {
         public body: Statement,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.RepeatStatement(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.RepeatStatement(this, ctx); }
     lispify(): string { return lispify.RepeatStatement(this); }
 }
 
@@ -80,7 +80,7 @@ export class ChooseStatement implements Statement {
         public bodies: Statement[],
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.ChooseStatement(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ChooseStatement(this, ctx); }
     lispify(): string { return lispify.ChooseStatement(this); }
 }
 
@@ -91,6 +91,6 @@ export class ReturnStatement implements Statement {
         public value: Expression | undefined,
         public location: Location) { }
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.ReturnStatement(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ReturnStatement(this, ctx); }
     lispify(): string { return lispify.ReturnStatement(this); }
 }

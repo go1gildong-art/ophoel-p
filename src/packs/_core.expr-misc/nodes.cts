@@ -11,7 +11,7 @@ export class Identifier implements Expression {
         public name: string,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.Identifier(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.Identifier(this, ctx); }
     lispify(): string { return lispify.Identifier(this); }
 }
 
@@ -22,7 +22,7 @@ export class ParenExpression implements Expression {
         public expression: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.ParenExpression(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ParenExpression(this, ctx); }
     lispify(): string { return lispify.ParenExpression(this); }
 }
 

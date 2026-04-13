@@ -32,7 +32,7 @@ export class BinaryOperation implements Expression {
         public right: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.BinaryOperation(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.BinaryOperation(this, ctx); }
     lispify(): string { return lispify.BinaryOperation(this); }
 }
 
@@ -50,7 +50,7 @@ export class PreUnary implements Expression {
         public right: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.PreUnary(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.PreUnary(this, ctx); }
     lispify(): string { return lispify.PreUnary(this); }
 }
 
@@ -62,7 +62,7 @@ export class PostUnary implements Expression {
         public left: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.PostUnary(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.PostUnary(this, ctx); }
     lispify(): string { return lispify.PostUnary(this); }
 }
 
@@ -74,7 +74,7 @@ export class IndexAccess implements Expression {
         public index: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.IndexAccess(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.IndexAccess(this, ctx); }
     lispify(): string { return lispify.IndexAccess(this); }
 }
 
@@ -86,7 +86,7 @@ export class MemberAccess implements Expression {
         public member: string,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.MemberAccess(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.MemberAccess(this, ctx); }
     lispify(): string { return lispify.MemberAccess(this); }
 }
 
@@ -98,7 +98,7 @@ export class VariableAssign implements Expression {
         public setValue: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.VariableAssign(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.VariableAssign(this, ctx); }
     lispify(): string { return lispify.VariableAssign(this); }
 }
 
@@ -111,7 +111,7 @@ export class CompoundAssign implements Expression {
         public setValue: Expression,
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.CompoundAssign(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.CompoundAssign(this, ctx); }
     lispify(): string { return lispify.CompoundAssign(this); }
 }
 
@@ -123,7 +123,7 @@ export class FunctionCall implements Expression {
         public args: Expression[],
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.FunctionCall(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.FunctionCall(this, ctx); }
     lispify(): string { return lispify.FunctionCall(this); }
 }
 
@@ -135,6 +135,6 @@ export class MacroCall implements Expression {
         public args: Expression[],
         public location: Location) {}
 
-        evaluate(ctx: Context): InterpretReturn { return interpret.MacroCall(this, ctx); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.MacroCall(this, ctx); }
     lispify(): string { return lispify.MacroCall(this); }
 }

@@ -13,7 +13,7 @@ export class BoolLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.BoolLiteral(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.BoolLiteral(this, ctx); }
     lispify(): string { return lispify.BoolLiteral(this); }
 }
 
@@ -25,7 +25,7 @@ export class CompoundLiteral implements Expression {
         public values: Expression[],
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.CompoundLiteral(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.CompoundLiteral(this, ctx); }
     lispify(): string { return lispify.CompoundLiteral(this); }
 }
 
@@ -36,7 +36,7 @@ export class FloatLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.FloatLiteral(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.FloatLiteral(this, ctx); }
     lispify(): string { return lispify.FloatLiteral(this); }
 }
 
@@ -47,7 +47,7 @@ export class IntLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.IntLiteral(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.IntLiteral(this, ctx); }
     lispify(): string { return lispify.IntLiteral(this); }
 }
 
@@ -58,7 +58,7 @@ export class StringLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.StringLiteral(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.StringLiteral(this, ctx); }
     lispify(): string { return lispify.StringLiteral(this); }
 }
 
@@ -71,7 +71,7 @@ export class TemplateStringLiteral implements Expression {
         public raw: string,
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.TemplateStringLiteral(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.TemplateStringLiteral(this, ctx); }
     lispify(): string { return lispify.TemplateStringLiteral(this); }
 }
 
@@ -82,6 +82,6 @@ export class VectorLiteral implements Expression {
         public entries: Expression[],
         public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.VectorLiteral(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.VectorLiteral(this, ctx); }
     lispify(): string { return lispify.VectorLiteral(this); }
 }

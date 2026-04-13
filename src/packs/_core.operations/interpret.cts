@@ -4,14 +4,14 @@ import { BinaryOperation as BinOperationNode, BinaryOperator, UnaryOperator } fr
 import { IntLiteral } from "../_core.literals/nodes.cjs";
 import * as res from "../../utils/result.cjs"
 
-export function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Context): InterpretReturn {
+export async function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
-    const left = ast.left.evaluate(ctx.wrap());
+    const left = await ast.left.evaluate(ctx.wrap());
     if (!left.ok) return left;
     ctx = left.ctx.branch();
 
-    const right = ast.right.evaluate(ctx.wrap());
+    const right = await ast.right.evaluate(ctx.wrap());
     if (!right.ok) return right;
     ctx = left.ctx.branch();
 
@@ -72,23 +72,15 @@ export function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Context)
     })
 }
 
-export function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): InterpretReturn {
+export async function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
-    const operand = ast.right.evaluate(ctx.wrap());
+    const operand = await ast.right.evaluate(ctx.wrap());
     if (!operand.ok) return operand;
-
-    new BinOperationNode(
-        ast.right,
-        BinaryOperator.ADD,
-        new IntLiteral("1", ast.location),
-        ast.location
-    ).evaluate(ctx.wrap());
-
 
     switch (ast.operator) {
         case UnaryOperator.INCREMENT: {
-            const value = new BinOperationNode(
+            const value = await new BinOperationNode(
                 ast.right,
                 BinaryOperator.ADD,
                 new IntLiteral("1", ast.location),
@@ -101,7 +93,7 @@ export function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): InterpretRet
         }
 
         case UnaryOperator.DECREMENT: {
-            const value = new BinOperationNode(
+            const value = await new BinOperationNode(
                 ast.right,
                 BinaryOperator.SUBTRACT,
                 new IntLiteral("1", ast.location),
@@ -126,24 +118,16 @@ export function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): InterpretRet
     }
 }
 
-export function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): InterpretReturn {
+export async function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
-    const operand = ast.left.evaluate(ctx.wrap());
+    const operand = await ast.left.evaluate(ctx.wrap());
     if (!operand.ok) return operand;
     ctx = operand.ctx.branch();
 
-    new BinOperationNode(
-        ast.left,
-        BinaryOperator.ADD,
-        new IntLiteral("1", ast.location),
-        ast.location
-    ).evaluate(ctx.wrap());
-
-
     switch (ast.operator) {
         case UnaryOperator.INCREMENT: {
-            const value = new BinOperationNode(
+            const value = await new BinOperationNode(
                 ast.left,
                 BinaryOperator.ADD,
                 new IntLiteral("1", ast.location),
@@ -157,7 +141,7 @@ export function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): InterpretR
         }
 
         case UnaryOperator.DECREMENT: {
-            const value = new BinOperationNode(
+            const value = await new BinOperationNode(
                 ast.left,
                 BinaryOperator.SUBTRACT,
                 new IntLiteral("1", ast.location),
@@ -176,14 +160,14 @@ export function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): InterpretR
     }
 }
 
-export function IndexAccess(ast: ASTTypes["IndexAccess"], _ctx: Context): InterpretReturn {
+export async function IndexAccess(ast: ASTTypes["IndexAccess"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
-    const left = ast.left.evaluate(ctx.wrap());
+    const left = await ast.left.evaluate(ctx.wrap());
     if (!left.ok) return left;
     ctx = left.ctx.branch();
 
-    const index = ast.index.evaluate(ctx.wrap());
+    const index = await ast.index.evaluate(ctx.wrap());
     if (!index.ok) return index;
     ctx = index.ctx.branch();
 
@@ -229,10 +213,10 @@ export function IndexAccess(ast: ASTTypes["IndexAccess"], _ctx: Context): Interp
     }
 }
 
-export function MemberAccess(ast: ASTTypes["MemberAccess"], _ctx: Context): InterpretReturn {
+export async function MemberAccess(ast: ASTTypes["MemberAccess"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
-    const left = ast.left.evaluate(ctx.wrap());
+    const left = await ast.left.evaluate(ctx.wrap());
     if (!left.ok) return left;
     ctx = left.ctx.branch();
 
@@ -264,18 +248,18 @@ export function MemberAccess(ast: ASTTypes["MemberAccess"], _ctx: Context): Inte
     }
 }
 
-export function FunctionCall(ast: ASTTypes["FunctionCall"], _ctx: Context): InterpretReturn {
+export async function FunctionCall(ast: ASTTypes["FunctionCall"], _ctx: Context): Promise<InterpretReturn> {
     return { ok: false, err: new Error("FunctionCall: not implemented yet") };
 }
 
-export function VariableAssign(ast: ASTTypes["VariableAssign"], _ctx: Context): InterpretReturn {
+export async function VariableAssign(ast: ASTTypes["VariableAssign"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
-    const address = ast.address.evaluate(ctx.wrap());
+    const address = await ast.address.evaluate(ctx.wrap());
     if (!address.ok) return address;
     ctx = address.ctx.branch();
 
-    const setValue = ast.setValue.evaluate(ctx.wrap());
+    const setValue = await ast.setValue.evaluate(ctx.wrap());
     if (!setValue.ok) return setValue;
     ctx = setValue.ctx.branch();
     
@@ -284,14 +268,14 @@ export function VariableAssign(ast: ASTTypes["VariableAssign"], _ctx: Context): 
     return res.makeOK(setValue.value, ctx.wrap());
 }
 
-export function CompoundAssign(ast: ASTTypes["CompoundAssign"], _ctx: Context): InterpretReturn {
+export async function CompoundAssign(ast: ASTTypes["CompoundAssign"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
-    const address = ast.address.evaluate(ctx.wrap());
+    const address = await ast.address.evaluate(ctx.wrap());
     if (!address.ok) return address;
     ctx = address.ctx.branch();
 
-    const result = new BinOperationNode(
+    const result = await new BinOperationNode(
         ast.address, 
         ast.operation, 
         ast.setValue, 
@@ -305,6 +289,6 @@ export function CompoundAssign(ast: ASTTypes["CompoundAssign"], _ctx: Context): 
     return res.makeOK(result.value, ctx.wrap());
 }
 
-export function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): InterpretReturn {
+export async function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): Promise<InterpretReturn> {
     return { ok: false, err: new Error("MacroCall: not implemented yet") };
 }

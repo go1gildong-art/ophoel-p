@@ -2,12 +2,12 @@ import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.c
 import { ASTTypes } from "../../pack-combinator.cjs";
 
 
-export function Block(ast: ASTTypes["Block"], _ctx: Context): InterpretReturn {
+export async function Block(ast: ASTTypes["Block"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
     ctx.pushFrame();
 
     for (const stmt of ast.statements) {
-        const res = stmt.evaluate(ctx.wrap());
+        const res = await stmt.evaluate(ctx.wrap());
         if (!res.ok) throw res.err;
 
         ctx = res.ctx.branch();
@@ -21,10 +21,10 @@ export function Block(ast: ASTTypes["Block"], _ctx: Context): InterpretReturn {
     }
 }
 
-export function ExecExpr(ast: ASTTypes["ExecExpr"], _ctx: Context): InterpretReturn {
+export async function ExecExpr(ast: ASTTypes["ExecExpr"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
-    const result = ast.expression.evaluate(ctx.wrap());
+    const result = await ast.expression.evaluate(ctx.wrap());
     if (!result.ok) throw result.err;
     ctx = result.ctx.branch();
 
@@ -35,11 +35,11 @@ export function ExecExpr(ast: ASTTypes["ExecExpr"], _ctx: Context): InterpretRet
     }
 }
 
-export function Program(ast: ASTTypes["Program"], _ctx: Context): InterpretReturn {
+export async function Program(ast: ASTTypes["Program"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
     for (const stmt of ast.body) {
-        const res = stmt.evaluate(ctx.wrap());
+        const res = await stmt.evaluate(ctx.wrap());
         if (!res.ok) throw res.err;
         ctx = res.ctx.branch();
     }

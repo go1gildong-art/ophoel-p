@@ -1,10 +1,10 @@
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 
-export function ConstDecl(ast: ASTTypes["ConstDecl"], _ctx: Context): InterpretReturn {
+export async function ConstDecl(ast: ASTTypes["ConstDecl"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
     
-    const initValue = ast.initValue.evaluate(ctx.wrap());
+    const initValue = await ast.initValue.evaluate(ctx.wrap());
     if (!initValue.ok) return initValue;
     ctx = initValue.ctx.branch();
 
@@ -17,18 +17,18 @@ export function ConstDecl(ast: ASTTypes["ConstDecl"], _ctx: Context): InterpretR
     };
 }
 
-export function FunctionDecl(ast: ASTTypes["FunctionDecl"], _ctx: Context): InterpretReturn {
+export async function FunctionDecl(ast: ASTTypes["FunctionDecl"], _ctx: Context): Promise<InterpretReturn> {
     return { ok: false, err: new Error("FunctionDecl: not implemented yet") };
 }
 
-export function MacroDecl(ast: ASTTypes["MacroDecl"], _ctx: Context): InterpretReturn {
+export async function MacroDecl(ast: ASTTypes["MacroDecl"], _ctx: Context): Promise<InterpretReturn> {
     return { ok: false, err: new Error("MacroDecl: not implemented yet") };
 }
 
-export function VariableDecl(ast: ASTTypes["VariableDecl"], _ctx: Context): InterpretReturn {
+export async function VariableDecl(ast: ASTTypes["VariableDecl"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
     
-    const initValue = ast.initValue.evaluate(ctx.wrap());
+    const initValue = await ast.initValue.evaluate(ctx.wrap());
     if (!initValue.ok) return initValue;
     ctx = initValue.ctx.branch();
 

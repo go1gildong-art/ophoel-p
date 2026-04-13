@@ -4,11 +4,11 @@ import { ASTTypes } from "../../pack-combinator.cjs";
 import { KVPair } from "../../compiler/interpreter/utilities.cjs";
 import { coerce } from "../../compiler/interpreter/coercions.cjs";
 
-export function BoolLiteral(ast: ASTTypes["BoolLiteral"], _ctx: Context): InterpretReturn {
+export async function BoolLiteral(ast: ASTTypes["BoolLiteral"], _ctx: Context): Promise<InterpretReturn> {
     return { ok: false, err: new Error("BoolLiteral: not implemented yet") };
 }
 
-export function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Context): InterpretReturn {
+export async function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
     let acc = [] as KVPair[];
 
@@ -18,7 +18,7 @@ export function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Context)
         if (!key) return res.makeErr(new Error(`CompoundLiteral: missing key for index '${i}'`));
         if (!value) return res.makeErr(new Error(`CompoundLiteral: missing value for key '${key}'`));
 
-        const result = value.evaluate(ctx.wrap());
+        const result = await value.evaluate(ctx.wrap());
         if (!result.ok) return result;
 
         ctx = result.ctx.branch();
@@ -31,11 +31,11 @@ export function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Context)
     return res.makeOK({ type: "compound", value: acc }, ctx.wrap());
 }
 
-export function FloatLiteral(ast: ASTTypes["FloatLiteral"], _ctx: Context): InterpretReturn {
+export async function FloatLiteral(ast: ASTTypes["FloatLiteral"], _ctx: Context): Promise<InterpretReturn> {
     return { ok: false, err: new Error("FloatLiteral: not implemented yet") };
 }
 
-export function IntLiteral(ast: ASTTypes["IntLiteral"], _ctx: Context): InterpretReturn {
+export async function IntLiteral(ast: ASTTypes["IntLiteral"], _ctx: Context): Promise<InterpretReturn> {
     const numValue = parseInt(ast.raw);
 
     if (isNaN(numValue)) {
@@ -49,7 +49,7 @@ export function IntLiteral(ast: ASTTypes["IntLiteral"], _ctx: Context): Interpre
     };
 }
 
-export function StringLiteral(ast: ASTTypes["StringLiteral"], _ctx: Context): InterpretReturn {
+export async function StringLiteral(ast: ASTTypes["StringLiteral"], _ctx: Context): Promise<InterpretReturn> {
     return {
         ok: true,
         ctx: _ctx,
@@ -57,13 +57,13 @@ export function StringLiteral(ast: ASTTypes["StringLiteral"], _ctx: Context): In
     };
 }
 
-export function TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"], _ctx: Context): InterpretReturn {
+export async function TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
     const exprBuffer = [] as OphoelValue["value"][];
 
     for (const expr of ast.expressions) {
-        const res = expr.evaluate(ctx.wrap());
+        const res = await expr.evaluate(ctx.wrap());
         if (!res.ok) return res;
         ctx = res.ctx.branch();
 
@@ -85,12 +85,12 @@ export function TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"], _c
     }, ctx.wrap());
 }
 
-export function VectorLiteral(ast: ASTTypes["VectorLiteral"], _ctx: Context): InterpretReturn {
+export async function VectorLiteral(ast: ASTTypes["VectorLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
     let acc = [] as OphoelValue[];
 
     for (const expr of ast.entries) {
-        const res = expr.evaluate(ctx.wrap());
+        const res = await expr.evaluate(ctx.wrap());
         if (!res.ok) return res;
 
         ctx = res.ctx.branch();

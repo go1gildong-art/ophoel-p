@@ -10,7 +10,7 @@ export class McCommand implements Statement {
 
     constructor(public command: string, public argument: Expression, public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.McCommand(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.McCommand(this, ctx); }
     lispify(): string { return lispify.McCommand(this); }
 }
 
@@ -19,6 +19,6 @@ export class McExecStatement implements Statement {
 
     constructor(public prefix: Expression, public body: Statement, public location: Location) { }
 
-    evaluate(ctx: Context): InterpretReturn { return interpret.McExecStatement(this, ctx); }
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.McExecStatement(this, ctx); }
     lispify(): string { return lispify.McExecStatement(this); }
 }

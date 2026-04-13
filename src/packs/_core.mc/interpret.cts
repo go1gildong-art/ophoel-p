@@ -4,10 +4,10 @@ import { ASTTypes } from "../../pack-combinator.cjs";
 import * as res from "../../utils/result.cjs"
 
 
-export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretReturn {
+export async function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 
-    const argResult = ast.argument.evaluate(_ctx);
+    const argResult = await ast.argument.evaluate(_ctx);
     if (!argResult.ok) throw argResult.err;
     ctx = argResult.ctx.branch();
 
@@ -20,6 +20,6 @@ export function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): InterpretR
     return res.makeOK({ type: "void", value: null }, ctx.wrap())
 }
 
-export function McExecStatement(ast: ASTTypes["McExecStatement"], _ctx: Context): InterpretReturn {
+export async function McExecStatement(ast: ASTTypes["McExecStatement"], _ctx: Context): Promise<InterpretReturn> {
     return { ok: false, err: new Error("McExecStatement: not implemented yet") };
 }

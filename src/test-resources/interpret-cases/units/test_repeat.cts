@@ -3,7 +3,7 @@ import { InterpretUnit } from "../unit.cjs";
 export const unit = new InterpretUnit({
     title: "Repeat",
     description: "repeat statement test with nested repeat",
-    fileName: "test_repeat.oph",
+    ophoelDir: "test_repeat.oph",
     link: __dirname,
 
     source: [

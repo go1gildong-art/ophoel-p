@@ -3,7 +3,7 @@ import { CodegenUnit } from "../unit.cjs";
 export const unit = new CodegenUnit({
     title: "Fundamentals",
     description: "data structures, repeat, arithmetics, and string interpolation",
-    fileName: "test_fundamentals.oph",
+    ophoelDir: "test_fundamentals.oph",
     link: __dirname,
 
     source: [

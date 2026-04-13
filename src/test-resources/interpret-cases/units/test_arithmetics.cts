@@ -3,7 +3,7 @@ import { InterpretUnit } from "../unit.cjs";
 export const unit = new InterpretUnit({
     title: "Arithmetics",
     description: "simple arithmetics test, with parenthesis and operator precedence",
-    fileName: "test-arithmetics.oph",
+    ophoelDir: "test-arithmetics.oph",
     link: __dirname,
 
     source: [

@@ -3,7 +3,7 @@ import { ParserUnit } from "../unit.cjs";
 export const unit = new ParserUnit({
     title: "Template Strings",
     description: "Template string literals with backticks should parse correctly.",
-    fileName: "test_template_string.cts",
+    ophoelDir: "test_template_string.cts",
     link: __dirname,
 
     source: [

@@ -3,7 +3,7 @@ import { ParserUnit } from "../unit.cjs";
 export const unit = new ParserUnit({
     title: "McExec Statement",
     description: "mc_exec statement having prefix and block.",
-    fileName: "test_mc-exec.cts",
+    ophoelDir: "test_mc-exec.cts",
     link: __dirname,
 
     source: [

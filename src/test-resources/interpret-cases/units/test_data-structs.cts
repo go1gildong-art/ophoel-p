@@ -3,7 +3,7 @@ import { InterpretUnit } from "../unit.cjs";
 export const unit = new InterpretUnit({
     title: "Data structures",
     description: "vectors and compounds",
-    fileName: "test_data-structs.oph",
+    ophoelDir: "test_data-structs.oph",
     link: __dirname,
 
     source: [

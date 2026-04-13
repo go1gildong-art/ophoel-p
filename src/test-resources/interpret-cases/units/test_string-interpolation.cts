@@ -3,7 +3,7 @@ import { InterpretUnit } from "../unit.cjs";
 export const unit = new InterpretUnit({
     title: "String Interpolation",
     description: "template string interpolation handling",
-    fileName: "test_string-interpolation.oph",
+    ophoelDir: "test_string-interpolation.oph",
     link: __dirname,
 
     source: [

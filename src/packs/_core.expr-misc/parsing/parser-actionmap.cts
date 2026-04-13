@@ -1,18 +1,18 @@
 import { ASTs } from "../../../pack-combinator.cjs";
 import { Expression } from "../../../ast.cjs";
-import { getLoc, ActionMap } from "../../../compiler/parser.cjs";
+import { getLoc, ActionMap, ActionMapThis } from "../../../compiler/parser.cjs";
 
-const toAST = (node: any) => typeof node?.toAST === 'function' ? node.toAST(__filename) : node;
+
 
 export const actionMap: ActionMap<Expression> = {
-    ident(_first, _rest) {
+    ident(this: ActionMapThis, _first, _rest) {
         return new ASTs.Identifier(
             _first.sourceString + _rest.sourceString,
-            getLoc(_first, __filename)
+            getLoc(_first, this.args.ophoelDir)
         );
     },
 
-    ParenExpr_paren(_open, expr, _close) {
-        return new ASTs.ParenExpression(toAST(expr), getLoc(_open, __filename));
+    ParenExpr_paren(this: ActionMapThis, _open, expr, _close) {
+        return new ASTs.ParenExpression(expr.toAST(this.args.ophoelDir), getLoc(_open, this.args.ophoelDir));
     },
 };

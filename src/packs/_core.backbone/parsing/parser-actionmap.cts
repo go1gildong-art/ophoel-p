@@ -1,38 +1,39 @@
 import { Node } from "ohm-js";
 import { ASTs } from "../../../pack-combinator.cjs";
 import { Statement } from "../../../ast.cjs";
-import { getLoc, ActionMap } from "../../../compiler/parser.cjs";
+import { getLoc, ActionMap, ActionMapThis } from "../../../compiler/parser.cjs";
 import * as ohm from 'ohm-js';
 
 
 
 
 export const actionMap: ActionMap<Statement | any[]> = {
-    Program(statements, _end) {
-        const statementList = statements.toAST(__filename);
-        return new ASTs.Program(statementList, getLoc(statements, __filename));
+    Program(this: ActionMapThis, statements, _end) {
+        const path = this.args.ophoelDir
+        const statementList = statements.toAST(path);
+        return new ASTs.Program(statementList, getLoc(statements, path));
     },
-    Block(_open, statements, _close) {
-        const statementList = statements.toAST(__filename);
-        return new ASTs.Block(statementList, getLoc(_open, __filename));
+    Block(this: ActionMapThis, _open, statements, _close) {
+        const statementList = statements.toAST(this.args.ophoelDir);
+        return new ASTs.Block(statementList, getLoc(_open, this.args.ophoelDir));
     },
-    ExecExpr(expr, _semi) {
-        return new ASTs.ExecExpr(expr.toAST(__filename), getLoc(expr, __filename))
+    ExecExpr(this: ActionMapThis, expr, _semi) {
+        return new ASTs.ExecExpr(expr.toAST(this.args.ophoelDir), getLoc(expr, this.args.ophoelDir))
     },
 
     // Built-in Ohm iteration handler (for the * in Statement*)
-    _iter(...children) {
-        return children.map(c => c.toAST(__filename));
+    _iter(this: ActionMapThis, ...children) {
+        return children.map(c => c.toAST(this.args.ophoelDir));
     },
 
-    ListOf(list) {
-        return list.toAST(__filename);
+    ListOf(this: ActionMapThis, list) {
+        return list.toAST(this.args.ophoelDir);
     },
-    NonemptyListOf(first, _sep, rest) {
+    NonemptyListOf(this: ActionMapThis, first, _sep, rest) {
         // 'first' is one node, 'rest' is an IterationNode of the remaining nodes
-        return [first.toAST(__filename), ...rest.toAST(__filename)];
+        return [first.toAST(this.args.ophoelDir), ...rest.toAST(this.args.ophoelDir)];
     },
-    EmptyListOf() {
+    EmptyListOf(this: ActionMapThis) {
         return [];
     }
 };

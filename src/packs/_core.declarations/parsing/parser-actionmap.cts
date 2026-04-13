@@ -1,41 +1,41 @@
 import { ASTs } from "../../../pack-combinator.cjs";
 import { Statement } from "../../../ast.cjs";
-import { getLoc, ActionMap } from "../../../compiler/parser.cjs";
+import { getLoc, ActionMap, ActionMapThis } from "../../../compiler/parser.cjs";
 import * as ohm from 'ohm-js';
 
 export const actionMap: ActionMap<Statement> = {
             
-    VariableDecl(kw, name, _eq, expr, _semi) {
+    VariableDecl(this: ActionMapThis, kw, name, _eq, expr, _semi) {
         return new ASTs.VariableDecl(
             name.sourceString,
-            expr.toAST(__filename),
-            getLoc(kw, __filename)
+            expr.toAST(this.args.ophoelDir),
+            getLoc(kw, this.args.ophoelDir)
         );
     },
 
-    ConstDecl(kw, name, _eq, expr, _semi) {
+    ConstDecl(this: ActionMapThis, kw, name, _eq, expr, _semi) {
         return new ASTs.ConstDecl(
             name.sourceString,
-            expr.toAST(__filename),
-            getLoc(kw, __filename)
+            expr.toAST(this.args.ophoelDir),
+            getLoc(kw, this.args.ophoelDir)
         );
     },
         
-    FunctionDecl(_fn, name, _open, params, _close, body) {
+    FunctionDecl(this: ActionMapThis, _fn, name, _open, params, _close, body) {
         return new ASTs.FunctionDecl(
             name.sourceString,
             params.sourceString.split(", "),
-            body.toAST(__filename),
-            getLoc(_fn, __filename)
+            body.toAST(this.args.ophoelDir),
+            getLoc(_fn, this.args.ophoelDir)
         );
     },
 
-    MacroDecl(_macro, _bang, name, _open, params, _close, body) {
+    MacroDecl(this: ActionMapThis, _macro, _bang, name, _open, params, _close, body) {
         return new ASTs.MacroDecl(
             name.sourceString,
             params.sourceString.split(", "),
-            body.toAST(__filename),
-            getLoc(_macro, __filename)
+            body.toAST(this.args.ophoelDir),
+            getLoc(_macro, this.args.ophoelDir)
         );
     }
 }

@@ -3,7 +3,7 @@ import { ParserUnit } from "../unit.cjs";
 export const unit = new ParserUnit({
     title: "Multiline",
     description: "Program with multiple statements.",
-    fileName: "test_multiline.oph",
+    ophoelDir: "test_multiline.oph",
     link: __dirname,
 
     source: [

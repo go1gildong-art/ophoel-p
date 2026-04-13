@@ -15,5 +15,3 @@ export async function loadTests<T>(folder: string): Promise<T[]> {
     return module.unit;
   });
 }
-
-/***/

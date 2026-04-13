@@ -29,6 +29,8 @@ export class Program implements Statement, StandardNode {
 
     constructor(public body: Statement[], public location: Location) { }
 
-    async evaluate(ctx: Context = Context.new()): Promise<InterpretReturn> { return await interpret.Program(this, ctx); }
+    async interpret(mcNamespace: string) { return this.evaluate(Context.new(mcNamespace)); }
+    async interpretPlaceheld(src: string) { return this.evaluate(Context.newPlaceheld(src)) };
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.Program(this, ctx); }
     lispify(): string { return lispify.Program(this); }
 }

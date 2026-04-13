@@ -1,3 +1,5 @@
+import { OphoelError } from "../../compiler/interpreter/error.cjs";
+import { FileManager } from "../../compiler/file-manager.cjs";
 import { Context, InterpretReturn, OphoelValue } from "../../compiler/interpreter/utilities.cjs";
 import * as res from "../../utils/result.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
@@ -5,7 +7,7 @@ import { KVPair } from "../../compiler/interpreter/utilities.cjs";
 import { coerce } from "../../compiler/interpreter/coercions.cjs";
 
 export async function BoolLiteral(ast: ASTTypes["BoolLiteral"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: new Error("BoolLiteral: not implemented yet") };
+    return { ok: false, err: await OphoelError.fromNode("BoolLiteral: not implemented yet", ast, _ctx.fm as FileManager) };
 }
 
 export async function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Context): Promise<InterpretReturn> {
@@ -15,8 +17,8 @@ export async function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Co
     for (let i = 0; i < ast.keys.length; i++) {
         const key = ast.keys[i];
         const value = ast.values[i];
-        if (!key) return res.makeErr(new Error(`CompoundLiteral: missing key for index '${i}'`));
-        if (!value) return res.makeErr(new Error(`CompoundLiteral: missing value for key '${key}'`));
+        if (!key) return res.makeErr(await OphoelError.fromNode(`CompoundLiteral: missing key for index '${i}'`, ast, ctx.fm));
+        if (!value) return res.makeErr(await OphoelError.fromNode(`CompoundLiteral: missing value for key '${key}'`, ast, ctx.fm));
 
         const result = await value.evaluate(ctx.wrap());
         if (!result.ok) return result;
@@ -32,14 +34,14 @@ export async function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Co
 }
 
 export async function FloatLiteral(ast: ASTTypes["FloatLiteral"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: new Error("FloatLiteral: not implemented yet") };
+    return { ok: false, err: await OphoelError.fromNode("FloatLiteral: not implemented yet", ast, _ctx.fm as FileManager) };
 }
 
 export async function IntLiteral(ast: ASTTypes["IntLiteral"], _ctx: Context): Promise<InterpretReturn> {
     const numValue = parseInt(ast.raw);
 
     if (isNaN(numValue)) {
-        return { ok: false, err: new Error(`IntLiteral: unable to parse '${ast.raw}' as an integer`) };
+        return { ok: false, err: await OphoelError.fromNode(`IntLiteral: unable to parse '${ast.raw}' as an integer`, ast, _ctx.fm as FileManager) };
     }
 
     return {
@@ -67,7 +69,7 @@ export async function TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral
         if (!res.ok) return res;
         ctx = res.ctx.branch();
 
-        const coerced = coerce(res.value, "string", ctx.wrap());
+        const coerced = await coerce(res.value, "string", ctx.wrap(), ast);
         if (!coerced.ok) return coerced;
         ctx = coerced.ctx.branch();
         exprBuffer.push(coerced.value.value);

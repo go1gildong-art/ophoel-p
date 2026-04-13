@@ -3,6 +3,8 @@ import { IRs } from "../../ir/ir-collection.cjs";
 import { IRInstructions, IRKind, IRNode } from "../../ir/ir.cjs";
 import { Location } from "../../location.cjs";
 import * as p from "../../pack-combinator.cjs";
+import { FileManager, FileManagerClass, FMPlaceholder } from "../file-manager.cjs";
+import { OphoelError } from "./error.cjs";
 
 export type InterpretReturn = {
     ok: true;
@@ -31,18 +33,36 @@ export function moveValue(address: OphoelValue, value: OphoelValue): void {
 export class Context {
     readonly frames: Frame[] = [];
     readonly instructions: IRNode[] = [];
+    fm: FileManager = new FMPlaceholder("uninitialized");
 
     branch(): ContextMut {
         const newCtx = new ContextMut();
         newCtx.frames.push(...this.frames);
         newCtx.instructions.push(...this.instructions);
+        newCtx.fm = this.fm;
         return newCtx;
     }
 
-    static new() {
+    static new(mcNamespace: string) {
         const ctx = {
             frames: [emptyFrame()],
             instructions: [] as IRNode[],
+            fm: new FileManagerClass(mcNamespace),
+            branch: function() {
+                const newCtx = new ContextMut();
+                newCtx.frames.push(...this.frames);
+                newCtx.instructions.push(...this.instructions);
+                return newCtx;
+            }
+        } as Context;
+        return ctx;
+    }
+
+    static newPlaceheld(src: string) {
+        const ctx = {
+            frames: [emptyFrame()],
+            instructions: [] as IRNode[],
+            fm: new FMPlaceholder(src),
             branch: function() {
                 const newCtx = new ContextMut();
                 newCtx.frames.push(...this.frames);
@@ -57,6 +77,7 @@ export class Context {
 export class ContextMut {
     readonly frames: Frame[] = [];
     readonly instructions: IRNode[] = [];
+    fm: FileManager = new FMPlaceholder("uninitialized");
 
     private makeOK(value?: OphoelValue): InterpretReturn {
         return {
@@ -93,7 +114,7 @@ export class ContextMut {
         this.peek().variables.push({ field, value, mutable });
     }
 
-    getVariable(ident: string): InterpretReturn {
+    async getVariable(ident: string, node: p.ASTTypes[keyof p.ASTTypes]): Promise<InterpretReturn> {
         for (const frame of [...this.frames].reverse()) {
             for (const variable of frame.variables) {
                 if (variable.field === ident) return this.makeOK(variable.value);
@@ -102,7 +123,7 @@ export class ContextMut {
 
         return {
             ok: false,
-            err: new Error(`Variable not found: ${ident}`)
+            err: await OphoelError.fromNode(`Variable not found: ${ident}`, node, this.fm)
         };
     }
 
@@ -127,6 +148,7 @@ export class ContextMut {
         const newCtx = new Context();
         newCtx.frames.push(...this.frames);
         newCtx.instructions.push(...this.instructions);
+        newCtx.fm = this.fm;
         return newCtx;
     }
 

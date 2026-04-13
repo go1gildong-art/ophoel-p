@@ -48,7 +48,7 @@ export interface ASTNode {
 }
 
 export interface StandardNode extends ASTNode {
-    evaluate(ctx: EvalContext): InterpretReturn;
+    evaluate(ctx: EvalContext): Promise<InterpretReturn>;
     lispify(): string;
     // format(): string;
 }

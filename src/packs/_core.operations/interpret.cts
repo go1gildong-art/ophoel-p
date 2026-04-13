@@ -1,3 +1,5 @@
+import { OphoelError } from "../../compiler/interpreter/error.cjs";
+import { FileManager } from "../../compiler/file-manager.cjs";
 import { Context, InterpretReturn, OphoelValue, moveValue } from "../../compiler/interpreter/utilities.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { BinaryOperation as BinOperationNode, BinaryOperator, UnaryOperator } from "./nodes.cjs";
@@ -27,7 +29,8 @@ export async function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Co
                 return res.makeOK({ type: "vector", value: [...left.value.value, ...right.value.value] }, ctx.wrap());
 
             } else {
-                return res.makeErr(new Error(`operator '+' not supported for types '${left.value.type}' and '${right.value.type}'`));
+                const msg = `operator '+' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
 
         case BinaryOperator.SUBTRACT:
@@ -35,7 +38,8 @@ export async function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Co
                 return res.makeOK({ type: "num", value: left.value.value - right.value.value }, ctx.wrap());
 
             } else {
-                return res.makeErr(new Error(`operator '-' not supported for types '${left.value.type}' and '${right.value.type}'`));
+                const msg = `operator '-' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
 
         case BinaryOperator.MULTIPLY:
@@ -43,7 +47,8 @@ export async function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Co
                 return res.makeOK({ type: "num", value: left.value.value * right.value.value }, ctx.wrap());
 
             } else {
-                return res.makeErr(new Error(`operator '*' not supported for types '${left.value.type}' and '${right.value.type}'`));
+                const msg = `operator '*' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
 
         case BinaryOperator.DIVIDE:
@@ -51,10 +56,11 @@ export async function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Co
                 return res.makeOK({ type: "num", value: left.value.value / right.value.value }, ctx.wrap());
 
             } else if (right.value.type === "num" && right.value.value === 0) {
-                return res.makeErr(new Error("Division by zero!"));
+                return res.makeErr(await OphoelError.fromNode("Division by zero!", ast, _ctx.fm as FileManager));
 
             } else {
-                return res.makeErr(new Error(`operator '/' not supported for types '${left.value.type}' and '${right.value.type}'`));
+                const msg = `operator '/' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
 
         case BinaryOperator.REMAINDER:
@@ -62,14 +68,13 @@ export async function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Co
                 return res.makeOK({ type: "num", value: left.value.value % right.value.value }, ctx.wrap());
 
             } else {
-                return res.makeErr(new Error(`operator '%' not supported for types '${left.value.type}' and '${right.value.type}'`));
+                const msg = `operator '%' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
     }
 
-    return res.makeErr({
-        ok: false,
-        err: new Error(`BinaryOperation: operator '${ast.operator}' not implemented yet`)
-    })
+    const msg = `BinaryOperation: operator '${ast.operator}' not implemented yet`;
+    return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm))
 }
 
 export async function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): Promise<InterpretReturn> {
@@ -107,7 +112,8 @@ export async function PreUnary(ast: ASTTypes["PreUnary"], _ctx: Context): Promis
 
         case UnaryOperator.LOGIC_NOT: {
             if (operand.value.type !== "bool") {
-                return res.makeErr(new Error(`operator '!' not supported for type '${operand.value.type}'`));
+                const msg = `operator '!' not supported for type '${operand.value.type}'`;
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
 
             operand.value.value = !operand.value.value;
@@ -155,7 +161,8 @@ export async function PostUnary(ast: ASTTypes["PostUnary"], _ctx: Context): Prom
         }
 
         case UnaryOperator.LOGIC_NOT: {
-            return res.makeErr(new Error(`operator '!' cannot be used as a post-unary operator`));
+            const msg = `operator '!' cannot be used as a post-unary operator`;
+            return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
         }
     }
 }
@@ -181,14 +188,14 @@ export async function IndexAccess(ast: ASTTypes["IndexAccess"], _ctx: Context): 
             } else if (index.value.type === "num") {
                 if (index.value.value >= left.value.value.length) {
                     const msg = `Array out of bound. length: ${left.value.value.length}, got: ${index.value.type}`;
-                    return res.makeErr(new Error(msg));
+                    return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
                 }
                 const address = left.value.value[index.value.value]
                 return res.makeOK(address, ctx.wrap());
 
             } else {
                 const msg = `Invalid index ${index.value.value}`
-                return res.makeErr(new Error(msg));
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
         }
 
@@ -197,18 +204,18 @@ export async function IndexAccess(ast: ASTTypes["IndexAccess"], _ctx: Context): 
                 const address = left.value.value.find(address => address.field === index.value.value);
                 if (!address) {
                     const msg = `property ${index.value.value} does not exist in the compound.`;
-                    return res.makeErr(new Error(msg));
+                    return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
                 }
                 return res.makeOK(address.value, ctx.wrap());
             } else {
                 const msg = `Invalid property access ${index.value.value}`
-                return res.makeErr(new Error(msg));
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
         }
 
         default: {
             const msg = `cannot access index ${index.value.value} of type ${left.value.type}`;
-            return res.makeErr(new Error(msg));
+            return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
         }
     }
 }
@@ -228,7 +235,7 @@ export async function MemberAccess(ast: ASTTypes["MemberAccess"], _ctx: Context)
 
             } else {
                 const msg = `cannot access property ${ast.member} of a vector`;
-                return res.makeErr(new Error(msg));
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
         }
 
@@ -236,20 +243,20 @@ export async function MemberAccess(ast: ASTTypes["MemberAccess"], _ctx: Context)
             const address = left.value.value.find(address => address.field === ast.member);
             if (!address) {
                 const msg = `property ${ast.member} does not exist in the compound.`;
-                return res.makeErr(new Error(msg));
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
             }
             return res.makeOK(address.value, ctx.wrap());
         }
 
         default: {
             const msg = `cannot access property ${ast.member} of type ${left.value.type}`;
-            return res.makeErr(new Error(msg));
+            return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
         }
     }
 }
 
 export async function FunctionCall(ast: ASTTypes["FunctionCall"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: new Error("FunctionCall: not implemented yet") };
+    return { ok: false, err: await OphoelError.fromNode("FunctionCall: not implemented yet", ast, _ctx.fm as FileManager) };
 }
 
 export async function VariableAssign(ast: ASTTypes["VariableAssign"], _ctx: Context): Promise<InterpretReturn> {
@@ -262,7 +269,7 @@ export async function VariableAssign(ast: ASTTypes["VariableAssign"], _ctx: Cont
     const setValue = await ast.setValue.evaluate(ctx.wrap());
     if (!setValue.ok) return setValue;
     ctx = setValue.ctx.branch();
-    
+
     moveValue(address.value, setValue.value);
 
     return res.makeOK(setValue.value, ctx.wrap());
@@ -276,19 +283,19 @@ export async function CompoundAssign(ast: ASTTypes["CompoundAssign"], _ctx: Cont
     ctx = address.ctx.branch();
 
     const result = await new BinOperationNode(
-        ast.address, 
-        ast.operation, 
-        ast.setValue, 
+        ast.address,
+        ast.operation,
+        ast.setValue,
         ast.location
     ).evaluate(ctx.wrap());
     if (!result.ok) return result;
     ctx = result.ctx.branch();
-    
+
     moveValue(address.value, result.value);
 
     return res.makeOK(result.value, ctx.wrap());
 }
 
 export async function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: new Error("MacroCall: not implemented yet") };
+    return { ok: false, err: await OphoelError.fromNode("MacroCall: not implemented yet", ast, _ctx.fm as FileManager) };
 }

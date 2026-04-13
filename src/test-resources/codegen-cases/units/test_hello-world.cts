@@ -6,6 +6,6 @@ export const unit = new CodegenUnit({
     ophoelDir: "test-hello_world.oph",
     link: __dirname,
 
-    source: `say!! "Hello, world!";`,
+    source: `x = 10;`,
     expectation: `say Hello, world!`
 });

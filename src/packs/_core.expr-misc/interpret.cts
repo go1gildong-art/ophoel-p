@@ -3,7 +3,7 @@ import { ASTTypes } from "../../pack-combinator.cjs";
 
 export async function Identifier(ast: ASTTypes["Identifier"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
-    const address = ctx.getVariable(ast.name);
+    const address = await ctx.getVariable(ast.name, ast);
     if (!address.ok) return address;
 
     return { ok: true, ctx: ctx.wrap(), value: address.value };

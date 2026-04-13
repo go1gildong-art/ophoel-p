@@ -1,3 +1,5 @@
+import { OphoelError } from "../../compiler/interpreter/error.cjs";
+import { FileManager } from "../../compiler/file-manager.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { coerce } from "../../compiler/interpreter/coercions.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
@@ -11,7 +13,7 @@ export async function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): Prom
     if (!argResult.ok) throw argResult.err;
     ctx = argResult.ctx.branch();
 
-    const coerced = coerce(argResult.value, "string", ctx.wrap());
+    const coerced = await coerce(argResult.value, "string", ctx.wrap(), ast);
     if (!coerced.ok) return coerced;
     ctx = coerced.ctx.branch();
     
@@ -21,5 +23,5 @@ export async function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): Prom
 }
 
 export async function McExecStatement(ast: ASTTypes["McExecStatement"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: new Error("McExecStatement: not implemented yet") };
+    return { ok: false, err: await OphoelError.fromNode("McExecStatement: not implemented yet", ast, _ctx.fm as FileManager) };
 }

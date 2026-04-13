@@ -1,3 +1,5 @@
+import { OphoelError } from "../../compiler/interpreter/error.cjs";
+import { FileManager } from "../../compiler/file-manager.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 
@@ -18,11 +20,11 @@ export async function ConstDecl(ast: ASTTypes["ConstDecl"], _ctx: Context): Prom
 }
 
 export async function FunctionDecl(ast: ASTTypes["FunctionDecl"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: new Error("FunctionDecl: not implemented yet") };
+    return { ok: false, err: await OphoelError.fromNode("FunctionDecl: not implemented yet", ast, _ctx.fm as FileManager) };
 }
 
 export async function MacroDecl(ast: ASTTypes["MacroDecl"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: new Error("MacroDecl: not implemented yet") };
+    return { ok: false, err: await OphoelError.fromNode("MacroDecl: not implemented yet", ast, _ctx.fm as FileManager) };
 }
 
 export async function VariableDecl(ast: ASTTypes["VariableDecl"], _ctx: Context): Promise<InterpretReturn> {

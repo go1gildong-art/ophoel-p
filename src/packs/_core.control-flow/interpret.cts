@@ -3,6 +3,7 @@ import { FileManager } from "../../compiler/file-manager.cjs";
 import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import * as res from "../../utils/result.cjs"
+import { makeOphoelError } from "../../compiler/interpreter/error.cjs";
 
 export async function IfStatement(ast: ASTTypes["IfStatement"], _ctx: Context): Promise<InterpretReturn> {
     return { ok: false, err: await OphoelError.fromNode("IfStatement: not implemented yet", ast, _ctx.fm as FileManager) };
@@ -22,6 +23,7 @@ export async function ForOfStatement(ast: ASTTypes["ForOfStatement"], _ctx: Cont
 
 export async function RepeatStatement(ast: ASTTypes["RepeatStatement"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
+try {
 
     const times = await ast.count.evaluate(ctx.wrap());
     if (!times.ok) return times;
@@ -39,6 +41,7 @@ export async function RepeatStatement(ast: ASTTypes["RepeatStatement"], _ctx: Co
     }
 
     return res.makeOK({ type: "void", value: null }, ctx.wrap());
+} catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
 
 export async function ChooseStatement(ast: ASTTypes["ChooseStatement"], _ctx: Context): Promise<InterpretReturn> {

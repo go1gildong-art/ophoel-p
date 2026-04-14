@@ -5,6 +5,7 @@ import * as res from "../../utils/result.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { KVPair } from "../../compiler/interpreter/utilities.cjs";
 import { coerce } from "../../compiler/interpreter/coercions.cjs";
+import { makeOphoelError } from "../../compiler/interpreter/error.cjs";
 
 export async function BoolLiteral(ast: ASTTypes["BoolLiteral"], _ctx: Context): Promise<InterpretReturn> {
     return { ok: false, err: await OphoelError.fromNode("BoolLiteral: not implemented yet", ast, _ctx.fm as FileManager) };
@@ -12,6 +13,7 @@ export async function BoolLiteral(ast: ASTTypes["BoolLiteral"], _ctx: Context): 
 
 export async function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
+try {
     let acc = [] as KVPair[];
 
     for (let i = 0; i < ast.keys.length; i++) {
@@ -31,6 +33,7 @@ export async function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Co
     }
 
     return res.makeOK({ type: "compound", value: acc }, ctx.wrap());
+} catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
 
 export async function FloatLiteral(ast: ASTTypes["FloatLiteral"], _ctx: Context): Promise<InterpretReturn> {
@@ -61,6 +64,7 @@ export async function StringLiteral(ast: ASTTypes["StringLiteral"], _ctx: Contex
 
 export async function TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
+try {
 
     const exprBuffer = [] as OphoelValue["value"][];
 
@@ -85,10 +89,12 @@ export async function TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral
         type: "string",
         value: total.join("")
     }, ctx.wrap());
+} catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
 
 export async function VectorLiteral(ast: ASTTypes["VectorLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
+try {
     let acc = [] as OphoelValue[];
 
     for (const expr of ast.entries) {
@@ -100,4 +106,5 @@ export async function VectorLiteral(ast: ASTTypes["VectorLiteral"], _ctx: Contex
     }
 
     return res.makeOK({ type: "vector", value: acc }, ctx.wrap());
+} catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }

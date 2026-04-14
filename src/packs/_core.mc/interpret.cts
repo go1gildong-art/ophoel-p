@@ -4,10 +4,12 @@ import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.c
 import { coerce } from "../../compiler/interpreter/coercions.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import * as res from "../../utils/result.cjs"
+import { makeOphoelError } from "../../compiler/interpreter/error.cjs";
 
 
 export async function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
+try {
 
     const argResult = await ast.argument.evaluate(_ctx);
     if (!argResult.ok) throw argResult.err;
@@ -20,6 +22,7 @@ export async function McCommand(ast: ASTTypes["McCommand"], _ctx: Context): Prom
     ctx.emitCmd(`${ast.command} ${coerced.value.value}`, ast.location);
 
     return res.makeOK({ type: "void", value: null }, ctx.wrap())
+} catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
 
 export async function McExecStatement(ast: ASTTypes["McExecStatement"], _ctx: Context): Promise<InterpretReturn> {

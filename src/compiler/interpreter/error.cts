@@ -2,6 +2,8 @@ import { ASTKind } from "../../ast.cjs";
 import { Location } from "../../location.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { FileManager } from "../file-manager.cjs";
+import * as res from "../../utils/result.cjs";
+import { InterpretReturn } from "./utilities.cjs";
 
 export class OphoelError extends Error {
     constructor(
@@ -39,5 +41,19 @@ export class OphoelError extends Error {
             ) + "^^^");
 
         return sliced.join("\n");
+    }
+}
+
+export class OphoelTSError extends OphoelError { }
+
+export async function makeOphoelError(err: unknown, ast: ASTTypes[keyof ASTTypes], fm: FileManager): Promise<InterpretReturn> {
+    if (err instanceof OphoelError) {
+        return res.makeErr(err);
+
+    } else if (err instanceof Error) {
+        return res.makeErr(await OphoelTSError.fromNode(err.message, ast, fm))
+
+    } else {
+        return res.makeErr(err);
     }
 }

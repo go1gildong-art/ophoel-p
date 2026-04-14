@@ -29,31 +29,26 @@ export function moveValue(address: OphoelValue, value: OphoelValue): void {
     address.value = value.value;
 }
 
-
-export class Context {
-    readonly frames: Frame[] = [];
-    readonly instructions: IRNode[] = [];
-    fm: FileManager = new FMPlaceholder("uninitialized");
-
-    branch(): ContextMut {
+const branchFn = function(this: Context) {
         const newCtx = new ContextMut();
         newCtx.frames.push(...this.frames);
         newCtx.instructions.push(...this.instructions);
         newCtx.fm = this.fm;
         return newCtx;
-    }
+}
+
+export class Context {
+    readonly frames: Frame[] = [];
+    readonly instructions: IRNode[] = [];
+    fm: FileManager = new FMPlaceholder("uninitialized");
+    branch = branchFn
 
     static new(mcNamespace: string) {
         const ctx = {
             frames: [emptyFrame()],
             instructions: [] as IRNode[],
             fm: new FileManagerClass(mcNamespace),
-            branch: function() {
-                const newCtx = new ContextMut();
-                newCtx.frames.push(...this.frames);
-                newCtx.instructions.push(...this.instructions);
-                return newCtx;
-            }
+            branch: branchFn
         } as Context;
         return ctx;
     }
@@ -63,12 +58,7 @@ export class Context {
             frames: [emptyFrame()],
             instructions: [] as IRNode[],
             fm: new FMPlaceholder(src),
-            branch: function() {
-                const newCtx = new ContextMut();
-                newCtx.frames.push(...this.frames);
-                newCtx.instructions.push(...this.instructions);
-                return newCtx;
-            }
+            branch: branchFn
         } as Context;
         return ctx;
     }

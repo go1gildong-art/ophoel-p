@@ -10,12 +10,14 @@ async function interpret(src: string) {
 }
 
 export interface FileManager {
-    mcNamespace: string
+    // ns will hold path from beginning to namespace folder
+    // C:/.../my-pack/data
+    dataFolder: string,
     getSrc(target: string): Promise<string>
 }
 
 export class FileManagerClass implements FileManager {
-    constructor(public mcNamespace: string) { }
+    constructor(public dataFolder: string) { }
 
     /*
     async include(target: string): Promise<Context | placeholder> {
@@ -25,7 +27,7 @@ export class FileManagerClass implements FileManager {
         */
 
     async getSrc(target: string) {
-        const fullPath = path.join(this.mcNamespace, "ophoel", target);
+        const fullPath = path.join(this.dataFolder, "ophoel", target);
         const src = await fs.promises.readFile(fullPath, { encoding: 'utf-8'});
         return src;
     }
@@ -33,7 +35,7 @@ export class FileManagerClass implements FileManager {
 
 export class FMPlaceholder implements FileManager {
     constructor(public src: string) {}
-    mcNamespace: string = "PLACEHOLDER does not contain minecraft namespace";
+    dataFolder: string = "PLACEHOLDER FileManager does not contain minecraft datapack folder";
 
     async getSrc(target: string): Promise<string> {
         return this.src;

@@ -2,8 +2,9 @@
 
 import fs from 'fs';
 import path from 'path';
-
-function compile(...args: any[]): string { return ""; };
+import { compile } from './compile.cjs';
+import { FileManagerClass } from './file-manager.cjs';
+import { Source } from '../location.cjs';
 
 let errCount = 0;
 
@@ -18,8 +19,9 @@ function shortenPath(fullPath: string) {
 }
 
 // 2. THE MAIN EXECUTION
-function build() {
+async function build() {
     console.log("Starting Ophoel compilation...");
+    const fm = new FileManagerClass(dataDir);
 
     if (!fs.existsSync(dataDir)) {
         console.error("Error: 'data' folder not found inside root.");
@@ -31,19 +33,18 @@ function build() {
     });
 
 
-    namespaces.forEach(ns => {
-        const ophoelFolder = path.join(dataDir, ns, "ophoel");
-        const srcDir = path.join(ophoelFolder, "functions");
+    await Promise.all(
+        namespaces.map(async ns => {
+            const ophoelFolder = path.join(dataDir, ns, "ophoel");
+            const srcDir = path.join(ophoelFolder, "functions");
 
-
-        if (fs.existsSync(srcDir)) {
-            
-            console.log(`Namespace found: ${ns}`);
-            const outDir = path.join(dataDir, ns, "functions");
-
-            compileDirectory(srcDir, outDir);
-        }
-    })
+            if (fs.existsSync(srcDir)) {
+                console.log(`Namespace found: ${ns}`);
+                const outDir = path.join(dataDir, ns, "functions");
+                await compileDirectory(srcDir, outDir, fm);
+            }
+        })
+    )
 
     if (errCount > 1) {
         console.log("Error occurred while building.");
@@ -54,7 +55,7 @@ function build() {
 }
 
 
-function compileDirectory(currentSrc: string, currentOut: string) {
+async function compileDirectory(currentSrc: string, currentOut: string, fm: FileManagerClass) {
     // Ensure the output directory exists (mirrors the sub-folder)
     if (!fs.existsSync(currentOut)) {
         fs.mkdirSync(currentOut, { recursive: true });
@@ -62,29 +63,30 @@ function compileDirectory(currentSrc: string, currentOut: string) {
 
     const items = fs.readdirSync(currentSrc);
 
-    items.forEach(item => {
+    items.forEach(async item => {
         const srcPath = path.join(currentSrc, item);
         const outPath = path.join(currentOut, item);
         const stat = fs.statSync(srcPath);
 
         if (stat.isDirectory()) {
-            // It's a folder! Dive deeper (Recursion)
-            compileDirectory(srcPath, outPath);
-        } else if (item.endsWith('.oph')) {
-            // It's an Ophoel file! Compile it
-            try {
-                const source = fs.readFileSync(srcPath, 'utf8');
-                const commands = compile(source, item);
-                const finalOutPath = outPath.replace('.oph', '.mcfunction');
-                fs.writeFileSync(finalOutPath, commands);
+            compileDirectory(srcPath, outPath, fm);
 
+        } else if (item.endsWith('.oph')) {
+            try {
+                const mcfunction = await compile({
+                    src: await fs.promises.readFile(srcPath, 'utf8'),
+                    ophoelDir: shortenPath(srcPath)
+                }, fm);
+
+                const finalOutPath = outPath.replace('.oph', '.mcfunction');
+                fs.writeFileSync(finalOutPath, mcfunction);
                 console.log(`Successfully compiled: ${shortenPath(srcPath)}`);
             } catch (err) {
                 if (err instanceof Error) {
                     console.error(`Error in compiling ${item}: \n${err.message}\n\n`);
                 }
                 else console.error(`Error in compiling ${item}: ${err}`);
-                
+
                 errCount++;
                 throw err;
             }

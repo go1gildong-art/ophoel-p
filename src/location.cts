@@ -1,6 +1,6 @@
 export class Location {
     constructor(
-        public dir: string,
+        public dir: string, // will directly transfer from Source.ophoelDir
         public line: number,
         public column: number,
         public charPos: number,) { }
@@ -17,5 +17,8 @@ export class Location {
 export class Source {
     constructor(
         public src: string,
-        public ophoelDir: string) { }
+
+        // to pair with FileManager, (...namespace/ophoel/functions/) <file-directory>
+        public ophoelDir: string 
+    ) { }
 }

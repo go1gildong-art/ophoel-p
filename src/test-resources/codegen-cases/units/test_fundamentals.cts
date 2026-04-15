@@ -13,7 +13,7 @@ export const unit = new CodegenUnit({
         `repeat(items.length) {`,
         `  const processed_count = 1 + counts[i] * 100;`,
         `  give!! \`@p {items[i]} {processed_count}\`;`,
-        `  ii++;`,
+        `  i++;`,
         `}`
     ].join("\n"),
 

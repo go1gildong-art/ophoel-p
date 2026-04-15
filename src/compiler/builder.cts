@@ -28,17 +28,21 @@ async function build() {
         return;
     }
 
-    const namespaces = fs.readdirSync(dataDir).filter(f => {
-        return fs.statSync(path.join(dataDir, f)).isDirectory();
+    const namespaces = (await fs.promises.readdir(dataDir)).filter(async f => {
+        return (await fs.promises.stat(path.join(dataDir, f))).isDirectory();
     });
+    
 
 
-    await Promise.all(
+    await Promise.allSettled(
         namespaces.map(async ns => {
             const ophoelFolder = path.join(dataDir, ns, "ophoel");
             const srcDir = path.join(ophoelFolder, "functions");
-
+            
+            console.log(srcDir);
+            console.log(fs.existsSync(srcDir));
             if (fs.existsSync(srcDir)) {
+                
                 console.log(`Namespace found: ${ns}`);
                 const outDir = path.join(dataDir, ns, "functions");
                 await compileDirectory(srcDir, outDir, fm);

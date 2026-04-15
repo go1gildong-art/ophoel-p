@@ -1,0 +1,7 @@
+const vec = ["diamond", "emerald", "gold_ingot", "redstone"];
+
+let i = 0;
+repeat vec.length {
+  give!! `@p {vec[i]}`;
+  i++;
+}

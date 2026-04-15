@@ -15,7 +15,7 @@ export function MacroDecl(ast: ASTTypes["MacroDecl"]) {
 }
 
 export function VariableDecl(ast: ASTTypes["VariableDecl"]) {
-    const value = ast.initValue.lispify();
+    const value = ast.initValue?.lispify() ?? "no_init";
     return `(let ${ast.name} ${value})`;
 }
 

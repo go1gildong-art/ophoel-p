@@ -1,6 +1,6 @@
 import { makeOphoelError, OphoelError, OphoelTSError } from "../../compiler/interpreter/error.cjs";
 import { FileManager } from "../../compiler/file-manager.cjs";
-import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
+import { Context, InterpretReturn, OphoelValue } from "../../compiler/interpreter/utilities.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import * as res from "../../utils/result.cjs";
 
@@ -31,17 +31,20 @@ export async function VariableDecl(ast: ASTTypes["VariableDecl"], _ctx: Context)
     let ctx = _ctx.branch();
 
     try {
-        const initValue = await ast.initValue.evaluate(ctx.wrap());
-        if (!initValue.ok) return initValue;
-        ctx = initValue.ctx.branch();
+        let initValue: OphoelValue;
 
-        ctx.addVariable(ast.name, initValue.value, true);
+        if (ast.initValue) {
+            const initValue_res = await ast.initValue.evaluate(ctx.wrap());
+            if (!initValue_res.ok) return initValue_res;
+            ctx = initValue_res.ctx.branch();
+            initValue = initValue_res.value;
+        
+        } else {
+            initValue = { type: "void", value: null };
+        }
 
-        return {
-            ok: true,
-            ctx: ctx.wrap(),
-            value: initValue.value
-        };
+        ctx.addVariable(ast.name, initValue, true);
+        return res.makeOK(initValue.value, ctx.wrap());
 
     } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }

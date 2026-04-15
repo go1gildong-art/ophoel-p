@@ -48,7 +48,7 @@ export class VariableDecl implements Statement, StandardNode {
 
     constructor(
         public name: string,
-        public initValue: Expression,
+        public initValue: Expression | null,
         public location: Location) { }
 
     async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.VariableDecl(this, ctx); }

@@ -5,10 +5,18 @@ import * as ohm from 'ohm-js';
 
 export const actionMap: ActionMap<Statement> = {
             
-    VariableDecl(this: ActionMapThis, kw, name, _eq, expr, _semi) {
+    VariableDecl_withInit(this: ActionMapThis, kw, name, _eq, expr, _semi) {
         return new ASTs.VariableDecl(
             name.sourceString,
             expr.toAST(this.args.ophoelDir),
+            getLoc(kw, this.args.ophoelDir)
+        );
+    },
+
+    VariableDecl_noInit(this: ActionMapThis, kw, name, _semi) {
+        return new ASTs.VariableDecl(
+            name.sourceString,
+            null,
             getLoc(kw, this.args.ophoelDir)
         );
     },

@@ -43,11 +43,11 @@ export class Context {
     fm: FileManager = new FMPlaceholder("uninitialized");
     branch = branchFn
 
-    static new(mcNamespace: string) {
+    static new(fm: FileManagerClass) {
         const ctx = {
             frames: [emptyFrame()],
             instructions: [] as IRNode[],
-            fm: new FileManagerClass(mcNamespace),
+            fm: fm,
             branch: branchFn
         } as Context;
         return ctx;

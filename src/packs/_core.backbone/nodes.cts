@@ -3,6 +3,7 @@ import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.c
 import { Location } from "../../location.cjs";
 import * as lispify from "./lispify.cjs";
 import * as interpret from "./interpret.cjs";
+import { FileManager, FileManagerClass } from "../../compiler/file-manager.cjs";
 
 // Expand existing nodes to a pack.
 export class Block implements Statement, StandardNode {
@@ -29,7 +30,7 @@ export class Program implements Statement, StandardNode {
 
     constructor(public body: Statement[], public location: Location) { }
 
-    async interpret(mcNamespace: string) { return this.evaluate(Context.new(mcNamespace)); }
+    async interpret(fm: FileManagerClass) { return this.evaluate(Context.new(fm)); }
     async interpretPlaceheld(src: string) { return this.evaluate(Context.newPlaceheld(src)) };
     async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.Program(this, ctx); }
     lispify(): string { return lispify.Program(this); }

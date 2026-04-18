@@ -11,17 +11,10 @@ Try making at least part of the dependency in the graph lazily loaded.
 
 
 
-# Import / Export rules
-.oph (OPHoel) files 
--> compile into one .mcfunction for each file
--> cannot export anything
--> can import one or multiple .ophl files
-
-.ophl (OPHoel Library) files
--> DOES NOT compile into a .mcfunction
--> can export struct, macro, and/or function
--> cannot import anything
-
+# Include (Import / Export) rules
+include <string path> form
+takes current context, pass to caller program, and then gather the result context, then apply it
+FileManager will hold cached ast per path text
 
 # AST Types
 1. Expression.value(from evaluation) is always javascript raw value

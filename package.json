@@ -68,5 +68,8 @@
   "homepage": "https://github.com/skibidi/ophoel-formatter#readme",
   "dependencies": {
     "ohm-js": "^17.5.0"
+  },
+  "imports": {
+    "#utils": "./out/utils/index.cjs"
   }
 }

@@ -18,7 +18,7 @@ export interface FileManager {
     dataFolder: string,
     getSrc(target: string): Promise<string>,
     include(target: string, ctx: Context): Promise<InterpretReturn>,
-    includeCache: { target: string, ast: ASTTypes["Program"] }[]
+    programCache: { target: string, ast: ASTTypes["Program"] }[]
 }
 
 export class FileManagerClass implements FileManager {
@@ -37,26 +37,48 @@ export class FileManagerClass implements FileManager {
         return src;
     }
 
-    includeCache: { target: string, ast: ASTTypes["Program"] }[] = [];
+    programCache: { target: string, ast: ASTTypes["Program"] }[] = [];
 
     async include(target: string, ctx: Context): Promise<InterpretReturn> {
 
         let ast: ASTTypes["Program"];
-        const foundCache = this.includeCache.find(cache => cache.target === target);
+        const foundCache = this.programCache.find(cache => cache.target === target);
 
         if (foundCache) ast = foundCache.ast;
         else {
-            const targetFull = path.join(this.dataFolder, target);
-            const srcCode = await fs.promises.readFile(targetFull, 'utf8');
+            const srcCode = await this.readFile(target);
             const srcObj = new Source(srcCode, target);
             const parsedAST = parse(srcObj);
 
-            this.includeCache.push({ target, ast: parsedAST });
+            this.programCache.push({ target, ast: parsedAST });
             ast = parsedAST;
         }
 
         const result = await ast.evaluate(ctx);
         return result;
+    }
+
+    async readFile(target: string): Promise<string> {
+        try {
+            const fullPath = path.join(this.dataFolder, target);
+            const content = await fs.promises.readFile(fullPath, 'utf-8');
+            return content;
+
+        } catch (err) {
+            if (err instanceof Error && "code" in err) {
+                if (err.code === "ENOENT") {
+                    throw new Error(`File not found: ${target}`);
+                }
+                if (err.code === "EISDIR") {
+                    throw new Error(`Expected file but got directory: ${target}`);
+                }
+                if (err.code === "EACCES") {
+                    throw new Error(`Permission denied: ${target}`);
+                }
+            }
+
+            throw err;
+        }
     }
 }
 
@@ -72,5 +94,5 @@ export class FMPlaceholder implements FileManager {
     async include(target: string, context: Context): Promise<InterpretReturn> {
         throw new Error(placeholderMsgs.include);
     }
-    includeCache = [];
+    programCache = [];
 }

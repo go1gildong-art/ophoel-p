@@ -78,7 +78,7 @@ async function compileDirectory(currentSrc: string, currentOut: string, fm: File
         } else if (item.endsWith('.oph')) {
             try {
                 const mcfunction = await compile({
-                    src: await fs.promises.readFile(srcPath, 'utf8'),
+                    src: await fm.readFile(path.relative(dataDir, srcPath)),
                     ophoelDir: shortenPath(srcPath)
                 }, fm);
 

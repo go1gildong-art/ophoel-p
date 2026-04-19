@@ -1,4 +1,5 @@
 const config = {
   a: 10,
-  b: "foo"
+  b: "foo",
+  helloworldPath: "ophoel_test/ophoel/functions/helloworld.oph"
 };

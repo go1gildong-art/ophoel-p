@@ -32,8 +32,7 @@ export class FileManagerClass implements FileManager {
         */
 
     async getSrc(target: string) {
-        const fullPath = path.join(this.dataFolder, "ophoel", target);
-        const src = await fs.promises.readFile(fullPath, 'utf-8');
+        const src = await this.readFile(target);
         return src;
     }
 
@@ -66,15 +65,15 @@ export class FileManagerClass implements FileManager {
 
         } catch (err) {
             if (err instanceof Error && "code" in err) {
-                if (err.code === "ENOENT") {
-                    throw new Error(`File not found: ${target}`);
-                }
-                if (err.code === "EISDIR") {
-                    throw new Error(`Expected file but got directory: ${target}`);
-                }
-                if (err.code === "EACCES") {
-                    throw new Error(`Permission denied: ${target}`);
-                }
+
+                const msg = ({
+                    "ENOENT": `File not found: (...data/) ${target}`,
+                    "EISDIR": `Expected file but got directory: (...data/) ${target}`,
+                    "EACCES": `Permission denied: (...data/) ${target}`
+                }[err.code as string]
+                    ?? `Unknown error: ${err.code}`);
+
+                throw new Error(msg);
             }
 
             throw err;

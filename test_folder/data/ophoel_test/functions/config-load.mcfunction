@@ -1,11 +1,11 @@
+say hello, world!
+say hello, world!
+say hello, world!
+say hello, world!
+say hello, world!
+say hello, world!
+say hello, world!
+say hello, world!
+say hello, world!
+say hello, world!
 say foo
-say hello, world!
-say hello, world!
-say hello, world!
-say hello, world!
-say hello, world!
-say hello, world!
-say hello, world!
-say hello, world!
-say hello, world!
-say hello, world!

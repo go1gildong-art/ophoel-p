@@ -8,5 +8,20 @@ import { res } from "#utils";
 
 
 export async function Include(ast: ASTTypes["Include"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: await OphoelError.fromNode("Include: not implemented yet", ast, _ctx.fm as FileManager) };
+    let ctx = _ctx.branch();
+    try {
+
+        const pathValue = await ast.path.evaluate(ctx.wrap());
+        if (!pathValue.ok) return pathValue;
+        ctx = pathValue.ctx.branch();
+
+        if (pathValue.value.type !== "string") {
+            const msg = `path must be a string, but got ${pathValue.value.value} (${pathValue.value.type})`;
+            throw new Error(msg);
+        }
+
+        const includedCtx = await ctx.fm.include(pathValue.value.value, ctx.wrap());
+        return includedCtx;
+        
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }

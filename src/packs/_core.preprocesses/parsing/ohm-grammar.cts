@@ -1,3 +1,3 @@
 export const grammar = `
-Include = "include" string ";"
+Include = "include" Expr ";"
 `;

@@ -7,7 +7,7 @@ import * as interpret from "./interpret.cjs";
 
 export class Include implements Statement {
     kind = ASTKind.Include;
-    constructor(public path: string, public location: Location) {}
+    constructor(public path: Expression, public location: Location) {}
 
     async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.Include(this, ctx); }
     lispify(): string { return lispify.Include(this); }

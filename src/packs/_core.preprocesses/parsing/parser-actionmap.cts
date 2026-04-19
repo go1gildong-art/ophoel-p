@@ -5,6 +5,6 @@ import * as ohm from 'ohm-js';
 
 export const actionMap: ActionMap<Statement> = {
     Include(this: ActionMapThis, _include, path, _semi) {
-        return new ASTs.Include(path.sourceString.slice(1, -1), getLoc(_include, this.args.ophoelDir));
+        return new ASTs.Include(path.toAST(this.args.ophoelDir), getLoc(_include, this.args.ophoelDir));
     }
 };

@@ -1,0 +1,3 @@
+include "ophoel_test/ophoel/functions/config.oph";
+say!! config.b;
+include "ophoel_test/ophoel/functions/helloworld.oph";

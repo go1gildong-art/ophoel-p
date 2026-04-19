@@ -1,0 +1,4 @@
+const config = {
+  a: 10,
+  b: "foo"
+};

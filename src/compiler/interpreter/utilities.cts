@@ -29,58 +29,47 @@ export function moveValue(address: OphoelValue, value: OphoelValue): void {
     address.value = value.value;
 }
 
-const branchFn = function(this: Context) {
-        const newCtx = new ContextMut();
-        newCtx.frames.push(...this.frames);
-        newCtx.instructions.push(...this.instructions);
-        newCtx.fm = this.fm;
-        return newCtx;
+const branchFn = function (this: Context) {
+    const newCtx = new ContextMut();
+    newCtx.frames.push(...this.frames);
+    newCtx.instructions.push(...this.instructions);
+    newCtx.fm = this.fm;
+    return newCtx;
 }
 
 export class Context {
-    readonly frames: Frame[] = [];
-    readonly instructions: IRNode[] = [];
-    fm: FileManager = new FMPlaceholder("uninitialized");
-    branch = branchFn
+
+    constructor(
+        public readonly frames: Frame[] = [],
+        public readonly instructions: IRNode[] = [],
+        public fm: FileManager = new FMPlaceholder("uninitialized")
+    ) { }
+
+    branch(this: Context) {
+        return new ContextMut(this.frames, this.instructions, this.fm);
+    }
 
     static new(fm: FileManagerClass) {
-        const ctx = {
-            frames: [emptyFrame()],
-            instructions: [] as IRNode[],
-            fm: fm,
-            branch: branchFn
-        } as Context;
-        return ctx;
+        return new Context([emptyFrame()], [], fm);
     }
 
     static newPlaceheld(src: string) {
-        const ctx = {
-            frames: [emptyFrame()],
-            instructions: [] as IRNode[],
-            fm: new FMPlaceholder(src),
-            branch: branchFn
-        } as Context;
-        return ctx;
+        return new Context([emptyFrame()], [], new FMPlaceholder(src));
     }
 }
 
 export class ContextMut {
-    readonly frames: Frame[] = [];
-    readonly instructions: IRNode[] = [];
-    fm: FileManager = new FMPlaceholder("uninitialized");
+    constructor(
+        public readonly frames: Frame[] = [],
+        public readonly instructions: IRNode[] = [],
+        public fm: FileManager = new FMPlaceholder("uninitialized")
+    ) { }
 
     private makeOK(value?: OphoelValue): InterpretReturn {
         return {
             ok: true,
             ctx: this.wrap(),
             value: value ?? { type: "void", value: null }
-        };
-    }
-
-    private makeErr(err?: unknown): InterpretReturn {
-        return {
-            ok: false,
-            err: err ?? new Error("An unexpected error occurred during interpretation")
         };
     }
 
@@ -117,7 +106,7 @@ export class ContextMut {
         };
     }
 
- 
+
     queuePrefix(prefix: string) {
         this.peek().queuedPrefix = prefix;
     }
@@ -135,11 +124,7 @@ export class ContextMut {
     }
 
     wrap(): Context {
-        const newCtx = new Context();
-        newCtx.frames.push(...this.frames);
-        newCtx.instructions.push(...this.instructions);
-        newCtx.fm = this.fm;
-        return newCtx;
+        return new Context(this.frames, this.instructions, this.fm);
     }
 
     export() {

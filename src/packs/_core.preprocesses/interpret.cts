@@ -4,7 +4,7 @@ import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.c
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { makeOphoelError } from "../../compiler/interpreter/error.cjs";
 
-import { res } from "#utils";
+import * as res  from "@utils/result.cjs";
 
 
 export async function Include(ast: ASTTypes["Include"], _ctx: Context): Promise<InterpretReturn> {

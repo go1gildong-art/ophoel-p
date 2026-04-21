@@ -6,11 +6,9 @@ import { parse } from "./parser.cjs";
 import { Context, InterpretReturn } from "./interpreter/utilities.cjs";
 import { ASTTypes } from "../pack-combinator.cjs";
 import { Source } from "../location.cjs";
-import { res } from "#utils";
+import * as res from "@utils/result.cjs";
 
-async function interpret(src: string) {
-
-}
+export class FileReadError extends Error { }
 
 export interface FileManager {
     // ns will hold path from beginning to namespace folder
@@ -24,13 +22,6 @@ export interface FileManager {
 export class FileManagerClass implements FileManager {
     constructor(public dataFolder: string) { }
 
-    /*
-    async include(target: string): Promise<Context | placeholder> {
-        path.join(this.mcNamespace, "ophoel", target);
-        return new Context();
-    }
-        */
-
     async getSrc(target: string) {
         const src = await this.readFile(target);
         return src;
@@ -39,7 +30,6 @@ export class FileManagerClass implements FileManager {
     programCache: { target: string, ast: ASTTypes["Program"] }[] = [];
 
     async include(target: string, ctx: Context): Promise<InterpretReturn> {
-
         let ast: ASTTypes["Program"];
         const foundCache = this.programCache.find(cache => cache.target === target);
 
@@ -73,7 +63,7 @@ export class FileManagerClass implements FileManager {
                 }[err.code as string]
                     ?? `Unknown error: ${err.code}`);
 
-                throw new Error(msg);
+                throw new FileReadError(msg);
             }
 
             throw err;

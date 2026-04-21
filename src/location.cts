@@ -18,7 +18,7 @@ export class Source {
     constructor(
         public src: string,
 
-        // to pair with FileManager, (...namespace/ophoel/functions/) <file-directory>
+        // to pair with FileManager, namespace/ophoel/functions/<file-directory>
         public ophoelDir: string 
     ) { }
 }

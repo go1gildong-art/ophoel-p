@@ -1,7 +1,7 @@
 import { ASTKind } from "../../ast.cjs";
 import { Location } from "../../location.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
-import { FileManager } from "../file-manager.cjs";
+import { FileManager, FileReadError } from "../file-manager.cjs";
 import * as res from "../../utils/result.cjs";
 import { InterpretReturn } from "./utilities.cjs";
 
@@ -22,8 +22,12 @@ export class OphoelError extends Error {
     }
 
     static async fromNode(msg: string, node: ASTTypes[keyof ASTTypes], fm: FileManager) {
-        const src = await fm.getSrc(node.location.dir);
-        return new OphoelError(msg, src, node.location);
+        try {
+            const src = await fm.getSrc(node.location.dir);
+            return new OphoelError(msg, src, node.location);
+        } catch (err) {
+            return err;
+        }
     }
 
     static prettyErr(src: string, loc: Location) {

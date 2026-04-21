@@ -1,9 +1,9 @@
 import { Source } from "../location.cjs";
-import { FileManager } from "./file-manager.cjs";
+import { FileManager, FileManagerClass } from "./file-manager.cjs";
 import { parse } from "./parser.cjs";
 
 
-export async function compile(source: Source, fm: FileManager): Promise<string> {
+export async function compile(source: Source, fm: FileManagerClass): Promise<string> {
     const eval_res = await parse(source).interpret(fm);
     if (!eval_res.ok) throw eval_res.err;
 

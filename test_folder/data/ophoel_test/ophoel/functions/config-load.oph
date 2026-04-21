@@ -1,3 +1,1 @@
-include "ophoel_test/ophoel/functions/conffig.oph";
-include config.helloworldPath;
-say!! config.b;
+include "ophoel_test/ophoel/functions/config.oph";

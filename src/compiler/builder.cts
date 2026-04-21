@@ -77,9 +77,10 @@ async function compileDirectory(currentSrc: string, currentOut: string, fm: File
 
         } else if (item.endsWith('.oph')) {
             try {
+                const filePath = path.relative(dataDir, srcPath);
                 const mcfunction = await compile({
-                    src: await fm.readFile(path.relative(dataDir, srcPath)),
-                    ophoelDir: shortenPath(srcPath)
+                    src: await fm.readFile(filePath),
+                    ophoelDir: filePath
                 }, fm);
 
                 const finalOutPath = outPath.replace('.oph', '.mcfunction');

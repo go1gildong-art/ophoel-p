@@ -20,7 +20,7 @@ export async function Include(ast: ASTTypes["Include"], _ctx: Context): Promise<
             throw new Error(msg);
         }
 
-        const includedCtx = await ctx.fm.include(pathValue.value.value, ctx.wrap());
+        const includedCtx = await ctx.include(pathValue.value.value);
         return includedCtx;
         
     } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }

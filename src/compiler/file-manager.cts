@@ -15,7 +15,7 @@ export interface FileManager {
     // C:/.../my-pack/data
     dataFolder: string,
     getSrc(target: string): Promise<string>,
-    include(target: string, ctx: Context): Promise<InterpretReturn>,
+    getAst(target: string): Promise<ASTTypes["Program"]>,
     programCache: { target: string, ast: ASTTypes["Program"] }[]
 }
 
@@ -29,22 +29,15 @@ export class FileManagerClass implements FileManager {
 
     programCache: { target: string, ast: ASTTypes["Program"] }[] = [];
 
-    async include(target: string, ctx: Context): Promise<InterpretReturn> {
-        let ast: ASTTypes["Program"];
+    async getAst(target: string): Promise<ASTTypes["Program"]> {
         const foundCache = this.programCache.find(cache => cache.target === target);
+        if (foundCache) return foundCache.ast;
 
-        if (foundCache) ast = foundCache.ast;
-        else {
-            const srcCode = await this.readFile(target);
+            const srcCode = await this.getSrc(target);
             const srcObj = new Source(srcCode, target);
             const parsedAST = parse(srcObj);
-
             this.programCache.push({ target, ast: parsedAST });
-            ast = parsedAST;
-        }
-
-        const result = await ast.evaluate(ctx);
-        return result;
+            return parsedAST;
     }
 
     async readFile(target: string): Promise<string> {
@@ -80,7 +73,7 @@ export class FMPlaceholder implements FileManager {
     dataFolder: string = placeholderMsgs.datapack;
 
     async getSrc(target: string): Promise<string> { return this.src; }
-    async include(target: string, context: Context): Promise<InterpretReturn> {
+    async getAst(target: string): Promise<ASTTypes["Program"]> {
         throw new Error(placeholderMsgs.include);
     }
     programCache = [];

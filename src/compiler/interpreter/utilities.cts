@@ -29,14 +29,6 @@ export function moveValue(address: OphoelValue, value: OphoelValue): void {
     address.value = value.value;
 }
 
-const branchFn = function (this: Context) {
-    const newCtx = new ContextMut();
-    newCtx.frames.push(...this.frames);
-    newCtx.instructions.push(...this.instructions);
-    newCtx.fm = this.fm;
-    return newCtx;
-}
-
 export class Context {
     constructor(
         public readonly frames: Frame[] = [],
@@ -67,8 +59,8 @@ export class ContextMut {
     constructor(
         public readonly frames: Frame[] = [],
         public readonly instructions: IRNode[] = [],
-        public fm: FileManager = new FMPlaceholder("uninitialized"),
-        public includeTrace: string[] = []
+        public readonly fm: FileManager = new FMPlaceholder("uninitialized"),
+        public readonly includeTrace: string[] = []
     ) { }
 
     private makeOK(value?: OphoelValue): InterpretReturn {
@@ -136,6 +128,12 @@ export class ContextMut {
             this.fm, 
             this.includeTrace
         );
+    }
+
+    async include(path: string): Promise<InterpretReturn> {
+        const ast = await this.fm.getAst(path);
+        const newCtx = await ast.evaluate(this.wrap());
+        return newCtx;
     }
 
     export() {

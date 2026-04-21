@@ -38,15 +38,20 @@ const branchFn = function (this: Context) {
 }
 
 export class Context {
-
     constructor(
         public readonly frames: Frame[] = [],
         public readonly instructions: IRNode[] = [],
-        public fm: FileManager = new FMPlaceholder("uninitialized")
+        public readonly fm: FileManager = new FMPlaceholder("uninitialized"),
+        public readonly includeTrace: string[] = []
     ) { }
 
     branch(this: Context) {
-        return new ContextMut(this.frames, this.instructions, this.fm);
+        return new ContextMut(
+            this.frames, 
+            this.instructions, 
+            this.fm, 
+            this.includeTrace
+        );
     }
 
     static new(fm: FileManagerClass) {
@@ -62,7 +67,8 @@ export class ContextMut {
     constructor(
         public readonly frames: Frame[] = [],
         public readonly instructions: IRNode[] = [],
-        public fm: FileManager = new FMPlaceholder("uninitialized")
+        public fm: FileManager = new FMPlaceholder("uninitialized"),
+        public includeTrace: string[] = []
     ) { }
 
     private makeOK(value?: OphoelValue): InterpretReturn {
@@ -82,6 +88,7 @@ export class ContextMut {
     pushFrame(frame: Frame = emptyFrame()) {
         if (this.peek().queuedPrefix != null) {
             frame.mcPrefix = this.peek().queuedPrefix;
+            this.peek().queuedPrefix = undefined;
         }
 
         this.frames.push(frame);
@@ -106,7 +113,6 @@ export class ContextMut {
         };
     }
 
-
     queuePrefix(prefix: string) {
         this.peek().queuedPrefix = prefix;
     }
@@ -124,7 +130,12 @@ export class ContextMut {
     }
 
     wrap(): Context {
-        return new Context(this.frames, this.instructions, this.fm);
+        return new Context(
+            this.frames, 
+            this.instructions, 
+            this.fm, 
+            this.includeTrace
+        );
     }
 
     export() {

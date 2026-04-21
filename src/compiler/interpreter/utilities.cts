@@ -3,6 +3,7 @@ import { IRs } from "../../ir/ir-collection.cjs";
 import { IRInstructions, IRKind, IRNode } from "../../ir/ir.cjs";
 import { Location } from "../../location.cjs";
 import * as p from "../../pack-combinator.cjs";
+import * as res from "@utils/result.cjs";
 import { FileManager, FileManagerClass, FMPlaceholder } from "../file-manager.cjs";
 import { OphoelError } from "./error.cjs";
 
@@ -57,18 +58,14 @@ export class Context {
 
 export class ContextMut {
     constructor(
-        public readonly frames: Frame[] = [],
-        public readonly instructions: IRNode[] = [],
-        public readonly fm: FileManager = new FMPlaceholder("uninitialized"),
-        public readonly includeTrace: string[] = []
+        public frames: Frame[] = [],
+        public instructions: IRNode[] = [],
+        public fm: FileManager = new FMPlaceholder("uninitialized"),
+        public includeTrace: string[] = []
     ) { }
 
-    private makeOK(value?: OphoelValue): InterpretReturn {
-        return {
-            ok: true,
-            ctx: this.wrap(),
-            value: value ?? { type: "void", value: null }
-        };
+    private makeOK(value: OphoelValue = { type: "void", value: null }): InterpretReturn {
+        return res.makeOK(value, this.wrap());
     }
 
     peek(): Frame {
@@ -92,17 +89,15 @@ export class ContextMut {
         this.peek().variables.push({ field, value, mutable });
     }
 
-    async getVariable(ident: string, node: p.ASTTypes[keyof p.ASTTypes]): Promise<InterpretReturn> {
+    async getVariable(ident: string): Promise<InterpretReturn> {
         for (const frame of [...this.frames].reverse()) {
             for (const variable of frame.variables) {
                 if (variable.field === ident) return this.makeOK(variable.value);
             }
         }
 
-        return {
-            ok: false,
-            err: await OphoelError.fromNode(`Variable not found: ${ident}`, node, this.fm)
-        };
+        const msg = `Variable not found: ${ident}`;
+        return res.makeErr(new Error(msg));
     }
 
     queuePrefix(prefix: string) {
@@ -131,8 +126,15 @@ export class ContextMut {
     }
 
     async include(path: string): Promise<InterpretReturn> {
+        if (this.includeTrace.some(includeNode => includeNode === path)) {
+            const msg = `Recursive include detected for ${path}!`;
+            throw new Error(msg);
+        }
+
+        this.includeTrace.push(path);
         const ast = await this.fm.getAst(path);
         const newCtx = await ast.evaluate(this.wrap());
+        if (newCtx.ok) newCtx.ctx.branch().includeTrace.pop();
         return newCtx;
     }
 

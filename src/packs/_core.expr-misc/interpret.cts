@@ -5,7 +5,7 @@ import { makeOphoelError } from "../../compiler/interpreter/error.cjs";
 export async function Identifier(ast: ASTTypes["Identifier"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
 try {
-    const address = await ctx.getVariable(ast.name, ast);
+    const address = await ctx.getVariable(ast.name);
     if (!address.ok) return address;
 
     return { ok: true, ctx: ctx.wrap(), value: address.value };

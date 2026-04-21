@@ -1,4 +1,4 @@
-
+include "ophoel_test/ophoel/functions/config-load.oph";
 const config = {
   a: 10,
   b: "foo",

@@ -37,7 +37,13 @@
   },
   "scripts": {
     "compile": "tsc",
-    "watch": "npx tsc -w",
+    "watch:ts": "tsc -w",
+    "watch:alias": "tsc-alias -w",
+
+    "watch:build": "run-p watch:ts watch:alias",
+
+    "watch": "run-p watch:build",
+
     "test": "node ./out/test-resources/run-golden.cjs",
     "build": "node build.js",
     "dev": "nodemon --prefix \"C:/Users/nines/Desktop/릴름즈/ophoel/\" --watch \"ophoel_config.json\" --watch \"data/*/ophoel\" --ext oph,json --exec \"node ./src/compiler/build.js\""
@@ -45,7 +51,9 @@
   "devDependencies": {
     "@types/node": "^20.19.37",
     "@types/vscode": "^1.88.0",
+    "npm-run-all": "^4.1.5",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
     "typescript": "^5.9.3"
   },
   "activationEvents": [

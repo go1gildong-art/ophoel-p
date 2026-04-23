@@ -36,12 +36,13 @@
     "url": "git+https://github.com/skibidi/ophoel-formatter.git"
   },
   "scripts": {
-    "compile": "tsc",
+    "compile:ts": "tsc",
+    "compile:alias": "tsc-alias",
+    "compile": "run-p compile:ts compile:alias",
+
     "watch:ts": "tsc -w",
     "watch:alias": "tsc-alias -w",
-
     "watch:build": "run-p watch:ts watch:alias",
-
     "watch": "run-p watch:build",
 
     "test": "node ./out/test-resources/run-golden.cjs",

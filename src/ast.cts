@@ -24,6 +24,7 @@ export enum ASTKind {
     IntLiteral = "IntLiteral",
     MacroCall = "MacroCall",
     MacroDecl = "MacroDecl",
+    MacroLiteral = "MacroLiteral",
     McCommand = "McCommand",
     McExecStatement = "McExecStatement",
     MemberAccess = "MemberAccess",

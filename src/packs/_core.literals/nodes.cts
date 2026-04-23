@@ -85,3 +85,15 @@ export class VectorLiteral implements Expression {
     async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.VectorLiteral(this, ctx); }
     lispify(): string { return lispify.VectorLiteral(this); }
 }
+
+export class MacroLiteral implements Expression, StandardNode {
+    kind = ASTKind.MacroLiteral;
+
+    constructor(
+        public parameters: string[],
+        public body: Block | Expression,
+        public location: Location) { }
+
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.MacroLiteral(this, ctx); }
+    lispify(): string { return lispify.MacroLiteral(this); }
+}

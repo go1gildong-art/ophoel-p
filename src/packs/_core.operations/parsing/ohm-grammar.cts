@@ -55,7 +55,8 @@ MacroCall = ident "!" "(" ListOf<Expr, ","> ")" -- macro
 
 
 
-Primary = number
+Primary = MacroLiteral
+        | number
         | string
         | TemplateString
         | bool

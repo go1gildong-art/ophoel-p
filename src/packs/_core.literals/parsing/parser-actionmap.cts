@@ -79,5 +79,13 @@ export const actionMap: ActionMap<literalActionTypes> = {
                 , { keys: [], values: [] });
 
         return new ASTs.CompoundLiteral(kvAcc.keys, kvAcc.values, getLoc(_open, this.args.ophoelDir));
-    }
+    },
+
+    MacroLiteral(this: ActionMapThis, _argOpen, params, _argClose, _bang, _arrow, body) {
+        return new ASTs.MacroLiteral(
+            params.sourceString.split(", "),
+            body.toAST(this.args.ophoelDir),
+            getLoc(_argOpen, this.args.ophoelDir)
+        );
+    },
 };

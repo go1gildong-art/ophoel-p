@@ -1,4 +1,4 @@
-import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
+import { Context, InterpretReturn, OphoelValue } from "../../compiler/interpreter/utilities.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { makeOphoelError } from "../../compiler/interpreter/error.cjs";
 
@@ -7,19 +7,25 @@ export async function Block(ast: ASTTypes["Block"], _ctx: Context): Promise<Inte
     let ctx = _ctx.branch();
     try {
         ctx.pushFrame();
+        let returnValue: OphoelValue | undefined;
 
         for (const stmt of ast.statements) {
             const res = await stmt.evaluate(ctx.wrap());
             if (!res.ok) throw res.err;
 
             ctx = res.ctx.branch();
+
+            if (stmt.kind === "ExecExpr") {
+                returnValue = res.value;
+                break;
+            }
         }
 
         ctx.popFrame();
         return {
             ok: true,
             ctx: ctx.wrap(),
-            value: { type: "void", value: null }
+            value: returnValue ?? { type: "void", value: null }
         }
     } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }

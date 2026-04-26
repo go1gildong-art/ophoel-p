@@ -354,7 +354,10 @@ export async function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): Prom
             ctx.addVariable(arg, value.value, false);
         }
 
-        const result = await callee.body.evaluate(ctx.wrap());
+        const result = await callee.body.evaluate(callee.closure);
+        
+
+
         if (!result.ok) return result;
         ctx = result.ctx.branch();
 

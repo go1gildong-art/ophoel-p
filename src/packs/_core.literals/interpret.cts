@@ -114,7 +114,8 @@ export async function MacroLiteral(ast: ASTTypes["MacroLiteral"], _ctx: Context)
     try {
         return res.makeOK({ type: "macro", value: {
             parameters: ast.parameters,
-            body: ast.body
+            body: ast.body,
+            closure: ctx.wrap()
         } }, ctx.wrap());
     } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }

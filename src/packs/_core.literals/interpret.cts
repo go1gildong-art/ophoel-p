@@ -1,6 +1,6 @@
 import { OphoelError } from "../../compiler/interpreter/error.cjs";
 import { FileManager } from "../../compiler/file-manager.cjs";
-import { Context, InterpretReturn, OphoelValue } from "../../compiler/interpreter/utilities.cjs";
+import { Context, InterpretReturn, MacroObject, OphoelValue } from "../../compiler/interpreter/utilities.cjs";
 import * as res from "../../utils/result.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { KVPair } from "../../compiler/interpreter/utilities.cjs";
@@ -112,10 +112,14 @@ export async function VectorLiteral(ast: ASTTypes["VectorLiteral"], _ctx: Contex
 export async function MacroLiteral(ast: ASTTypes["MacroLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
     try {
-        return res.makeOK({ type: "macro", value: {
+        type Macro = Extract<OphoelValue, {type: "macro"}>;
+
+        const result =  res.makeOK<Macro, Context, InterpretReturn>({ type: "macro", value: {
             parameters: ast.parameters,
             body: ast.body,
             closure: ctx.wrap()
-        } }, ctx.wrap());
+        } } as Macro, ctx.wrap());
+        
+        return result;
     } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }

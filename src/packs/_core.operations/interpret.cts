@@ -332,7 +332,6 @@ export async function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): Prom
         const _callee = await ast.callee.evaluate(ctx.wrap());
         if (!_callee.ok) return _callee;
         ctx = _callee.ctx.branch();
-        
 
         if (_callee.value.type !== "macro") {
             const msg = `cannot call non-macro object as macro!`;
@@ -340,6 +339,8 @@ export async function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): Prom
         }
         const callee = _callee.value.value;
 
+        const originalFrames = ctx.frames;
+        ctx.frames = callee.closure.frames;
         ctx.pushFrame();
 
         for (const [index, arg] of callee.parameters.entries()) {
@@ -350,18 +351,16 @@ export async function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): Prom
             }
             if (!value.ok) return value;
 
-            ctx = _callee.ctx.branch();
+            ctx = value.ctx.branch();
             ctx.addVariable(arg, value.value, false);
         }
 
-        const result = await callee.body.evaluate(callee.closure);
-        
-
-
+        const result = await callee.body.evaluate(ctx.wrap());
         if (!result.ok) return result;
         ctx = result.ctx.branch();
 
         ctx.popFrame();
+        ctx.frames = originalFrames;
         return res.makeOK(result.value, ctx.wrap());
     } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }

@@ -43,10 +43,10 @@ export class Context {
 
     branch(this: Context) {
         return new ContextMut(
-            this.frames, 
-            this.instructions, 
+            [ ...this.frames ], 
+            [ ...this.instructions ], 
             this.fm, 
-            this.includeTrace
+            [ ...this.includeTrace ]
         );
     }
 
@@ -121,10 +121,10 @@ export class ContextMut {
 
     wrap(): Context {
         return new Context(
-            this.frames, 
-            this.instructions, 
+            [ ...this.frames ], 
+            [ ...this.instructions ], 
             this.fm, 
-            this.includeTrace
+            [ ...this.includeTrace ]
         );
     }
 

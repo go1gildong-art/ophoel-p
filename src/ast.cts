@@ -41,6 +41,7 @@ export enum ASTKind {
     VariableDecl = "VariableDecl",
     VectorLiteral = "VectorLiteral",
     WhileStatement = "WhileStatement",
+    YieldExpr = "YieldExpr",
 }
 
 export interface ASTNode {

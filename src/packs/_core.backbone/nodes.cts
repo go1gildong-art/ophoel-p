@@ -24,6 +24,15 @@ export class ExecExpr implements Statement, StandardNode {
     lispify(): string { return lispify.ExecExpr(this); }
 }
 
+export class YieldExpr implements Statement, StandardNode {
+    kind = ASTKind.YieldExpr;
+
+    constructor(public expression: Expression, public location: Location) { }
+
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ExecExpr(this, ctx); }
+    lispify(): string { return lispify.ExecExpr(this); }
+}
+
 
 export class Program implements Statement, StandardNode {
     kind = ASTKind.Program;

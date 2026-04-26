@@ -1,9 +1,11 @@
 export const grammar = `
 Program = Statement* end
 
-Block = "{" Statement* "}"
+Block = "{" (Statement | YieldExpr )* "}"
+YieldExpr = Expr
 
 ExecExpr = Expr ";"
+
 
 Statement = Include
            | FunctionDecl

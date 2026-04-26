@@ -51,9 +51,12 @@ FunctionCall = ident "(" ListOf<Expr, ","> ")" -- fn
               | MacroCall
 
 MacroCall = ident "!" "(" ListOf<Expr, ","> ")" -- macro
-              | ParenExpr
+              | LambdaLiterals
 
-
+LambdaLiterals = 
+       MacroLiteral
+       // | FunctionLiteral
+       | ParenExpr
 
 Primary = MacroLiteral
         | number

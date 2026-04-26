@@ -25,7 +25,7 @@ export type OphoelValue =
     | { type: "compound"; value: KVPair[] }
     | { type: "void"; value: null }
     | { type: "macro"; value: MacroObject };
-export type MacroObject = { parameters: string, body: Block | Expression }
+export type MacroObject = { parameters: string[], body: Block | Expression }
 export type KVPair = { field: string, value: OphoelValue };
 
 export function moveValue(address: OphoelValue, value: OphoelValue): void {

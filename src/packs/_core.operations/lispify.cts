@@ -30,7 +30,7 @@ export function MemberAccess(ast: ASTTypes["MemberAccess"]) {
 
 export function FunctionCall(ast: ASTTypes["FunctionCall"]) {
     const args = ast.args.map((arg) => arg.lispify()).join(" ");
-    return `(${ast.callee} ${args})`;
+    return `(${ast.callee.lispify()} ${args})`;
 }
 
 export function VariableAssign(ast: ASTTypes["VariableAssign"]) {
@@ -47,5 +47,5 @@ export function CompoundAssign(ast: ASTTypes["CompoundAssign"]) {
 
 export function MacroCall(ast: ASTTypes["MacroCall"]) {
     const args = ast.args.map((arg) => arg.lispify()).join(" ");
-    return `(${ast.callee}! ${args})`;
+    return `(${ast.callee.lispify()}! ${args})`;
 }

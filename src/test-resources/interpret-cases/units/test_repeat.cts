@@ -10,8 +10,8 @@ export const unit = new InterpretUnit({
         `const repeat_check = 1;`,
         `repeat(3) {`,
         `  say!! repeat_check;`,
-        `  repeat_check++;`,
         `  repeat(2) say!! "nested!";`,
+        `  repeat_check++;`,
         `}`
     ].join("\n"),
 

@@ -21,14 +21,15 @@ export const actionMap: ActionMap<Statement | any[]> = {
         return new ASTs.ExecExpr(expr.toAST(this.args.ophoelDir), getLoc(expr, this.args.ophoelDir))
     },
 
+    YieldExpr(this: ActionMapThis, expr) {
+        return new ASTs.YieldExpr(expr.toAST(this.args.ophoelDir), getLoc(expr, this.args.ophoelDir))
+    },
+
     // Built-in Ohm iteration handler (for the * in Statement*)
     _iter(this: ActionMapThis, ...children) {
         return children.map(c => c.toAST(this.args.ophoelDir));
     },
 
-    ListOf(this: ActionMapThis, list) {
-        return list.toAST(this.args.ophoelDir);
-    },
     NonemptyListOf(this: ActionMapThis, first, _sep, rest) {
         // 'first' is one node, 'rest' is an IterationNode of the remaining nodes
         return [first.toAST(this.args.ophoelDir), ...rest.toAST(this.args.ophoelDir)];

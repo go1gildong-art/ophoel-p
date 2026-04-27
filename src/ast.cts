@@ -24,6 +24,7 @@ export enum ASTKind {
     IntLiteral = "IntLiteral",
     MacroCall = "MacroCall",
     MacroDecl = "MacroDecl",
+    MacroLiteral = "MacroLiteral",
     McCommand = "McCommand",
     McExecStatement = "McExecStatement",
     MemberAccess = "MemberAccess",
@@ -40,6 +41,7 @@ export enum ASTKind {
     VariableDecl = "VariableDecl",
     VectorLiteral = "VectorLiteral",
     WhileStatement = "WhileStatement",
+    YieldExpr = "YieldExpr",
 }
 
 export interface ASTNode {

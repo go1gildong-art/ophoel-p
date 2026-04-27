@@ -1,4 +1,4 @@
-import { ASTNode, Statement } from "../../ast.cjs";
+import { ASTNode, Expression, Statement } from "../../ast.cjs";
 import { IRs } from "../../ir/ir-collection.cjs";
 import { IRInstructions, IRKind, IRNode } from "../../ir/ir.cjs";
 import { Location } from "../../location.cjs";
@@ -6,6 +6,7 @@ import * as p from "../../pack-combinator.cjs";
 import * as res from "@utils/result.cjs";
 import { FileManager, FileManagerClass, FMPlaceholder } from "../file-manager.cjs";
 import { OphoelError } from "./error.cjs";
+import { Block } from "../../packs/_core.backbone/nodes.cjs";
 
 export type InterpretReturn = {
     ok: true;
@@ -22,7 +23,9 @@ export type OphoelValue =
     | { type: "string"; value: string }
     | { type: "vector"; value: OphoelValue[] }
     | { type: "compound"; value: KVPair[] }
-    | { type: "void"; value: null };
+    | { type: "void"; value: null }
+    | { type: "macro"; value: MacroObject };
+export type MacroObject = { parameters: string[], body: Block | Expression, closure: Context }
 export type KVPair = { field: string, value: OphoelValue };
 
 export function moveValue(address: OphoelValue, value: OphoelValue): void {
@@ -40,10 +43,10 @@ export class Context {
 
     branch(this: Context) {
         return new ContextMut(
-            this.frames, 
-            this.instructions, 
+            [ ...this.frames ], 
+            [ ...this.instructions ], 
             this.fm, 
-            this.includeTrace
+            [ ...this.includeTrace ]
         );
     }
 
@@ -118,10 +121,10 @@ export class ContextMut {
 
     wrap(): Context {
         return new Context(
-            this.frames, 
-            this.instructions, 
+            [ ...this.frames ], 
+            [ ...this.instructions ], 
             this.fm, 
-            this.includeTrace
+            [ ...this.includeTrace ]
         );
     }
 

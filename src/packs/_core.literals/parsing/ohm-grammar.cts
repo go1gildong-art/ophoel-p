@@ -1,9 +1,10 @@
 export const grammar = `
+MacroLiteral = "(" ListOf<ident, ","> ")" "!" "=>" (Block | Expr)
+
 string = ("\\"" (~"\\"" any)* "\\"")
        | ("'" (~"'" any)* "'")
 
 TemplateString = "\`" quasi InterQuasi* "\`"
-
 InterQuasi = Interpol quasi
 Interpol = "{" Expr "}"
 quasi = (~("\`" | "{") any)*

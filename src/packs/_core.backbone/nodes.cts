@@ -6,7 +6,7 @@ import * as interpret from "./interpret.cjs";
 import { FileManager, FileManagerClass } from "../../compiler/file-manager.cjs";
 
 // Expand existing nodes to a pack.
-export class Block implements Statement, StandardNode {
+export class Block implements Expression, Statement, StandardNode {
     kind = ASTKind.Block;
 
     constructor(public statements: Statement[], public location: Location) { }
@@ -17,6 +17,15 @@ export class Block implements Statement, StandardNode {
 
 export class ExecExpr implements Statement, StandardNode {
     kind = ASTKind.ExecExpr;
+
+    constructor(public expression: Expression, public location: Location) { }
+
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ExecExpr(this, ctx); }
+    lispify(): string { return lispify.ExecExpr(this); }
+}
+
+export class YieldExpr implements Statement, StandardNode {
+    kind = ASTKind.YieldExpr;
 
     constructor(public expression: Expression, public location: Location) { }
 

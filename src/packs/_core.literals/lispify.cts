@@ -22,3 +22,8 @@ export function CompoundLiteral(ast: ASTTypes["CompoundLiteral"]) {
 
     return `(${pairs})`;
 }
+
+export function MacroLiteral(ast: ASTTypes["MacroLiteral"]) {
+    const params = ast.parameters.join(" ");
+    return `((${params})! => ${ast.body.lispify()})`;
+}

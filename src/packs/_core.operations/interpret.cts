@@ -326,5 +326,41 @@ export async function CompoundAssign(ast: ASTTypes["CompoundAssign"], _ctx: Cont
 }
 
 export async function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: await OphoelError.fromNode("MacroCall: not implemented yet", ast, _ctx.fm as FileManager) };
+    let ctx = _ctx.branch();
+    try {
+
+        const _callee = await ast.callee.evaluate(ctx.wrap());
+        if (!_callee.ok) return _callee;
+        ctx = _callee.ctx.branch();
+
+        if (_callee.value.type !== "macro") {
+            const msg = `cannot call non-macro object as macro!`;
+            throw new Error(msg);
+        }
+        const callee = _callee.value.value;
+
+        const originalFrames = ctx.frames;
+        ctx.frames = callee.closure.frames;
+        ctx.pushFrame();
+
+        for (const [index, arg] of callee.parameters.entries()) {
+            const value = await ast.args[index]?.evaluate(ctx.wrap());
+            if (!value) {
+                const msg = `${index + 1}th argument ${arg} does not exist for the macro`;
+                throw new Error(msg);
+            }
+            if (!value.ok) return value;
+
+            ctx = value.ctx.branch();
+            ctx.addVariable(arg, value.value, false);
+        }
+
+        const result = await callee.body.evaluate(ctx.wrap());
+        if (!result.ok) return result;
+        ctx = result.ctx.branch();
+
+        ctx.popFrame();
+        ctx.frames = originalFrames;
+        return res.makeOK(result.value, ctx.wrap());
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }

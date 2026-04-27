@@ -34,10 +34,12 @@ export const actionMap: ActionMap<Expression> = {
     PostUnaryExp_postIncrement(this: ActionMapThis, left, op) { return new ASTs.PostUnary(UnaryOperator.INCREMENT, left.toAST(this.args.ophoelDir), getLoc(op, this.args.ophoelDir)); },
     PostUnaryExp_postDecrement(this: ActionMapThis, left, op) { return new ASTs.PostUnary(UnaryOperator.DECREMENT, left.toAST(this.args.ophoelDir), getLoc(op, this.args.ophoelDir)); },
     PostUnaryExp(this: ActionMapThis, left) { return left.toAST(this.args.ophoelDir); },
-    FunctionCall_fn(this: ActionMapThis, name, _open, args, _close) { return new ASTs.FunctionCall(name.sourceString, args.toAST(this.args.ophoelDir), getLoc(name, this.args.ophoelDir)); },
+    
+    FunctionCall_fn(this: ActionMapThis, name, _open, args, _close) { return new ASTs.FunctionCall(name.toAST(this.args.ophoelDir), args.toAST(this.args.ophoelDir), getLoc(name, this.args.ophoelDir)); },
     FunctionCall(this: ActionMapThis, left) { return left.toAST(this.args.ophoelDir); },
-    MacroCall_macro(this: ActionMapThis, name, _bang, _open, args, _close) { return new ASTs.MacroCall(name.sourceString, args.toAST(this.args.ophoelDir), getLoc(name, this.args.ophoelDir)); },
+    MacroCall_macro(this: ActionMapThis, name, _bang, _open, args, _close) { return new ASTs.MacroCall(name.toAST(this.args.ophoelDir), args.toAST(this.args.ophoelDir), getLoc(name, this.args.ophoelDir)); },
     MacroCall(this: ActionMapThis, left) { return left.toAST(this.args.ophoelDir); },
+    
     MemberAccess_mem(this: ActionMapThis, expr, _dot, ident) { return new ASTs.MemberAccess(expr.toAST(this.args.ophoelDir), ident.sourceString, getLoc(_dot, this.args.ophoelDir)); },
     MemberAccess(this: ActionMapThis, left) { return left.toAST(this.args.ophoelDir); },
     IndexAccess_index(this: ActionMapThis, expr, _open, index, _close) { return new ASTs.IndexAccess(expr.toAST(this.args.ophoelDir), index.toAST(this.args.ophoelDir), getLoc(_open, this.args.ophoelDir)); },

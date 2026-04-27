@@ -8,8 +8,11 @@ export function Block(ast: ASTTypes["Block"]) {
 }
 
 export function ExecExpr(ast: ASTTypes["ExecExpr"]) {
-
     return `(ex ${ast.expression.lispify()})`;
+}
+
+export function YieldExpr(ast: ASTTypes["YieldExpr"]) {
+    return `(yield ${ast.expression.lispify()})`;
 }
 
 export function Program(ast: ASTTypes["Program"]) {

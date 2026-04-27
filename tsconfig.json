@@ -23,7 +23,7 @@
   },
   "include": [
     "./src"
-  ],
+, "src/test-resources/interpret-cases/units/.test_block-expr.cts"  ],
   "exclude": [
     "./node_modules",
     "./src/test",

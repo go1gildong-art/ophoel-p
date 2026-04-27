@@ -38,10 +38,11 @@ export const actionMap: ActionMap<Statement> = {
         );
     },
 
-    MacroDecl(this: ActionMapThis, _macro, _bang, name, _open, params, _close, body) {
+    MacroDecl(this: ActionMapThis, _macro, name, _bang, _open, paramString, _close, body) {
+        const params = paramString.sourceString.split(", ");
         return new ASTs.MacroDecl(
             name.sourceString,
-            params.sourceString.split(", "),
+            params?.[0] ? params : [],
             body.toAST(this.args.ophoelDir),
             getLoc(_macro, this.args.ophoelDir)
         );

@@ -1,6 +1,6 @@
 import { OphoelError } from "../../compiler/interpreter/error.cjs";
 import { FileManager } from "../../compiler/file-manager.cjs";
-import { Context, InterpretReturn, OphoelValue } from "../../compiler/interpreter/utilities.cjs";
+import { Context, InterpretReturn, MacroObject, OphoelValue } from "../../compiler/interpreter/utilities.cjs";
 import * as res from "../../utils/result.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { KVPair } from "../../compiler/interpreter/utilities.cjs";
@@ -13,27 +13,27 @@ export async function BoolLiteral(ast: ASTTypes["BoolLiteral"], _ctx: Context): 
 
 export async function CompoundLiteral(ast: ASTTypes["CompoundLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
-try {
-    let acc = [] as KVPair[];
+    try {
+        let acc = [] as KVPair[];
 
-    for (let i = 0; i < ast.keys.length; i++) {
-        const key = ast.keys[i];
-        const value = ast.values[i];
-        if (!key) return res.makeErr(await OphoelError.fromNode(`CompoundLiteral: missing key for index '${i}'`, ast, ctx.fm));
-        if (!value) return res.makeErr(await OphoelError.fromNode(`CompoundLiteral: missing value for key '${key}'`, ast, ctx.fm));
+        for (let i = 0; i < ast.keys.length; i++) {
+            const key = ast.keys[i];
+            const value = ast.values[i];
+            if (!key) return res.makeErr(await OphoelError.fromNode(`CompoundLiteral: missing key for index '${i}'`, ast, ctx.fm));
+            if (!value) return res.makeErr(await OphoelError.fromNode(`CompoundLiteral: missing value for key '${key}'`, ast, ctx.fm));
 
-        const result = await value.evaluate(ctx.wrap());
-        if (!result.ok) return result;
+            const result = await value.evaluate(ctx.wrap());
+            if (!result.ok) return result;
 
-        ctx = result.ctx.branch();
-        acc.push({
-            field: key,
-            value: result.value
-        });
-    }
+            ctx = result.ctx.branch();
+            acc.push({
+                field: key,
+                value: result.value
+            });
+        }
 
-    return res.makeOK({ type: "compound", value: acc }, ctx.wrap());
-} catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
+        return res.makeOK({ type: "compound", value: acc }, ctx.wrap());
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
 
 export async function FloatLiteral(ast: ASTTypes["FloatLiteral"], _ctx: Context): Promise<InterpretReturn> {
@@ -64,47 +64,62 @@ export async function StringLiteral(ast: ASTTypes["StringLiteral"], _ctx: Contex
 
 export async function TemplateStringLiteral(ast: ASTTypes["TemplateStringLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
-try {
+    try {
 
-    const exprBuffer = [] as OphoelValue["value"][];
+        const exprBuffer = [] as OphoelValue["value"][];
 
-    for (const expr of ast.expressions) {
-        const res = await expr.evaluate(ctx.wrap());
-        if (!res.ok) return res;
-        ctx = res.ctx.branch();
+        for (const expr of ast.expressions) {
+            const res = await expr.evaluate(ctx.wrap());
+            if (!res.ok) return res;
+            ctx = res.ctx.branch();
 
-        const coerced = await coerce(res.value, "string", ctx.wrap(), ast);
-        if (!coerced.ok) return coerced;
-        ctx = coerced.ctx.branch();
-        exprBuffer.push(coerced.value.value);
-    }
+            const coerced = await coerce(res.value, "string", ctx.wrap(), ast);
+            if (!coerced.ok) return coerced;
+            ctx = coerced.ctx.branch();
+            exprBuffer.push(coerced.value.value);
+        }
 
 
 
-    const total = ast.quasis.flatMap((x, i) =>
-        exprBuffer[i] !== undefined ? [x, exprBuffer[i]] : [x]
-    );
+        const total = ast.quasis.flatMap((x, i) =>
+            exprBuffer[i] !== undefined ? [x, exprBuffer[i]] : [x]
+        );
 
-    return res.makeOK({
-        type: "string",
-        value: total.join("")
-    }, ctx.wrap());
-} catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
+        return res.makeOK({
+            type: "string",
+            value: total.join("")
+        }, ctx.wrap());
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
 
 export async function VectorLiteral(ast: ASTTypes["VectorLiteral"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
-try {
-    let acc = [] as OphoelValue[];
+    try {
+        let acc = [] as OphoelValue[];
 
-    for (const expr of ast.entries) {
-        const res = await expr.evaluate(ctx.wrap());
-        if (!res.ok) return res;
+        for (const expr of ast.entries) {
+            const res = await expr.evaluate(ctx.wrap());
+            if (!res.ok) return res;
 
-        ctx = res.ctx.branch();
-        acc.push(res.value);
-    }
+            ctx = res.ctx.branch();
+            acc.push(res.value);
+        }
 
-    return res.makeOK({ type: "vector", value: acc }, ctx.wrap());
-} catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
+        return res.makeOK({ type: "vector", value: acc }, ctx.wrap());
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
+}
+
+export async function MacroLiteral(ast: ASTTypes["MacroLiteral"], _ctx: Context): Promise<InterpretReturn> {
+    let ctx = _ctx.branch();
+    try {
+        type Macro = Extract<OphoelValue, {type: "macro"}>;
+
+        const result =  res.makeOK<Macro, Context, InterpretReturn>({ type: "macro", value: {
+            parameters: ast.parameters,
+            body: ast.body,
+            closure: ctx.wrap()
+        } } as Macro, ctx.wrap());
+        
+        return result;
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }

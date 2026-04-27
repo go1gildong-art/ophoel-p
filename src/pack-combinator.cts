@@ -37,9 +37,9 @@ type ActionMaps =
   & typeof _core_preprocesses.actionMap
 
 
-  export const grammars = Object.fromEntries(
-    Object.entries(packs).map(([name, p]) => ([name, p.grammar ]))
-  );
+export const grammars = Object.fromEntries(
+  Object.entries(packs).map(([name, p]) => ([name, p.grammar]))
+);
 
 
 export const ASTs = Object.assign(

@@ -23,8 +23,20 @@ export async function FunctionDecl(ast: ASTTypes["FunctionDecl"], _ctx: Context)
 }
 
 export async function MacroDecl(ast: ASTTypes["MacroDecl"], _ctx: Context): Promise<InterpretReturn> {
-    const msg = "MacroDecl: not implemented yet";
-    return res.makeErr(new Error(msg));
+    let ctx = _ctx.branch();
+    try {
+        type Macro = Extract<OphoelValue, { type: "macro" }>;
+        const macroObj: Macro = {
+            type: "macro", value: {
+                parameters: ast.parameters,
+                body: ast.body,
+                closure: ctx.wrap()
+            }
+        };
+        ctx.addVariable(ast.name, macroObj, false);
+        return res.makeOK(macroObj, ctx.wrap());
+
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
 
 export async function VariableDecl(ast: ASTTypes["VariableDecl"], _ctx: Context): Promise<InterpretReturn> {
@@ -38,7 +50,7 @@ export async function VariableDecl(ast: ASTTypes["VariableDecl"], _ctx: Context)
             if (!initValue_res.ok) return initValue_res;
             ctx = initValue_res.ctx.branch();
             initValue = initValue_res.value;
-        
+
         } else {
             initValue = { type: "void", value: null };
         }

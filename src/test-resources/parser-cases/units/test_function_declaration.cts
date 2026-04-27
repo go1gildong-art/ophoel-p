@@ -10,7 +10,7 @@ export const unit = new ParserUnit({
         `fn add(a, b) {`,
         `  return a + b;`,
         `}`,
-        `macro! log(msg) {`,
+        `macro log!(msg) {`,
         `  say!! msg;`,
         `}`
     ].join("\n"),

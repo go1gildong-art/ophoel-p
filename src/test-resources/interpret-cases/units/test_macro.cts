@@ -8,7 +8,7 @@ export const unit = new InterpretUnit({
 
     source: [
         `const add = (a, b)! => { a + b };`,
-        `const hello = ()! => { say!! "hello!"; };`,
+        `macro hello!() { say!! "hello!"; }`,
         `const twice = (c)! => { c!(); c!(); };`,
         ``,
         `let mac;`,

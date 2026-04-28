@@ -21,8 +21,12 @@ export const actionMap: ActionMap<Statement | any[]> = {
         return new ASTs.ExecExpr(expr.toAST(this.args.ophoelDir), getLoc(expr, this.args.ophoelDir))
     },
 
-    YieldExpr(this: ActionMapThis, expr) {
+    YieldExpr_nonKW(this: ActionMapThis, expr) {
         return new ASTs.YieldExpr(expr.toAST(this.args.ophoelDir), getLoc(expr, this.args.ophoelDir))
+    },
+
+    YieldExpr_KW(this: ActionMapThis, _yield, expr) {
+        return new ASTs.YieldExpr(expr.toAST(this.args.ophoelDir), getLoc(_yield, this.args.ophoelDir))
     },
 
     // Built-in Ohm iteration handler (for the * in Statement*)

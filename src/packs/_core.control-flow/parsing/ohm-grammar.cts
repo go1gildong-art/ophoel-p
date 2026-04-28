@@ -1,7 +1,8 @@
 export const grammar = `
-IfStatement = "if" Expr Statement Elif* Else?
-Elif = "elif" Expr Statement
-Else = "else" Statement
+IfStatement = "if" Expr IfBody Elif* Else?
+Elif = "elif" Expr IfBody
+Else = "else" IfBody
+IfBody = Statement | Expr
 
 WhileStatement = "while" Expr Statement
 ForStatement = "for" "(" (VariableDecl | ConstDecl | Expr) Expr ";" Expr ")" Statement

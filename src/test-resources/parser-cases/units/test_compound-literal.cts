@@ -6,6 +6,6 @@ export const unit = new ParserUnit({
     ophoelDir: "test_compound-literal.oph",
     link: __dirname,
 
-    source: `const c = {x: 1, y: 2};`,
+    source: `const c = {| x: 1, y: 2 |};`,
     expectation: `(program (const c ((x 1) (y 2))))`
 });

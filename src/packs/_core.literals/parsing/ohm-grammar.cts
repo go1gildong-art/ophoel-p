@@ -15,5 +15,5 @@ number = digit+
 bool = "true" | "false"
 VectorLiteral = "[" ListOf<Expr, ","> "]"
 Pair = ident ":" Expr
-CompoundLiteral = "{" ListOf<Pair, ","> "}"
+CompoundLiteral = "{|" ListOf<Pair, ","> "|}"
 `;

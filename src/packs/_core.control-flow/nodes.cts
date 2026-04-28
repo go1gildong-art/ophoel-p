@@ -6,9 +6,9 @@ import * as lispify from "./lispify.cjs";
 import * as interpret from "./interpret.cjs";
 
 
-export type CondBodySet = { condition: Expression, body: Statement };
+export type CondBodySet = { condition: Expression, body: Expression };
 
-export class IfStatement implements Statement {
+export class IfStatement implements Expression {
     kind = ASTKind.IfStatement;
 
     constructor(

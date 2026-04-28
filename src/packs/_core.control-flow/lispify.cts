@@ -1,16 +1,21 @@
+import * as fp from "@utils/functional.cjs"
 import { ASTTypes } from "../../pack-combinator.cjs";
 import { CondBodySet } from "../../packs/_core.control-flow/nodes.cjs";
 
 export function IfStatement(ast: ASTTypes["IfStatement"]) {
-    const lispifySignature = (sign: CondBodySet) => `${sign.condition.lispify()} ${sign.body.lispify()})`;
+    const lispifySignature = (sign: CondBodySet) => `${sign.condition?.lispify()} ${sign.body?.lispify()})`;
+
     const mainBranch = `(if ${lispifySignature(ast.ifSignature)}`;
+
     const elifBranches = ast.elifSignatures
         .map(sign => lispifySignature(sign))
         .map(sign => `(elif ${sign})`)
         .join(" ");
-    const elseBranch = typeof ast.elseSignature !== "undefined"
+
+    const elseBranch = ast.elseSignature !== undefined
         ? `(else ${lispifySignature(ast.elseSignature)})`
         : "";
+
     const parts = [mainBranch];
     if (elifBranches) parts.push(elifBranches);
     if (elseBranch) parts.push(elseBranch);

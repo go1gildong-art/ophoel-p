@@ -8,11 +8,11 @@ export const unit = new InterpretUnit({
 
     source: [
         `const myVec = [1, 2, 3];`,
-        `const myComp = {`,
+        `const myComp = {|`,
         `  x: "foo",`, 
         `  y: "bar",`, 
         `  z: [ 100, 200, 300 ]`,
-        `};`,
+        `|};`,
 
         `say!! myVec[0];`,
         `say!! myComp.x;`,

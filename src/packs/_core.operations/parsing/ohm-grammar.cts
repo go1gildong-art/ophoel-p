@@ -1,6 +1,8 @@
 export const grammar = `
 
-Expr = VariableAssign
+Expr = IfStatement
+| Block
+| VariableAssign
 
 VariableAssign = Expr "=" Expr -- assign
               | CompoundAssign

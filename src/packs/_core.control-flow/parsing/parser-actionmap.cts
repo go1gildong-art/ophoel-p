@@ -7,7 +7,7 @@ export const actionMap: ActionMap<Statement | any> = {
     IfStatement(this: ActionMapThis, _if, cond, body, elifs, elseClause) {
         const ifSignature = { condition: cond.toAST(this.args.ophoelDir), body: body.toAST(this.args.ophoelDir) };
         const elifSignatures = elifs.toAST(this.args.ophoelDir).map((elif: any) => ({ condition: elif.condition.toAST(this.args.ophoelDir), body: elif.body.toAST(this.args.ophoelDir) }));
-        const elseSignature = elseClause.toAST(this.args.ophoelDir)[0] ? { condition: elseClause.toAST(this.args.ophoelDir)[0].body.toAST(this.args.ophoelDir), body: elseClause.toAST(this.args.ophoelDir)[0].body.toAST(this.args.ophoelDir) } : undefined;
+        const elseSignature = elseClause?.toAST(this.args.ophoelDir)[0] ?? undefined
         return new ASTs.IfStatement(ifSignature, elifSignatures, elseSignature, getLoc(_if, this.args.ophoelDir));
     },
     Elif(this: ActionMapThis, _elif, condition, body) {

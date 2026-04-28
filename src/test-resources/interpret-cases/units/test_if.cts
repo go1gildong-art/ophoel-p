@@ -7,27 +7,24 @@ export const unit = new InterpretUnit({
     link: __dirname,
 
     source: [
-        `const its = 10;`,
-        /*`const iron_or_gold = (x)! => {`,
-        `  if (x == 'iron') { 'an iron!' }`,
+        `macro iron_or_gold!(x) {`,
+        `  yield if (x == 'iron') { 'an iron!' }`,
         `  elif (x == 'gold') { 'a gold!' }`,
         `  elif (x == 'emerald') { 'an emerald!' }`,
-        `  else { error!! 'neither!'; 'it's neither!' };`,
+        `  else { error!! 'neither!'; "it's neither!" }`,
         `}`,
-        */``,
+        ``,
         `if (10 > 20) {`,
         `  say!! "never";`, 
         `} else {`,
         `  say!! "10 is smaller than 20";`,
         `}`,
-        //`say!! its;`,
-        //`say!! iron_or_gold!('gold');`,
-        //`say!! iron_or_gold!('aaaaaaaa', 'eeeee'`,
+        `say!! iron_or_gold!('gold');`,
+        `say!! iron_or_gold!('aaaaaaaa');`,
     ].join("\n"),
 
     expectation: [
         `/say 10 is smaller than 20`,
-        `/say it's true!`,
         `/say a gold!`,
         `/error neither!`,
         `/say it's neither!`

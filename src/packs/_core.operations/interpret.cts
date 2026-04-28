@@ -73,6 +73,72 @@ export async function BinaryOperation(ast: ASTTypes["BinaryOperation"], _ctx: Co
                     const msg = `operator '%' not supported for types '${left.value.type}' and '${right.value.type}'`;
                     return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
                 }
+
+
+            case BinaryOperator.LOGIC_IS:
+                if (left.value.type === "num" && right.value.type === "num") {
+                    return res.makeOK({ type: "bool", value: left.value.value === right.value.value }, ctx.wrap());
+
+                } else if (left.value.type === "string" && right.value.type === "string") {
+                    return res.makeOK({ type: "bool", value: left.value.value === right.value.value }, ctx.wrap());
+
+                } else if (left.value.type === "bool" && right.value.type === "bool") {
+                    return res.makeOK({ type: "bool", value: left.value.value === right.value.value }, ctx.wrap());
+
+                } else {
+                    const msg = `operator '===' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                    return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+                }
+
+            case BinaryOperator.CMPARE_LARGER:
+                if (left.value.type === "num" && right.value.type === "num") {
+                    return res.makeOK({ type: "bool", value: left.value.value > right.value.value }, ctx.wrap());
+
+                } else if (left.value.type === "string" && right.value.type === "string") {
+                    return res.makeOK({ type: "bool", value: left.value.value.length > right.value.value.length }, ctx.wrap());
+
+                } else {
+                    const msg = `operator '>' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                    return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+                }
+
+            case BinaryOperator.CMPARE_SMALLER:
+                if (left.value.type === "num" && right.value.type === "num") {
+                    return res.makeOK({ type: "bool", value: left.value.value < right.value.value }, ctx.wrap());
+
+                } else if (left.value.type === "string" && right.value.type === "string") {
+                    return res.makeOK({ type: "bool", value: left.value.value.length < right.value.value.length }, ctx.wrap());
+
+                } else {
+                    const msg = `operator '<' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                    return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+                }
+
+            case BinaryOperator.CMPARE_SLARGER:
+                if (left.value.type === "num" && right.value.type === "num") {
+                    return res.makeOK({ type: "bool", value: left.value.value >= right.value.value }, ctx.wrap());
+
+                } else if (left.value.type === "string" && right.value.type === "string") {
+                    return res.makeOK({ type: "bool", value: left.value.value.length >= right.value.value.length }, ctx.wrap());
+
+                } else {
+                    const msg = `operator '>=' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                    return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+                }
+
+            case BinaryOperator.CMPARE_SSMALLER:
+                if (left.value.type === "num" && right.value.type === "num") {
+                    return res.makeOK({ type: "bool", value: left.value.value <= right.value.value }, ctx.wrap());
+
+                } else if (left.value.type === "string" && right.value.type === "string") {
+                    return res.makeOK({ type: "bool", value: left.value.value.length <= right.value.value.length }, ctx.wrap());
+
+                } else {
+                    const msg = `operator '<=' not supported for types '${left.value.type}' and '${right.value.type}'`;
+                    return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+                }
+
+
         }
 
         const msg = `BinaryOperation: operator '${ast.operator}' not implemented yet`;

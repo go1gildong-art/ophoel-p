@@ -6,7 +6,7 @@ import * as lispify from "./lispify.cjs";
 import * as interpret from "./interpret.cjs";
 
 
-export type CondBodySet = { condition: Expression, body: Expression };
+export type CondBodySet = { condition: Expression | null, body: Expression };
 
 export class IfStatement implements Expression {
     kind = ASTKind.IfStatement;
@@ -14,7 +14,7 @@ export class IfStatement implements Expression {
     constructor(
         public ifSignature: CondBodySet,
         public elifSignatures: CondBodySet[],
-        public elseSignature: CondBodySet | undefined,
+        public elseSignature: CondBodySet | null,
         public location: Location) { }
 
         async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.IfStatement(this, ctx); }

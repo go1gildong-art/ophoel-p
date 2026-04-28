@@ -2,7 +2,9 @@ export const grammar = `
 Program = Statement* end
 
 Block = "{" (Statement | YieldExpr )* "}"
-YieldExpr = Expr
+YieldExpr = "yield" Expr -- KW
+            | Expr -- nonKW
+            
 
 ExecExpr = Expr ";"
 

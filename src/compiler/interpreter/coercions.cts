@@ -23,12 +23,9 @@ export async function coerce(from: OphoelValue, toType: OphoelValue["type"], ctx
     const transform = coerceMaps[from.type]?.[toType];
 
     if (!transform) {
-        const msg = `Non-coercible from ${from.value} (${from.type}) to type ${toType}`;
+        const msg = `Not coercible from ${from.value} (${from.type}) to type ${toType}`;
         return res.makeErr(await OphoelError.fromNode(msg, node, ctx.fm));
     }
 
-    return res.makeOK(
-        transform(from),
-        ctx
-    )
+    return res.makeOK(transform(from), ctx)
 }

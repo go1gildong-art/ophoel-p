@@ -12,7 +12,7 @@ export function IfStatement(ast: ASTTypes["IfStatement"]) {
         .map(sign => `(elif ${sign})`)
         .join(" ");
 
-    const elseBranch = ast.elseSignature !== undefined
+    const elseBranch = ast.elseSignature != null
         ? `(else ${lispifySignature(ast.elseSignature)})`
         : "";
 

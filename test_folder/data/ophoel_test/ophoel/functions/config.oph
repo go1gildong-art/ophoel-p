@@ -1,6 +1,6 @@
 include "ophoel_test/ophoel/functions/config-load.oph";
-const config = {
+const config = {|
   a: 10,
   b: "foo",
   helloworldPath: "ophoel_test/ophoel/functions/helloworld.oph"
-};
+|};

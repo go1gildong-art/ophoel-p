@@ -1,0 +1,7 @@
+choose {
+  give!! "@p diamond";
+} or {
+  give!! "@p emerald";
+} or 10 {
+  give!! "@p dirt";
+}

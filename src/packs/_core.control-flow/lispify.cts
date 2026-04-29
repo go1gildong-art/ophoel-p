@@ -39,8 +39,8 @@ export function RepeatStatement(ast: ASTTypes["RepeatStatement"]) {
 }
 
 export function ChooseStatement(ast: ASTTypes["ChooseStatement"]) {
-    const cases = ast.weights
-        .map((weight, i) => `(${weight.lispify()} ${ast.bodies[i]?.lispify()})`)
+    const cases = ast.entries
+        .map((entry, i) => `(${entry.weight?.lispify() ?? "none"} ${entry.body.lispify()})`)
         .join(" ");
     return `(choose ${cases})`;
 }

@@ -35,21 +35,20 @@ export const actionMap: ActionMap<Statement | any> = {
         ];
 
         return new ASTs.ChooseStatement(
-            branchList.map(branch => branch.value),
-            branchList.map(branch => branch.body),
+            branchList,
             getLoc(_choose, this.args.ophoelDir));
     },
 
     WeightBodySet_explicit(this: ActionMapThis, expr, stmt) {
         return ({
-            value: expr.toAST(this.args.ophoelDir),
+            weight: expr.toAST(this.args.ophoelDir),
             body: stmt.toAST(this.args.ophoelDir)
         })
     },
 
     WeightBodySet_implicit(this: ActionMapThis, stmt) {
         return ({
-            value: new ASTs.IntLiteral("1", getLoc(stmt, this.args.ophoelDir)),
+            weight: null,
             body: stmt.toAST(this.args.ophoelDir)
         })
     },

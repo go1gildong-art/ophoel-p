@@ -72,12 +72,12 @@ export class RepeatStatement implements Statement {
     lispify(): string { return lispify.RepeatStatement(this); }
 }
 
+export type WeightBodySet = { weight: Expression | null, body: Statement };
 export class ChooseStatement implements Statement {
     kind = ASTKind.ChooseStatement;
 
     constructor(
-        public weights: Expression[],
-        public bodies: Statement[],
+        public entries: WeightBodySet[],
         public location: Location) { }
 
         async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ChooseStatement(this, ctx); }

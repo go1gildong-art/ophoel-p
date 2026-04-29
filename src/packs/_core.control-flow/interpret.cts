@@ -1,10 +1,11 @@
 import { coerce } from "../../compiler/interpreter/coercions.cjs";
 import { OphoelError } from "../../compiler/interpreter/error.cjs";
 import { FileManager } from "../../compiler/file-manager.cjs";
-import { Context, InterpretReturn } from "../../compiler/interpreter/utilities.cjs";
+import { Context, InterpretReturn, OphoelValue } from "../../compiler/interpreter/utilities.cjs";
 import { ASTTypes } from "../../pack-combinator.cjs";
 import * as res from "../../utils/result.cjs"
 import { makeOphoelError } from "../../compiler/interpreter/error.cjs";
+import { Statement } from "../../ast.cjs";
 
 export async function IfStatement(ast: ASTTypes["IfStatement"], _ctx: Context): Promise<InterpretReturn> {
     let ctx = _ctx.branch();
@@ -72,6 +73,29 @@ export async function RepeatStatement(ast: ASTTypes["RepeatStatement"], _ctx: Co
 }
 
 export async function ChooseStatement(ast: ASTTypes["ChooseStatement"], _ctx: Context): Promise<InterpretReturn> {
+    let ctx = _ctx.branch();
+    try {
+        const weightBuffer: OphoelValue[] = [];
+        const bodyBuffer: Statement[] = [];
+
+        for (const _weight of ast.weights) {
+            const weight = await _weight.evaluate(ctx.wrap());
+            if (!weight.ok) return weight;
+            ctx = weight.ctx.branch();
+
+            const coerced = await coerce(weight.value, "num", ctx.wrap(), ast);
+            if (!coerced.ok) return coerced;
+            ctx = coerced.ctx.branch();
+
+            weightBuffer.push(coerced.value);
+        }
+        
+
+        ctx.emitCmd()
+
+
+
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
     return { ok: false, err: await OphoelError.fromNode("ChooseStatement: not implemented yet", ast, _ctx.fm as FileManager) };
 }
 

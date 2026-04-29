@@ -28,16 +28,32 @@ export const actionMap: ActionMap<Statement | any> = {
     RepeatStatement(this: ActionMapThis, _repeat, count, body) {
         return new ASTs.RepeatStatement(count.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_repeat, this.args.ophoelDir));
     },
-    ChooseStatement(this: ActionMapThis, _choose, weight, body, branches) {
-        const branchList = branches.toAST(this.args.ophoelDir).map((c: any) => ({
-            weight: c.value.toAST(this.args.ophoelDir),
-            body: c.body.toAST(this.args.ophoelDir)
-        }));
+    ChooseStatement(this: ActionMapThis, _choose, weightBody, _or, branches) {
+        const branchList = [
+            weightBody.toAST(this.args.ophoelDir),
+            ...branches.toAST(this.args.ophoelDir)
+        ];
+
         return new ASTs.ChooseStatement(
-            [weight.toAST(this.args.ophoelDir), ...branchList.weight],
-            [body.toAST(this.args.ophoelDir), ...branchList.body],
+            branchList.map(branch => branch.value),
+            branchList.map(branch => branch.body),
             getLoc(_choose, this.args.ophoelDir));
     },
+
+    WeightBodySet_explicit(this: ActionMapThis, expr, stmt) {
+        return ({
+            value: expr.toAST(this.args.ophoelDir),
+            body: stmt.toAST(this.args.ophoelDir)
+        })
+    },
+
+    WeightBodySet_implicit(this: ActionMapThis, stmt) {
+        return ({
+            value: new ASTs.IntLiteral("1", getLoc(stmt, this.args.ophoelDir)),
+            body: stmt.toAST(this.args.ophoelDir)
+        })
+    },
+
     ReturnStatement(this: ActionMapThis, _return, expr, _semi) {
         const value = expr?.toAST(this.args.ophoelDir)[0];
         return new ASTs.ReturnStatement(value, getLoc(_return, this.args.ophoelDir));

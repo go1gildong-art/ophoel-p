@@ -9,8 +9,9 @@ ForStatement = "for" "(" (VariableDecl | ConstDecl | Expr) Expr ";" Expr ")" Sta
 ForOfStatement = "for" "(" (VariableDecl | ConstDecl) "of" Expr ")" Statement
 RepeatStatement = "repeat" Expr Statement
 
-ChooseStatement = "choose" Expr Statement ChooseOr*
-ChooseOr = "or" Expr Statement
+ChooseStatement = "choose" WeightBodySet ("or" WeightBodySet)*
+WeightBodySet = Expr Statement -- explicit
+                | Statement -- implicit
 
 ReturnStatement = "return" Expr? ";"
 `;

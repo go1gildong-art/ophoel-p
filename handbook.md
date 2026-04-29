@@ -27,3 +27,17 @@ FileManager will hold cached ast per path text
 
 # EXPLORER TAB GONE
 1. f1, and View: Show Explorer
+
+# CHOOSE stmt evaluation order
+choose weight1 {
+    body1();
+} or weight2 {
+    body2();
+} or weight3 {
+    body3();
+}
+in terms of side effects on Ophoel level,
+
+weight1 -> weight2 -> ... weightX
+AND THEN
+body1() -> body2() - ... bodyX()

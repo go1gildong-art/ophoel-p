@@ -17,13 +17,13 @@ export const unit = new InterpretUnit({
 
     expectation: [
         `/say 1`,
+        `/say nested! 0`,
         `/say nested! 1`,
-        `/say nested! 2`,
         `/say 2`,
+        `/say nested! 0`,
         `/say nested! 1`,
-        `/say nested! 2`,
         `/say 3`,
+        `/say nested! 0`,
         `/say nested! 1`,
-        `/say nested! 2`,
     ].join("\n")
 });

@@ -29,7 +29,7 @@ export const actionMap: ActionMap<Statement | any> = {
         return new ASTs.RepeatStatement(count.toAST(this.args.ophoelDir), undefined, body.toAST(this.args.ophoelDir), getLoc(_repeat, this.args.ophoelDir));
     },
     RepeatStatement_indexed(this: ActionMapThis, _repeat, count, _arrow, index, body) {
-        return new ASTs.RepeatStatement(count.toAST(this.args.ophoelDir), index.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_repeat, this.args.ophoelDir));
+        return new ASTs.RepeatStatement(count.toAST(this.args.ophoelDir), index.sourceString, body.toAST(this.args.ophoelDir), getLoc(_repeat, this.args.ophoelDir));
     },
     ChooseStatement(this: ActionMapThis, _choose, weightBody, _or, branches) {
         const branchList = [

@@ -14,7 +14,7 @@ Statement = Include
            | IfStatement
            | WhileStatement
            | ForStatement
-           | ForOfStatement
+           | ForEachStatement
            | RepeatStatement
            | ChooseStatement
            | McExecStatement

@@ -52,8 +52,8 @@ export class ForEachStatement implements Statement {
 
     constructor(
         public iterable: Expression,
-        public iterator: Expression,
-        public index: Expression | undefined,
+        public iterator: string,
+        public index: string | undefined,
         public body: Statement,
         public location: Location) { }
 

@@ -32,8 +32,8 @@ export function ForStatement(ast: ASTTypes["ForStatement"]) {
 
 export function ForEachStatement(ast: ASTTypes["ForEachStatement"]) {
     const signature = ast.index
-    ? `${ast.iterator.lispify()}, ${ast.index.lispify()}`
-    : ast.iterator.lispify();
+    ? `${ast.iterator}, ${ast.index}`
+    : ast.iterator;
     
     return `(for ${signature} ${ast.body.lispify()})`;
 }

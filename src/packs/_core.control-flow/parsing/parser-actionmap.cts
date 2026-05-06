@@ -22,10 +22,13 @@ export const actionMap: ActionMap<Statement | any> = {
     ForStatement(this: ActionMapThis, _for, _open1, declaration, condition, _semi, increment, _close1, body) {
         return new ASTs.ForStatement(declaration.toAST(this.args.ophoelDir), condition.toAST(this.args.ophoelDir), increment.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_for, this.args.ophoelDir));
     },
-    ForEachStatement(this: ActionMapThis, _for, _open1, declaration, _of, iterable, _close1, body) {
-        return new ASTs.ForEachStatement(declaration.toAST(this.args.ophoelDir), iterable.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_for, this.args.ophoelDir));
+    ForEachStatement_standard(this: ActionMapThis, arr, _arrow, iter, body) {
+        return new ASTs.ForEachStatement(arr.toAST(this.args.ophoelDir), iter.sourceString, undefined, body.toAST(this.args.ophoelDir), getLoc(arr, this.args.ophoelDir));
     },
-    RepeatStatement_legacy(this: ActionMapThis, _repeat, count, body) {
+    ForEachStatement_indexed(this: ActionMapThis, arr, _arrow, iter, _comma, index, body) {
+        return new ASTs.ForEachStatement(arr.toAST(this.args.ophoelDir), iter.sourceString, index.sourceString, body.toAST(this.args.ophoelDir), getLoc(arr, this.args.ophoelDir));
+    },
+    RepeatStatement_standard(this: ActionMapThis, _repeat, count, body) {
         return new ASTs.RepeatStatement(count.toAST(this.args.ophoelDir), undefined, body.toAST(this.args.ophoelDir), getLoc(_repeat, this.args.ophoelDir));
     },
     RepeatStatement_indexed(this: ActionMapThis, _repeat, count, _arrow, index, body) {

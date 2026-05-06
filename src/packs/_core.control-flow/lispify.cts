@@ -32,10 +32,10 @@ export function ForStatement(ast: ASTTypes["ForStatement"]) {
 
 export function ForEachStatement(ast: ASTTypes["ForEachStatement"]) {
     const signature = ast.index
-    ? `${ast.iterator}, ${ast.index}`
+    ? `(${ast.iterator}, ${ast.index})`
     : ast.iterator;
     
-    return `(for ${signature} ${ast.body.lispify()})`;
+    return `(${ast.iterable.lispify()} -> ${signature} ${ast.body.lispify()})`;
 }
 
 export function RepeatStatement(ast: ASTTypes["RepeatStatement"]) {

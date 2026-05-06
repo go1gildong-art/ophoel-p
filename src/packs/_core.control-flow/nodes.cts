@@ -47,8 +47,8 @@ export class ForStatement implements Statement {
     lispify(): string { return lispify.ForStatement(this); }
 }
 
-export class ForOfStatement implements Statement {
-    kind = ASTKind.ForOfStatement;
+export class ForEachStatement implements Statement {
+    kind = ASTKind.ForEachStatement;
 
     constructor(
         public declaration: Statement,
@@ -56,8 +56,8 @@ export class ForOfStatement implements Statement {
         public body: Statement,
         public location: Location) { }
 
-        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ForOfStatement(this, ctx); }
-    lispify(): string { return lispify.ForOfStatement(this); }
+        async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.ForEachStatement(this, ctx); }
+    lispify(): string { return lispify.ForEachStatement(this); }
 }
 
 export class RepeatStatement implements Statement {

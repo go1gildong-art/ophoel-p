@@ -45,8 +45,8 @@ export async function ForStatement(ast: ASTTypes["ForStatement"], _ctx: Context)
     return { ok: false, err: await OphoelError.fromNode("ForStatement: not implemented yet", ast, _ctx.fm as FileManager) };
 }
 
-export async function ForOfStatement(ast: ASTTypes["ForOfStatement"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: await OphoelError.fromNode("ForOfStatement: not implemented yet", ast, _ctx.fm as FileManager) };
+export async function ForEachStatement(ast: ASTTypes["ForEachStatement"], _ctx: Context): Promise<InterpretReturn> {
+    return { ok: false, err: await OphoelError.fromNode("ForEachStatement: not implemented yet", ast, _ctx.fm as FileManager) };
 }
 
 export async function RepeatStatement(ast: ASTTypes["RepeatStatement"], _ctx: Context): Promise<InterpretReturn> {

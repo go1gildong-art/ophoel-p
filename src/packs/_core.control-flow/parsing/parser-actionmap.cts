@@ -22,8 +22,8 @@ export const actionMap: ActionMap<Statement | any> = {
     ForStatement(this: ActionMapThis, _for, _open1, declaration, condition, _semi, increment, _close1, body) {
         return new ASTs.ForStatement(declaration.toAST(this.args.ophoelDir), condition.toAST(this.args.ophoelDir), increment.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_for, this.args.ophoelDir));
     },
-    ForOfStatement(this: ActionMapThis, _for, _open1, declaration, _of, iterable, _close1, body) {
-        return new ASTs.ForOfStatement(declaration.toAST(this.args.ophoelDir), iterable.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_for, this.args.ophoelDir));
+    ForEachStatement(this: ActionMapThis, _for, _open1, declaration, _of, iterable, _close1, body) {
+        return new ASTs.ForEachStatement(declaration.toAST(this.args.ophoelDir), iterable.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_for, this.args.ophoelDir));
     },
     RepeatStatement_legacy(this: ActionMapThis, _repeat, count, body) {
         return new ASTs.RepeatStatement(count.toAST(this.args.ophoelDir), undefined, body.toAST(this.args.ophoelDir), getLoc(_repeat, this.args.ophoelDir));

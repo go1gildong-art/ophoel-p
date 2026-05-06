@@ -13,7 +13,7 @@ export enum ASTKind {
     ConstDecl = "ConstDecl",
     ExecExpr = "ExecExpr",
     FloatLiteral = "FloatLiteral",
-    ForOfStatement = "ForOfStatement",
+    ForEachStatement = "ForEachStatement",
     ForStatement = "ForStatement",
     FunctionCall = "FunctionCall",
     FunctionDecl = "FunctionDecl",

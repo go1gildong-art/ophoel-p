@@ -30,7 +30,7 @@ export function ForStatement(ast: ASTTypes["ForStatement"]) {
     return `(for ${ast.declaration.lispify()} ${ast.condition.lispify()} ${ast.increment.lispify()} ${ast.body.lispify()})`;
 }
 
-export function ForOfStatement(ast: ASTTypes["ForOfStatement"]) {
+export function ForEachStatement(ast: ASTTypes["ForEachStatement"]) {
     return `(for ${ast.declaration.lispify()} of ${ast.iterable.lispify()} ${ast.body.lispify()})`;
 }
 

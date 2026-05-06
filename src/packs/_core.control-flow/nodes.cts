@@ -51,8 +51,9 @@ export class ForEachStatement implements Statement {
     kind = ASTKind.ForEachStatement;
 
     constructor(
-        public declaration: Statement,
         public iterable: Expression,
+        public iterator: Expression,
+        public index: Expression | undefined,
         public body: Statement,
         public location: Location) { }
 

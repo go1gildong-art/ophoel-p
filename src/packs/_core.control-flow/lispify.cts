@@ -31,7 +31,11 @@ export function ForStatement(ast: ASTTypes["ForStatement"]) {
 }
 
 export function ForEachStatement(ast: ASTTypes["ForEachStatement"]) {
-    return `(for ${ast.declaration.lispify()} of ${ast.iterable.lispify()} ${ast.body.lispify()})`;
+    const signature = ast.index
+    ? `${ast.iterator.lispify()}, ${ast.index.lispify()}`
+    : ast.iterator.lispify();
+    
+    return `(for ${signature} ${ast.body.lispify()})`;
 }
 
 export function RepeatStatement(ast: ASTTypes["RepeatStatement"]) {

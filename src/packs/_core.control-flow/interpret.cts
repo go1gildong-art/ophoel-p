@@ -63,9 +63,18 @@ export async function RepeatStatement(ast: ASTTypes["RepeatStatement"], _ctx: Co
         }
 
         for (let i = 0; i < times.value.value; i++) {
+            ctx.pushFrame();
+
+            if (ast.index) ctx.addVariable(ast.index, { type: "num", value: i }, false);
+            if (ast.index) {
+                ctx.frames.forEach(frame => console.log(frame.variables));
+            }
+
             const body = await ast.body.evaluate(ctx.wrap());
             if (!body.ok) return body;
             ctx = body.ctx.branch();
+
+            ctx.popFrame();
         }
 
         return res.makeOK({ type: "void", value: null }, ctx.wrap());

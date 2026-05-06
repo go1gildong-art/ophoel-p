@@ -65,6 +65,7 @@ export class RepeatStatement implements Statement {
 
     constructor(
         public count: Expression,
+        public index: string | undefined,
         public body: Statement,
         public location: Location) { }
 

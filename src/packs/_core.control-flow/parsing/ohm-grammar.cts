@@ -7,7 +7,8 @@ IfBody = Statement | Expr
 WhileStatement = "while" Expr Statement
 ForStatement = "for" "(" (VariableDecl | ConstDecl | Expr) Expr ";" Expr ")" Statement
 ForOfStatement = "for" "(" (VariableDecl | ConstDecl) "of" Expr ")" Statement
-RepeatStatement = "repeat" Expr Statement
+RepeatStatement = "repeat" Expr Statement -- legacy
+| "repeat" Expr "->" ident Statement -- indexed
 
 ChooseStatement = "choose" WeightBodySet ("or" WeightBodySet)*
 WeightBodySet = Expr Statement -- explicit

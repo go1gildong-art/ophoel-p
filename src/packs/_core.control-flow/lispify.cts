@@ -35,7 +35,11 @@ export function ForOfStatement(ast: ASTTypes["ForOfStatement"]) {
 }
 
 export function RepeatStatement(ast: ASTTypes["RepeatStatement"]) {
-    return `(repeat ${ast.count.lispify()} ${ast.body.lispify()})`;
+    const count = ast.index
+        ? `(${ast.count.lispify()} -> ${ast.index})`
+        : ast.count.lispify();
+        
+    return `(repeat ${count} ${ast.body.lispify()})`;
 }
 
 export function ChooseStatement(ast: ASTTypes["ChooseStatement"]) {

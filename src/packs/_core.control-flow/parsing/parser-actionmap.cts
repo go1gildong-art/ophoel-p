@@ -25,8 +25,11 @@ export const actionMap: ActionMap<Statement | any> = {
     ForOfStatement(this: ActionMapThis, _for, _open1, declaration, _of, iterable, _close1, body) {
         return new ASTs.ForOfStatement(declaration.toAST(this.args.ophoelDir), iterable.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_for, this.args.ophoelDir));
     },
-    RepeatStatement(this: ActionMapThis, _repeat, count, body) {
-        return new ASTs.RepeatStatement(count.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_repeat, this.args.ophoelDir));
+    RepeatStatement_legacy(this: ActionMapThis, _repeat, count, body) {
+        return new ASTs.RepeatStatement(count.toAST(this.args.ophoelDir), undefined, body.toAST(this.args.ophoelDir), getLoc(_repeat, this.args.ophoelDir));
+    },
+    RepeatStatement_indexed(this: ActionMapThis, _repeat, count, _arrow, index, body) {
+        return new ASTs.RepeatStatement(count.toAST(this.args.ophoelDir), index.toAST(this.args.ophoelDir), body.toAST(this.args.ophoelDir), getLoc(_repeat, this.args.ophoelDir));
     },
     ChooseStatement(this: ActionMapThis, _choose, weightBody, _or, branches) {
         const branchList = [

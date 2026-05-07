@@ -24,9 +24,11 @@ export type OphoelValue =
     | { type: "vector"; value: OphoelValue[] }
     | { type: "compound"; value: KVPair[] }
     | { type: "void"; value: null }
-    | { type: "macro"; value: MacroObject };
+    | { type: "macro"; value: MacroObject }
+    | { type: "range", value: Range };
 export type MacroObject = { parameters: string[], body: Block | Expression, closure: Context }
 export type KVPair = { field: string, value: OphoelValue };
+export type Range = { start: number | null, end: number | null };
 
 export function moveValue(address: OphoelValue, value: OphoelValue): void {
     address.type = value.type;

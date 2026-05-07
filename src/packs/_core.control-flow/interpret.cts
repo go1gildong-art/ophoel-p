@@ -45,8 +45,64 @@ export async function ForStatement(ast: ASTTypes["ForStatement"], _ctx: Context)
     return { ok: false, err: await OphoelError.fromNode("ForStatement: not implemented yet", ast, _ctx.fm as FileManager) };
 }
 
-export async function ForOfStatement(ast: ASTTypes["ForOfStatement"], _ctx: Context): Promise<InterpretReturn> {
-    return { ok: false, err: await OphoelError.fromNode("ForOfStatement: not implemented yet", ast, _ctx.fm as FileManager) };
+export async function ForEachStatement(ast: ASTTypes["ForEachStatement"], _ctx: Context): Promise<InterpretReturn> {
+    let ctx = _ctx.branch();
+    try {
+
+        const iterable = await ast.iterable.evaluate(ctx.wrap());
+        if (!iterable.ok) return iterable;
+        ctx = iterable.ctx.branch();
+
+        const iterType = iterable.value.type;
+        if (iterType !== "vector" && iterType !== "range") {
+            const msg = `ForEachStatement: expected a vector or range to iterate over, but got ${iterable.value.value} (${iterable.value.type})`;
+            return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+        }
+
+        if (iterType === "vector") {
+            for (const [i, item] of iterable.value.value.entries()) {
+                ctx.pushFrame();
+
+                if (ast.index) ctx.addVariable(ast.index, { type: "num", value: i }, false);
+                ctx.addVariable(ast.iterator, item, false);
+
+                const body = await ast.body.evaluate(ctx.wrap());
+                if (!body.ok) return body;
+                ctx = body.ctx.branch();
+
+                ctx.popFrame();
+            }
+            
+        } else if (iterType === "range") {
+            const rangeVal = iterable.value.value;
+
+            if (typeof rangeVal.start !== "number" || typeof rangeVal.end !== "number") {
+                const start = `${rangeVal.start} (${typeof rangeVal.start})`;
+                const end = `${rangeVal.end} (${typeof rangeVal.end})`;
+                const msg = `ForEachStatement: range bounds must be numbers, but got ${start} and ${end}`;
+                return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+            }
+
+            for (let i = rangeVal.start; i <= rangeVal.end; i++) {
+                ctx.pushFrame();
+
+                if (ast.index) ctx.addVariable(ast.index, { type: "num", value: i - rangeVal.start }, false);
+                ctx.addVariable(ast.iterator, { type: "num", value: i }, false);
+
+                const body = await ast.body.evaluate(ctx.wrap());
+                if (!body.ok) return body;
+                ctx = body.ctx.branch();
+
+                ctx.popFrame();
+            }
+
+        } else {
+            const msg = `ForEachStatement: expected a vector, string, or range to iterate over, but got ${iterable.value.value} (${iterable.value.type})`;
+            return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+        }
+
+        return res.makeOK({ type: "void", value: null }, ctx.wrap());
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
 
 export async function RepeatStatement(ast: ASTTypes["RepeatStatement"], _ctx: Context): Promise<InterpretReturn> {
@@ -66,9 +122,6 @@ export async function RepeatStatement(ast: ASTTypes["RepeatStatement"], _ctx: Co
             ctx.pushFrame();
 
             if (ast.index) ctx.addVariable(ast.index, { type: "num", value: i }, false);
-            if (ast.index) {
-                ctx.frames.forEach(frame => console.log(frame.variables));
-            }
 
             const body = await ast.body.evaluate(ctx.wrap());
             if (!body.ok) return body;

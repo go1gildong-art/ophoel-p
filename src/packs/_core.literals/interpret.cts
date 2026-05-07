@@ -123,3 +123,47 @@ export async function MacroLiteral(ast: ASTTypes["MacroLiteral"], _ctx: Context)
         return result;
     } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
+
+export async function RangeLiteral(ast: ASTTypes["RangeLiteral"], _ctx: Context): Promise<InterpretReturn> {
+    let ctx = _ctx.branch();
+    try {
+        if (ast.start == null && ast.end == null) {
+            const msg = `RangeLiteral: missing both 'start' and 'end' bounds`;
+            return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+        }
+
+        let start: OphoelValue;
+        if (ast.start) {
+            const _start = await ast.start.evaluate(ctx.wrap());
+            if (!_start.ok) return _start;
+            start = _start.value;
+        } else start = { type: "void", value: null };
+
+        if (start.type !== "num" && start.type !== "void") {
+            const msg = `RangeLiteral: 'start' bound must be a number, but got ${start.value} (${start.type})`;
+            return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+        }
+
+        let end: OphoelValue;
+        if (ast.end) {
+            const _end = await ast.end.evaluate(ctx.wrap());
+            if (!_end.ok) return _end;
+            end = _end.value;
+        } else end = { type: "void", value: null };
+
+        if (end.type !== "num" && end.type !== "void") {
+            const msg = `RangeLiteral: 'end' bound must be a number, but got ${end.value} (${end.type})`;
+            return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
+        }
+
+        const rangeValue: OphoelValue = {
+            type: "range",
+            value: {
+                start: start.type === "num" ? start.value : null,
+                end: end.type === "num" ? end.value : null
+            }
+        };
+
+        return res.makeOK(rangeValue, ctx.wrap());
+    } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
+}

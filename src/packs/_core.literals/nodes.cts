@@ -97,3 +97,16 @@ export class MacroLiteral implements Expression, StandardNode {
     async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.MacroLiteral(this, ctx); }
     lispify(): string { return lispify.MacroLiteral(this); }
 }
+
+export class RangeLiteral implements Expression, StandardNode {
+    kind = ASTKind.RangeLiteral;  
+
+    constructor(
+        public start: Expression | undefined,
+        public end: Expression | undefined,
+        public location: Location
+    ) {}
+
+    async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.RangeLiteral(this, ctx); }
+    lispify(): string { return lispify.RangeLiteral(this); }
+}  

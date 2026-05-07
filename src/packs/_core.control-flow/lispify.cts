@@ -30,8 +30,12 @@ export function ForStatement(ast: ASTTypes["ForStatement"]) {
     return `(for ${ast.declaration.lispify()} ${ast.condition.lispify()} ${ast.increment.lispify()} ${ast.body.lispify()})`;
 }
 
-export function ForOfStatement(ast: ASTTypes["ForOfStatement"]) {
-    return `(for ${ast.declaration.lispify()} of ${ast.iterable.lispify()} ${ast.body.lispify()})`;
+export function ForEachStatement(ast: ASTTypes["ForEachStatement"]) {
+    const signature = ast.index
+    ? `(${ast.iterator}, ${ast.index})`
+    : ast.iterator;
+    
+    return `(${ast.iterable.lispify()} -> ${signature} ${ast.body.lispify()})`;
 }
 
 export function RepeatStatement(ast: ASTTypes["RepeatStatement"]) {

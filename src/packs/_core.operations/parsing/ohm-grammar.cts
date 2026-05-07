@@ -60,7 +60,7 @@ LambdaLiterals =
        // | FunctionLiteral
        | ParenExpr
 
-Primary = MacroLiteral
+Primary = RangeLiteral
         | number
         | string
         | TemplateString

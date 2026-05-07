@@ -72,7 +72,7 @@ export async function ForEachStatement(ast: ASTTypes["ForEachStatement"], _ctx: 
 
                 ctx.popFrame();
             }
-            
+
         } else if (iterType === "range") {
             const rangeVal = iterable.value.value;
 
@@ -95,10 +95,6 @@ export async function ForEachStatement(ast: ASTTypes["ForEachStatement"], _ctx: 
 
                 ctx.popFrame();
             }
-
-        } else {
-            const msg = `ForEachStatement: expected a vector, string, or range to iterate over, but got ${iterable.value.value} (${iterable.value.type})`;
-            return res.makeErr(await OphoelError.fromNode(msg, ast, ctx.fm));
         }
 
         return res.makeOK({ type: "void", value: null }, ctx.wrap());

@@ -3,6 +3,7 @@ import { Expression } from "../../../ast.cjs";
 import { getLoc, ActionMap, ActionMapThis } from "../../../compiler/parser.cjs";
 import * as ohm from 'ohm-js';
 import * as fp from '../../../utils/functional.cjs'
+import { RangeLiteral } from "../lispify.cjs";
 
 type literalActionTypes = Expression | string | { key: string; value: any; } | { inter: any, qua: string };
 export const actionMap: ActionMap<literalActionTypes> = {
@@ -90,4 +91,12 @@ export const actionMap: ActionMap<literalActionTypes> = {
             getLoc(_argOpen, this.args.ophoelDir)
         );
     },
+
+    RangeLiteral(this: ActionMapThis, start, _dots, end) {
+        return new ASTs.RangeLiteral(
+            start.toAST(this.args.ophoelDir),
+            end.toAST(this.args.ophoelDir),
+            getLoc(start, this.args.ophoelDir)
+        );
+    }
 };

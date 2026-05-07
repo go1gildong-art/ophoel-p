@@ -9,7 +9,7 @@ InterQuasi = Interpol quasi
 Interpol = "{" Expr "}"
 quasi = (~("\`" | "{") any)*
 
-
+RangeLiteral = Expr? ".." Expr?
 
 number = digit+
 bool = "true" | "false"

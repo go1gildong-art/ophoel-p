@@ -2,7 +2,7 @@ import { InterpretUnit } from "../unit.cjs";
 
 export const unit = new InterpretUnit({
     title: "For and Ranges",
-    description: "for loops and range expressions",
+    description: "for, foreach, and range expressions",
     ophoelDir: "test_for.oph",
     link: __dirname,
 

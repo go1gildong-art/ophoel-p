@@ -92,11 +92,13 @@ export const actionMap: ActionMap<literalActionTypes> = {
         );
     },
 
-    RangeLiteral(this: ActionMapThis, start, _dots, end) {
+    RangeLiteral(this: ActionMapThis, $start, _dots, $end) {
+        const start = $start.toAST(this.args.ophoelDir);
+        const end = $end.toAST(this.args.ophoelDir);
         return new ASTs.RangeLiteral(
-            start.toAST(this.args.ophoelDir),
-            end.toAST(this.args.ophoelDir),
-            getLoc(start, this.args.ophoelDir)
+            start[0] ? start[0] : undefined,
+            end[0] ? end[0] : undefined,
+            getLoc($start, this.args.ophoelDir)
         );
     }
 };

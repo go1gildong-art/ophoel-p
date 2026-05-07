@@ -123,3 +123,7 @@ export async function MacroLiteral(ast: ASTTypes["MacroLiteral"], _ctx: Context)
         return result;
     } catch (err) { return await makeOphoelError(err, ast, ctx.fm); }
 }
+
+export async function RangeLiteral(ast: ASTTypes["RangeLiteral"], _ctx: Context): Promise<InterpretReturn> {
+    return { ok: false, err: await OphoelError.fromNode("RangeLiteral: not implemented yet", ast, _ctx.fm as FileManager) };
+}

@@ -27,3 +27,9 @@ export function MacroLiteral(ast: ASTTypes["MacroLiteral"]) {
     const params = ast.parameters.join(" ");
     return `((${params})! => ${ast.body.lispify()})`;
 }
+
+export function RangeLiteral(ast: ASTTypes["RangeLiteral"]) {
+    const start = ast.start === null ? "" : ast.start;
+    const end = ast.end === null ? "" : ast.end;
+    return `(${start} .. ${end})`;
+}

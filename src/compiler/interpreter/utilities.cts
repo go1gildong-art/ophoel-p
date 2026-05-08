@@ -121,6 +121,12 @@ export class ContextMut {
         );
     }
 
+    emitComment(content: string, location: Location) {
+        this.instructions.push(
+            new IRs.Comment(content, location)
+        );
+    }
+
     wrap(): Context {
         return new Context(
             [ ...this.frames ], 

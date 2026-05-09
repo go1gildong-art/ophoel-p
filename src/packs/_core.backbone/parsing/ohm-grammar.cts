@@ -1,7 +1,7 @@
 export const grammar = `
 Program = Statement* end
 
-Block = "{" (Statement | YieldExpr )* "}"
+Block = "{" (Statement | YieldExpr)* "}"
 YieldExpr = "yield" Expr -- KW
             | Expr -- nonKW
             
@@ -24,4 +24,5 @@ Statement = Include
            | ReturnStatement
            | ExecExpr
            | Block
+           | comment
 `;

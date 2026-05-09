@@ -4,19 +4,19 @@ import { getLoc, ActionMap, ActionMapThis } from "../../../compiler/parser.cjs";
 import * as ohm from 'ohm-js';
 
 export const actionMap: ActionMap<Statement> = {
-    SLComment(this: ActionMapThis, _slashes, content, _newline) {
+    slComment(this: ActionMapThis, _slashes, content) {
         return new ASTs.SLComment(content.sourceString, getLoc(_slashes, this.args.ophoelDir));
     },
 
-    MLComment(this: ActionMapThis, _start, content, _end) {
+    mlComment(this: ActionMapThis, _start, content, _end) {
         return new ASTs.MLComment(content.sourceString, getLoc(_start, this.args.ophoelDir));
     },
 
-    PreservedComment(this: ActionMapThis, _start, content) {
+    preservedComment(this: ActionMapThis, _start, content) {
         return new ASTs.PreservedComment(content.sourceString, getLoc(_start, this.args.ophoelDir));
     },
 
-    PreservedNewline(this: ActionMapThis, _start) {
+    preservedNewline(this: ActionMapThis, _start) {
         return new ASTs.PreservedNewline(getLoc(_start, this.args.ophoelDir));
     }
 };

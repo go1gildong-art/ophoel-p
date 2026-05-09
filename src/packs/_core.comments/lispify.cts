@@ -10,7 +10,7 @@ export function MLComment(ast: ASTTypes["MLComment"]) {
 }
 
 export function PreservedComment(ast: ASTTypes["PreservedComment"]) {
-    return `/# ${ast.content}`;
+    return `(/# ${ast.content})`;
 }
 
 export function PreservedNewline(ast: ASTTypes["PreservedNewline"]) {

@@ -6,5 +6,5 @@ export function McCommand(ast: ASTTypes["McCommand"]) {
 }
 
 export function McExecStatement(ast: ASTTypes["McExecStatement"]) {
-    return `(mc_exec ${ast.prefix.lispify()}!! ${ast.body.lispify()})`;
+    return `(execute ${ast.prefix.lispify()}!! ${ast.body.lispify()})`;
 }

@@ -1,9 +1,9 @@
 import { InterpretUnit } from "../unit.cjs";
 
 export const unit = new InterpretUnit({
-    title: "If",
-    description: "if, used as expressions and statements",
-    ophoelDir: "test_if.oph",
+    title: "Minecraft Execute",
+    description: "execute scope chain",
+    ophoelDir: "test_mc-exec.oph",
     link: __dirname,
 
     source: [

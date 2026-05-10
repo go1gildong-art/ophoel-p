@@ -45,7 +45,7 @@ export async function McExecStatement(ast: ASTTypes["McExecStatement"], _ctx: Co
         ctx.queuePrefix(coerced.value.value);
 
         ctx.pushFrame();
-        
+
         const body = await ast.body.evaluate(ctx.wrap());
         if (!body.ok) return body;
         ctx = body.ctx.branch();

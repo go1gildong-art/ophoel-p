@@ -7,13 +7,13 @@ export const unit = new ParserUnit({
     link: __dirname,
 
     source: [
-        `mc_exec "as @e"!! {`,
+        `execute "as @e"!! {`,
         `  say!! "hello";`,
-        `  mc_exec "at @s"!! {`,
+        `  execute "at @s"!! {`,
         `    say!! "nested";`,
         `  }`,
         `}`
     ].join("\n"),
 
-    expectation: `(program (mc_exec 'as @e'!! (block ((say!! 'hello') (mc_exec 'at @s'!! (block ((say!! 'nested'))))))))`
+    expectation: `(program (execute 'as @e'!! (block ((say!! 'hello') (execute 'at @s'!! (block ((say!! 'nested'))))))))`
 });

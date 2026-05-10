@@ -406,7 +406,18 @@ export async function MacroCall(ast: ASTTypes["MacroCall"], _ctx: Context): Prom
         const callee = _callee.value.value;
 
         const originalFrames = ctx.frames;
+        const originalPrefixes = originalFrames
+            .map(frame => frame.mcPrefix)
+            .filter(prefix => prefix !== undefined);
+
         ctx.frames = callee.closure.frames;
+
+        // add dummy frame to hold the mcPrefix for the macro call
+        ctx.frames.unshift({
+            mcPrefix: originalPrefixes.join(" "),
+            variables: []
+        });
+        
         ctx.pushFrame();
 
         for (const [index, arg] of callee.parameters.entries()) {

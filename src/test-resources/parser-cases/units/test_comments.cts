@@ -8,10 +8,11 @@ export const unit = new ParserUnit({
 
     source: [
         `const x = 1; //line comment`,
-        `/*block comment*/`,
-        `/# preserved comment`,
+        `/*block `,
+        `comment*/`,
+        `/#preserved comment`,
         `/.`,
-        `const y = 2;`
+        `const y = 2;`,
     ].join("\n"),
-    expectation: `(program (const x 1) (// line comment) (/* block comment */) (/# preserved comment) (/.) (const y 2))`
+    expectation: `(program (const x 1) (// line comment) (/* block \ncomment */) (/# preserved comment) (/.) (const y 2))`
 });

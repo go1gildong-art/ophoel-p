@@ -111,9 +111,8 @@ export class ContextMut {
 
     emitCmd(cmd: string, location: Location) {
         const prefix = [...this.frames]
-            .reverse()
-            .filter(frame => frame.mcPrefix != null)
-            .map(frame => frame.mcPrefix!)
+            .map(frame => frame.mcPrefix)
+            .filter(mcPrefix => mcPrefix != null && /\S/.test(mcPrefix))
             .join(" ");
 
         this.instructions.push(

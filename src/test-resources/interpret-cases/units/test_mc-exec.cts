@@ -7,11 +7,11 @@ export const unit = new InterpretUnit({
     link: __dirname,
 
     source: [
-        `macro say_as_all(msg) {`,
-        `  execute "as @a at @s" { say!! msg; }`,
+        `macro say_as_all!(msg) {`,
+        `  execute "as @a at @s"!! { say!! msg; }`,
         `}`,
         ``,
-        `execute "if entity @s zombie" {`,
+        `execute "if entity @s zombie"!! {`,
         `  say_as_all!("zombies!");`,
         `}`
     ].join("\n"),

@@ -34,6 +34,7 @@ export enum ASTKind {
     PreUnary = "PreUnary",
     PreservedComment = "PreservedComment",
     PreservedNewline = "PreservedNewline",
+    Print = "Print",
     Program = "Program",
     RangeLiteral = "RangeLiteral",
     RepeatStatement = "RepeatStatement",

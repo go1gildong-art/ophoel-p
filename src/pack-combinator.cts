@@ -7,6 +7,7 @@ import { pack as _core_mc } from "./packs/_core.mc/module.cjs"
 import { pack as _core_operations } from "./packs/_core.operations/module.cjs"
 import { pack as _core_preprocesses } from "./packs/_core.preprocesses/module.cjs"
 import { pack as _core_comments } from "./packs/_core.comments/module.cjs"
+import { pack as _core_backend } from "./packs/_core.backend/module.cjs"
 
 
 
@@ -20,7 +21,8 @@ export const packs = {
   _core_mc,
   _core_operations,
   _core_preprocesses,
-  _core_comments
+  _core_comments,
+  _core_backend
 } as const;
 
 export const actionMaps = Object.assign(
@@ -38,6 +40,7 @@ type ActionMaps =
   & typeof _core_operations.actionMap
   & typeof _core_preprocesses.actionMap
   & typeof _core_comments.actionMap
+  & typeof _core_backend.actionMap
 
 
 export const grammars = Object.fromEntries(
@@ -65,6 +68,7 @@ type Nodes =
   & typeof _core_operations.nodes
   & typeof _core_preprocesses.nodes
   & typeof _core_comments.nodes
+  & typeof _core_backend.nodes
 
 
 /*

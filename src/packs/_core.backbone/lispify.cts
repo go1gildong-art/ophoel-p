@@ -16,6 +16,7 @@ export function YieldExpr(ast: ASTTypes["YieldExpr"]) {
 }
 
 export function Program(ast: ASTTypes["Program"]) {
+    if (!Array.isArray(ast.body)) console.log(ast.body);
     const body = ast.body.map(s => s.lispify()).join(" ");
     return `(program ${body})`;
 }

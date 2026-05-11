@@ -22,7 +22,8 @@ Statement = Include
            | ConstDecl
            | VariableDecl
            | ReturnStatement
-           | ExecExpr
            | Block
+           | Print
            | comment
+           | ExecExpr
 `;

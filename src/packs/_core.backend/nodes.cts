@@ -6,7 +6,7 @@ import * as interpret from "./interpret.cjs";
 import { FileManager, FileManagerClass } from "../../compiler/file-manager.cjs";
 
 // Expand existing nodes to a pack.
-export class Print implements Expression, Statement, StandardNode {
+export class Print implements Statement, StandardNode {
     kind = ASTKind.Print
 
     constructor(

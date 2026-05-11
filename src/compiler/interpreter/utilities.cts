@@ -40,7 +40,8 @@ export class Context {
         public readonly frames: Frame[] = [],
         public readonly instructions: IRNode[] = [],
         public readonly fm: FileManager = new FMPlaceholder("uninitialized"),
-        public readonly includeTrace: string[] = []
+        public readonly includeTrace: string[] = [],
+        public readonly logs: OphoelValue[] = []
     ) { }
 
     branch(this: Context) {
@@ -48,7 +49,8 @@ export class Context {
             [ ...this.frames ], 
             [ ...this.instructions ], 
             this.fm, 
-            [ ...this.includeTrace ]
+            [ ...this.includeTrace ],
+            [ ...this.logs ]
         );
     }
 
@@ -66,7 +68,8 @@ export class ContextMut {
         public frames: Frame[] = [],
         public instructions: IRNode[] = [],
         public fm: FileManager = new FMPlaceholder("uninitialized"),
-        public includeTrace: string[] = []
+        public includeTrace: string[] = [],
+        public logs: OphoelValue[] = []
     ) { }
 
     private makeOK(value: OphoelValue = { type: "void", value: null }): InterpretReturn {
@@ -131,8 +134,21 @@ export class ContextMut {
             [ ...this.frames ], 
             [ ...this.instructions ], 
             this.fm, 
-            [ ...this.includeTrace ]
+            [ ...this.includeTrace ],
+            [ ...this.logs ]
         );
+    }
+
+    pushLog(value: OphoelValue) { this.logs.push(value); }
+
+    async printLogs(): Promise<void> {
+        if (!this.logs[0]) return;
+
+        const eeee = new FileManagerClass("e");
+        eeee.
+        console.log()
+
+
     }
 
     async include(path: string): Promise<InterpretReturn> {

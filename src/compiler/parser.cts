@@ -10,7 +10,6 @@ const grammarFull = [
   ...Object.values(p.grammars),
   "}"
 ].join("\n");
-// console.log(grammarFull);
 
 const myGrammar = ohm.grammar(grammarFull);
 

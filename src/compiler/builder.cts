@@ -40,7 +40,6 @@ async function build() {
             const srcDir = path.join(ophoelFolder, "functions");
             
             console.log(srcDir);
-            console.log(fs.existsSync(srcDir));
             if (fs.existsSync(srcDir)) {
                 
                 console.log(`Namespace found: ${ns}`);

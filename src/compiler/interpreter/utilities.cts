@@ -57,12 +57,12 @@ export class Context {
         );
     }
 
-    static new(fm: FileManagerClass) {
-        return new Context([emptyFrame()], [], fm);
+    static new(fm: FileManagerClass, from?: string) {
+        return new Context([emptyFrame()], [], fm, from);
     }
 
-    static newPlaceheld(src: string) {
-        return new Context([emptyFrame()], [], new FMPlaceholder(src));
+    static newPlaceheld(src: string, from?: string) {
+        return new Context([emptyFrame()], [], new FMPlaceholder(src), from);
     }
 }
 

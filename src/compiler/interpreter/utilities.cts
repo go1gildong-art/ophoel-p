@@ -40,19 +40,20 @@ export class Context {
         public readonly frames: Frame[] = [],
         public readonly instructions: IRNode[] = [],
         public readonly fm: FileManager = new FMPlaceholder("uninitialized"),
+        public readonly from: string = "unnamed context",
         public readonly includeTrace: string[] = [],
         public readonly logs: OphoelValue[] = [],
-        public readonly from: string = "unnamed context"
+
     ) { }
 
     branch(this: Context) {
         return new ContextMut(
-            [ ...this.frames ], 
-            [ ...this.instructions ], 
+            [...this.frames],
+            [...this.instructions],
             this.fm, 
-            [ ...this.includeTrace ],
-            [ ...this.logs ],
-            this.from
+            this.from,
+            [...this.includeTrace],
+            [...this.logs],
         );
     }
 
@@ -70,9 +71,10 @@ export class ContextMut {
         public frames: Frame[] = [],
         public instructions: IRNode[] = [],
         public fm: FileManager = new FMPlaceholder("uninitialized"),
+        public from: string = "unnamed context",
         public includeTrace: string[] = [],
         public logs: OphoelValue[] = [],
-        public from: string = "unnamed context"
+
     ) { }
 
     private makeOK(value: OphoelValue = { type: "void", value: null }): InterpretReturn {
@@ -134,12 +136,12 @@ export class ContextMut {
 
     wrap(): Context {
         return new Context(
-            [ ...this.frames ], 
-            [ ...this.instructions ], 
-            this.fm, 
-            [ ...this.includeTrace ],
-            [ ...this.logs ],
-            this.from
+            [...this.frames],
+            [...this.instructions],
+            this.fm,
+            this.from,
+            [...this.includeTrace],
+            [...this.logs],
         );
     }
 
@@ -150,7 +152,7 @@ export class ContextMut {
 
         const eeee = new FileManagerClass("e");
         eeee.
-        console.log()
+            console.log()
 
 
     }

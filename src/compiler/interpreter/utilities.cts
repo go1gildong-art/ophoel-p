@@ -30,6 +30,19 @@ export type MacroObject = { parameters: string[], body: Block | Expression, clos
 export type KVPair = { field: string, value: OphoelValue };
 export type Range = { start: number | null, end: number | null };
 
+function ophToString(value: OphoelValue): string {
+    switch (value.type) {
+        case "bool": return value.value.toString();
+        case "num": return value.value.toString();
+        case "string": return value.value;
+        case "vector": return `[${ value.value.map(ophToString).join(", ") }]`;
+        case "compound": return `{ ${value.value.map(v => `${v.field}: ${ophToString(v.value)}`).join(", ")} }`;
+        case "void": return "void";
+        case "macro": return `<macro>`;
+        case "range": return `[${value.value.start ?? ""}..${value.value.end ?? ""}]`;
+    }
+}
+
 export function moveValue(address: OphoelValue, value: OphoelValue): void {
     address.type = value.type;
     address.value = value.value;
@@ -150,11 +163,7 @@ export class ContextMut {
     async printLogs(): Promise<void> {
         if (!this.logs[0]) return;
 
-        const eeee = new FileManagerClass("e");
-        eeee.
-            console.log()
-
-
+        console.log(`----- Logs for ${this.from} -----`);
     }
 
     async include(path: string): Promise<InterpretReturn> {

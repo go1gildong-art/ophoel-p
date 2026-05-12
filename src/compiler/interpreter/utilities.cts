@@ -160,7 +160,7 @@ export class ContextMut {
 
     pushLog(value: OphoelValue) { this.logs.push(value); }
 
-    async printLogs(): Promise<void> {
+    printLogs() {
         if (!this.logs[0]) return;
 
         console.log(`----- Logs for ${this.from} -----`); 

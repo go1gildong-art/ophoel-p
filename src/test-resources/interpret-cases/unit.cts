@@ -24,10 +24,12 @@ export class InterpretUnit extends GoldenCase<Source, string> {
             expectation: args.expectation,
             source: new Source(args.source, args.ophoelDir),
             process: async (src) => {
-                const parseResult = await parse(src).interpretPlaceheld(src.src);
+                const parseResult = await parse(src).interpretPlaceheld(src.src, src.ophoelDir);
                 if (!parseResult.ok) throw parseResult.err;
 
-                return parseResult.ctx.branch().export().nonLocString();
+                const mut = parseResult.ctx.branch();
+                mut.printLogs();
+                return mut.export().codeGen();
             }
         });
     }

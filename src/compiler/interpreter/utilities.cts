@@ -163,7 +163,10 @@ export class ContextMut {
     async printLogs(): Promise<void> {
         if (!this.logs[0]) return;
 
-        console.log(`----- Logs for ${this.from} -----`);
+        console.log(`----- Logs for ${this.from} -----`); 
+        this.logs.forEach(log => console.log(ophToString(log)));
+        console.log(`----- End of logs for ${this.from} -----`);
+        console.log("\n");
     }
 
     async include(path: string): Promise<InterpretReturn> {

@@ -39,8 +39,8 @@ export class Program implements Statement, StandardNode {
 
     constructor(public body: Statement[], public location: Location) { }
 
-    async interpret(fm: FileManagerClass) { return this.evaluate(Context.new(fm)); }
-    async interpretPlaceheld(src: string) { return this.evaluate(Context.newPlaceheld(src)) };
+    async interpret(fm: FileManagerClass, from?: string) { return this.evaluate(Context.new(fm, from)); }
+    async interpretPlaceheld(src: string, from?: string) { return this.evaluate(Context.newPlaceheld(src, from)); };
     async evaluate(ctx: Context): Promise<InterpretReturn> { return await interpret.Program(this, ctx); }
     lispify(): string { return lispify.Program(this); }
 }

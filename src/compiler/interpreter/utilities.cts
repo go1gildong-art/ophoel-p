@@ -41,7 +41,8 @@ export class Context {
         public readonly instructions: IRNode[] = [],
         public readonly fm: FileManager = new FMPlaceholder("uninitialized"),
         public readonly includeTrace: string[] = [],
-        public readonly logs: OphoelValue[] = []
+        public readonly logs: OphoelValue[] = [],
+        public readonly from: string = "unnamed context"
     ) { }
 
     branch(this: Context) {
@@ -50,7 +51,8 @@ export class Context {
             [ ...this.instructions ], 
             this.fm, 
             [ ...this.includeTrace ],
-            [ ...this.logs ]
+            [ ...this.logs ],
+            this.from
         );
     }
 
@@ -69,7 +71,8 @@ export class ContextMut {
         public instructions: IRNode[] = [],
         public fm: FileManager = new FMPlaceholder("uninitialized"),
         public includeTrace: string[] = [],
-        public logs: OphoelValue[] = []
+        public logs: OphoelValue[] = [],
+        public from: string = "unnamed context"
     ) { }
 
     private makeOK(value: OphoelValue = { type: "void", value: null }): InterpretReturn {
@@ -135,7 +138,8 @@ export class ContextMut {
             [ ...this.instructions ], 
             this.fm, 
             [ ...this.includeTrace ],
-            [ ...this.logs ]
+            [ ...this.logs ],
+            this.from
         );
     }
 

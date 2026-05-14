@@ -1,2 +1,0 @@
-include "ophoel_test/ophoel/functions/config.oph";
-say!! config.b;

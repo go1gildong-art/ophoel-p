@@ -1,0 +1,21 @@
+macro rotate_n!(vec, times) {
+  0..times -> i {
+    rotate!(vec)
+  }
+}
+
+macro rotate!(vec) {
+  {|
+    x: vec.y,
+    y: vec.x
+  |}
+}
+
+macro apply_n!(arg, callback, times) {
+  let temp = arg;
+  0..times -> i {
+    temp = callback!(temp);
+  }
+
+  temp
+}

@@ -29,7 +29,7 @@ export class InterpretUnit extends GoldenCase<Source, string> {
 
                 const mut = parseResult.ctx.branch();
                 mut.printLogs();
-                return mut.export().codeGen();
+                return mut.export().nonLocString();
             }
         });
     }

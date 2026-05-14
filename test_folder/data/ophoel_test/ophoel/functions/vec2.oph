@@ -7,7 +7,8 @@ macro rotate_n!(vec, times) {
 macro rotate!(vec) {
   {|
     x: vec.y,
-    y: vec.x
+    y: vec.x * -1,
+    z: 10
   |}
 }
 
